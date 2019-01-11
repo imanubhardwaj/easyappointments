@@ -122,8 +122,7 @@ class User extends CI_Controller {
     {
         try
         {
-            if ( ! $this->input->post('username') || ! $this->input->post('password') ||
-                $this->input->post('apiKey') !== 'twitterisboring')
+            if ( ! $this->input->post('username') || ! $this->input->post('password'))
             {
                 throw new Exception('Invalid credentials given!');
             }
@@ -136,7 +135,7 @@ class User extends CI_Controller {
                 $this->session->set_userdata($user_data); // Save data on user's session.
                 $this->output
                     ->set_content_type('application/json')
-                    ->set_output(json_encode($user_data));
+                    ->set_output(json_encode(AJAX_SUCCESS));
             }
             else
             {
