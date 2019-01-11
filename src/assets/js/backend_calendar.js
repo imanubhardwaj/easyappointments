@@ -47,7 +47,7 @@ window.BackendCalendar = window.BackendCalendar || {};
                     document.webkitExitFullscreen();
 
                 $target
-                    .removeClass('btn-success')
+                    .removeClass('btn-primary')
                     .addClass('btn-default');
 
             } else {
@@ -63,7 +63,7 @@ window.BackendCalendar = window.BackendCalendar || {};
 
                 $target
                     .removeClass('btn-default')
-                    .addClass('btn-success');
+                    .addClass('btn-primary');
             }
         });
     }

@@ -40,7 +40,7 @@
 <div id="calendar-page" class="container-fluid">
     <div id="calendar-toolbar">
         <div id="calendar-filter" class="form-inline col-xs-12 col-sm-5">
-            <div class="form-group">
+            <div class="form-group" style="display: none">
                 <label for="select-filter-item"><?= lang('display_calendar') ?></label>
                 <select id="select-filter-item" class="form-control" title="<?= lang('select_filter_item_hint') ?>">
                 </select>
@@ -171,7 +171,7 @@
 
                                 <div class="form-group">
                                     <label for="select-provider" class="control-label"><?= lang('provider') ?> *</label>
-                                    <select id="select-provider" class="required form-control"></select>
+                                    <select id="select-provider" class="required form-control" disabled></select>
                                 </div>
                             </div>
 

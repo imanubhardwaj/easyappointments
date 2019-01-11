@@ -154,8 +154,7 @@ body .modal .modal-title {
 
 body .modal-header {
     padding: 12px 15px;
-    background: #39c678;
-    border-bottom: 4px solid #c0f1d6;
+    background: #3498db;
 }
 
 body .modal-header h3 {
@@ -166,7 +165,7 @@ body .modal-header h3 {
 
 body .modal-header .close {
     margin-top: 2px;
-    color: #12482a;
+    color: white;
 }
 
 body .modal-content {

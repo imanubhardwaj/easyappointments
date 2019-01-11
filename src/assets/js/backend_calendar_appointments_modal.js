@@ -97,11 +97,11 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 $dialog.find('.modal-body').scrollTop(0);
 
                 // Close the modal dialog and refresh the calendar appointments after one second.
-                setTimeout(function () {
-                    $dialog.find('.alert').addClass('hidden');
-                    $dialog.modal('hide');
-                    $('#select-filter-item').trigger('change');
-                }, 2000);
+                // setTimeout(function () {
+                //     $dialog.find('.alert').addClass('hidden');
+                //     $dialog.modal('hide');
+                //     $('#select-filter-item').trigger('change');
+                // }, 2000);
             };
 
             // Define error callback.

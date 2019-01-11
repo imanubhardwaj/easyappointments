@@ -42,13 +42,12 @@ body .ui-dialog .ui-dialog-titlebar-close {
 }
 
 body .ui-draggable .ui-dialog-titlebar {
-    background: #39c678;
+    background: #3498db;
     color: #FFF;
     font-size: 1.5em;
     font-weight: lighter;
     padding: 12px 10px;
     border: none;
-    border-bottom: 4px solid #c0f1d6;
     margin-bottom: 10px;
 }
 
@@ -159,8 +158,8 @@ body .ui-datepicker .ui-datepicker-next-hover {
 
 body .ui-datepicker .ui-slider-handle {
     border-radius: none;
-    border-color: #3DD481;
-    background-color: #3DD481;
+    border-color: #3498db;
+    background-color: #3498db;
 }
 
 body .ui-priority-primary,

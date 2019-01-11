@@ -29,7 +29,7 @@
 </script>
 
 <div id="settings-page" class="container-fluid">
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs" role="tablist" style="display: none">
         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
             <li role="presentation" class="active">
                 <a href="#general" aria-controls="general" role="tab" data-toggle="tab"><?= lang('general') ?></a>
@@ -50,9 +50,6 @@
                 <a href="#current-user" aria-controls="current-user" role="tab" data-toggle="tab"><?= lang('current_user') ?></a>
             </li>
         <?php endif ?>
-        <li role="presentation">
-            <a href="#about-app" aria-controls="about-app" role="tab" data-toggle="tab"><?= lang('about_app') ?></a>
-        </li>
     </ul>
 
     <div class="tab-content">
