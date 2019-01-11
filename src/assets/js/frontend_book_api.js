@@ -26,6 +26,10 @@ window.FrontendBookApi = window.FrontendBookApi || {};
     var selectedDateStringBackup;
     var processingUnavailabilities = false;
 
+    const selectedService = GlobalVariables.availableServices[0];
+
+    const selectedProvider = GlobalVariables.availableProviders[0];
+
     /**
      * Get Available Hours
      *
@@ -40,7 +44,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         // Find the selected service duration (it is going to be send within the "postData" object).
         var selServiceDuration = 15; // Default value of duration (in minutes).
         $.each(GlobalVariables.availableServices, function (index, service) {
-            if (service.id == $('#select-service').val()) {
+            if (service.id == selectedService['id']) {
                 selServiceDuration = service.duration;
             }
         });
@@ -52,8 +56,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_available_hours';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
-            service_id: $('#select-service').val(),
-            provider_id: $('#select-provider').val(),
+            service_id: selectedService['id'],
+            provider_id: selectedProvider['id'],
             selected_date: selDate,
             service_duration: selServiceDuration,
             manage_mode: FrontendBook.manageMode,

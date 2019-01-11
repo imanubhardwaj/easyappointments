@@ -38,6 +38,10 @@ window.FrontendBook = window.FrontendBook || {};
      */
     var privacyPolicyConsent;
 
+    const selectedService = GlobalVariables.availableServices[0];
+
+    const selectedProvider = GlobalVariables.availableProviders[0];
+
     /**
      * Determines the functionality of the page.
      *
@@ -70,7 +74,7 @@ window.FrontendBook = window.FrontendBook || {};
                         text: '#666666'
                     },
                     button: {
-                        background: '#3DD481',
+                        background: '#3498db',
                         text: '#ffffff'
                     }
                 },
@@ -141,6 +145,14 @@ window.FrontendBook = window.FrontendBook || {};
             }
         });
 
+        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
+            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+        FrontendBook.updateConfirmFrame();
+
+        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
+            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+        FrontendBook.updateConfirmFrame();
+
         // Bind the event handlers (might not be necessary every time we use this class).
         if (bindEventHandlers) {
             _bindEventHandlers();
@@ -193,51 +205,6 @@ window.FrontendBook = window.FrontendBook || {};
      */
     function _bindEventHandlers() {
         /**
-         * Event: Selected Provider "Changed"
-         *
-         * Whenever the provider changes the available appointment date - time periods must be updated.
-         */
-        $('#select-provider').change(function () {
-            FrontendBookApi.getUnavailableDates($(this).val(), $('#select-service').val(),
-                $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
-            FrontendBook.updateConfirmFrame();
-        });
-
-        /**
-         * Event: Selected Service "Changed"
-         *
-         * When the user clicks on a service, its available providers should
-         * become visible.
-         */
-        $('#select-service').change(function () {
-            var currServiceId = $('#select-service').val();
-            $('#select-provider').empty();
-
-            $.each(GlobalVariables.availableProviders, function (indexProvider, provider) {
-                $.each(provider.services, function (indexService, serviceId) {
-                    // If the current provider is able to provide the selected service,
-                    // add him to the listbox.
-                    if (serviceId == currServiceId) {
-                        var optionHtml = '<option value="' + provider.id + '">'
-                            + provider.first_name + ' ' + provider.last_name
-                            + '</option>';
-                        $('#select-provider').append(optionHtml);
-                    }
-                });
-            });
-
-            // Add the "Any Provider" entry.
-            if ($('#select-provider option').length >= 1) {
-                $('#select-provider').append(new Option('- ' + EALang.any_provider + ' -', 'any-provider'));
-            }
-
-            FrontendBookApi.getUnavailableDates($('#select-provider').val(), $(this).val(),
-                $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
-            FrontendBook.updateConfirmFrame();
-            _updateServiceDescription($('#select-service').val(), $('#service-description'));
-        });
-
-        /**
          * Event: Next Step Button "Clicked"
          *
          * This handler is triggered every time the user pressed the "next" button on the book wizard.
@@ -246,7 +213,7 @@ window.FrontendBook = window.FrontendBook || {};
         $('.button-next').click(function () {
             // If we are on the first step and there is not provider selected do not continue
             // with the next step.
-            if ($(this).attr('data-step_index') === '1' && $('#select-provider').val() == null) {
+            if ($(this).attr('data-step_index') === '1' && selectedProvider['id'] == null) {
                 return;
             }
 
@@ -497,7 +464,7 @@ window.FrontendBook = window.FrontendBook || {};
             selectedDate = GeneralFunctions.formatDate(selectedDate, GlobalVariables.dateFormat);
         }
 
-        var selServiceId = $('#select-service').val();
+        var selServiceId = selectedService['id'];
         var servicePrice;
         var serviceCurrency;
 
@@ -510,10 +477,10 @@ window.FrontendBook = window.FrontendBook || {};
         });
 
         var html =
-            '<h4>' + $('#select-service option:selected').text() + '</h4>' +
+            '<h4>' + selectedService['name'] + '</h4>' +
             '<p>'
             + '<strong class="text-primary">'
-            + $('#select-provider option:selected').text() + '<br>'
+            + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
             + selectedDate + ' ' + $('.selected-hour').text()
             + servicePrice + ' ' + serviceCurrency
             + '</strong>' +
@@ -566,8 +533,8 @@ window.FrontendBook = window.FrontendBook || {};
             end_datetime: _calcEndDatetime(),
             notes: $('#notes').val(),
             is_unavailable: false,
-            id_users_provider: $('#select-provider').val(),
-            id_services: $('#select-service').val()
+            id_users_provider: selectedProvider['id'],
+            id_services: selectedService['id']
         };
 
         postData.manage_mode = FrontendBook.manageMode;
@@ -591,7 +558,7 @@ window.FrontendBook = window.FrontendBook || {};
         var selServiceDuration = undefined;
 
         $.each(GlobalVariables.availableServices, function (index, service) {
-            if (service.id == $('#select-service').val()) {
+            if (service.id == selectedService['id']) {
                 selServiceDuration = service.duration;
                 return false; // Stop searching ...
             }
@@ -650,49 +617,6 @@ window.FrontendBook = window.FrontendBook || {};
             return true;
         } catch (exc) {
             return false;
-        }
-    }
-
-    /**
-     * This method updates a div's html content with a brief description of the
-     * user selected service (only if available in db). This is useful for the
-     * customers upon selecting the correct service.
-     *
-     * @param {Number} serviceId The selected service record id.
-     * @param {Object} $div The destination div jquery object (e.g. provide $('#div-id')
-     * object as value).
-     */
-    function _updateServiceDescription(serviceId, $div) {
-        var html = '';
-
-        $.each(GlobalVariables.availableServices, function (index, service) {
-            if (service.id == serviceId) { // Just found the service.
-                html = '<strong>' + service.name + ' </strong>';
-
-                if (service.description != '' && service.description != null) {
-                    html += '<br>' + service.description + '<br>';
-                }
-
-                if (service.duration != '' && service.duration != null) {
-                    html += '[' + EALang.duration + ' ' + service.duration + ' ' + EALang.minutes + ']';
-                }
-
-                if (service.price != '' && service.price != null) {
-                    html += '[' + EALang.price + ' ' + service.price + ' ' + service.currency + ']';
-                }
-
-                html += '<br>';
-
-                return false;
-            }
-        });
-
-        $div.html(html);
-
-        if (html != '') {
-            $div.show();
-        } else {
-            $div.hide();
         }
     }
 

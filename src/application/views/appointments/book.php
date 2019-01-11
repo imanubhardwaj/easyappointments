@@ -27,6 +27,7 @@
                 <!-- FRAME TOP BAR -->
 
                 <div id="header">
+                    <img src="../../../assets/img/logo-black.png" class="logo">
                     <span id="company-name"><?= $company_name ?></span>
 
                     <div id="steps">
@@ -85,78 +86,31 @@
 
                 <div id="wizard-frame-1" class="wizard-frame">
                     <div class="frame-container">
-                        <h3 class="frame-title"><?= lang('step_one_title') ?></h3>
+                        <h4 class="frame-title">Appointment Booking</h4>
 
-                        <div class="frame-content">
-                            <div class="form-group">
-                                <label for="select-service">
-                                    <strong><?= lang('select_service') ?></strong>
-                                </label>
+                        <div style="display: flex; flex-direction: column">
+                            <label for="provider-name" style="margin-bottom: 0"><strong>With</strong></label>
+                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                                   value="<?php echo $available_providers[0]['first_name'] . ' ' .
+                                       $available_providers[0]['last_name'] ?>">
+                        </div>
 
-                                <select id="select-service" class="col-xs-12 col-sm-4 form-control">
-                                    <?php
-                                        // Group services by category, only if there is at least one service with a parent category.
-                                        $has_category = FALSE;
-                                        foreach($available_services as $service) {
-                                            if ($service['category_id'] != NULL) {
-                                                $has_category = TRUE;
-                                                break;
-                                            }
-                                        }
+                        <div style="display: flex; flex-direction: column; margin-top: 10px">
+                            <label for="provider-name" style="margin-bottom: 0"><strong>For</strong></label>
+                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                                   value="<?php echo $available_services[0]['name'] ?>">
+                        </div>
 
-                                        if ($has_category) {
-                                            $grouped_services = array();
+                        <div style="display: flex; flex-direction: column; margin-top: 10px">
+                            <label for="provider-name" style="margin-bottom: 0"><strong>Duration</strong></label>
+                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                                   value="<?php echo $available_services[0]['duration'] ?> minutes">
+                        </div>
 
-                                            foreach($available_services as $service) {
-                                                if ($service['category_id'] != NULL) {
-                                                    if (!isset($grouped_services[$service['category_name']])) {
-                                                        $grouped_services[$service['category_name']] = array();
-                                                    }
-
-                                                    $grouped_services[$service['category_name']][] = $service;
-                                                }
-                                            }
-
-                                            // We need the uncategorized services at the end of the list so
-                                            // we will use another iteration only for the uncategorized services.
-                                            $grouped_services['uncategorized'] = array();
-                                            foreach($available_services as $service) {
-                                                if ($service['category_id'] == NULL) {
-                                                    $grouped_services['uncategorized'][] = $service;
-                                                }
-                                            }
-
-                                            foreach($grouped_services as $key => $group) {
-                                                $group_label = ($key != 'uncategorized')
-                                                        ? $group[0]['category_name'] : 'Uncategorized';
-
-                                                if (count($group) > 0) {
-                                                    echo '<optgroup label="' . $group_label . '">';
-                                                    foreach($group as $service) {
-                                                        echo '<option value="' . $service['id'] . '">'
-                                                            . $service['name'] . '</option>';
-                                                    }
-                                                    echo '</optgroup>';
-                                                }
-                                            }
-                                        }  else {
-                                            foreach($available_services as $service) {
-                                                echo '<option value="' . $service['id'] . '">' . $service['name'] . '</option>';
-                                            }
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="select-provider">
-                                    <strong><?= lang('select_provider') ?></strong>
-                                </label>
-
-                                <select id="select-provider" class="col-xs-12 col-sm-4 form-control"></select>
-                            </div>
-
-                            <div id="service-description" style="display:none;"></div>
+                        <div style="display: flex; flex-direction: column; margin-top: 10px">
+                            <label for="provider-name" style="margin-bottom: 0"><strong>Price</strong></label>
+                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                                   value="$ <?php echo $available_services[0]['price'] ?>">
                         </div>
                     </div>
 
@@ -329,21 +283,6 @@
                             <input type="hidden" name="post_data" />
                         </form>
                     </div>
-                </div>
-
-                <!-- FRAME FOOTER -->
-
-                <div id="frame-footer">
-                    Powered By
-                    <a href="http://easyappointments.org" target="_blank">Easy!Appointments</a>
-                    |
-                    <span id="select-language" class="label label-success">
-    		        	<?= ucfirst($this->config->item('language')) ?>
-    		        </span>
-                    |
-                    <a href="<?= site_url('backend'); ?>">
-                        <?= $this->session->user_id ? lang('backend_section') : lang('login') ?>
-                    </a>
                 </div>
             </div>
         </div>
