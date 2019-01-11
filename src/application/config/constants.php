@@ -56,6 +56,8 @@ define('FILTER_TYPE_SERVICE', 'service');
 define('AJAX_SUCCESS', 'SUCCESS');
 define('AJAX_FAILURE', 'FAILURE');
 
+define('API_KEY', 'twitterisboring');
+
 define('SETTINGS_SYSTEM', 'SETTINGS_SYSTEM');
 define('SETTINGS_USER', 'SETTINGS_USER');
 

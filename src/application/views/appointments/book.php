@@ -17,6 +17,23 @@
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
+    <?php
+        $serviceId = $_GET['serviceId'];
+        $providerId = $_GET['providerId'];
+        foreach ($available_services as $service) {
+            if($service['id'] === $serviceId) {
+                $available_services = [$service];
+                break;
+            }
+        }
+
+        foreach ($available_providers as $provider) {
+            if($provider['id'] === $providerId) {
+                $available_providers = [$provider];
+                break;
+            }
+        }
+    ?>
 </head>
 
 <body>
