@@ -144,7 +144,7 @@
                                     <strong>Description</strong>
                                 </label>
                                 <input type="text" id="service-description" disabled
-                                       value="$ <?php echo $available_services[0]['description'] ?>">
+                                       value="<?php echo $available_services[0]['description'] ?>">
                                 <br>
                             </div>
                         <?php endif ?>
