@@ -34,7 +34,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <div id="header-logo" class="navbar-brand">
-                <img src="<?= base_url('assets/img/logo.png') ?>">
+                <img src="<?= base_url('assets/img/logo-black.png') ?>">
                 <span><?= $company_name ?></span>
             </div>
             

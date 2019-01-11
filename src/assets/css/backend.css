@@ -20,8 +20,7 @@ root {
 /* BACKEND GENERAL ELEMENTS
    -------------------------------------------------------------------- */
 #header {
-    background-color: #39c678;
-    border-bottom: 4px solid #c0f1d6;
+    background-color: #3498db;
     box-shadow: none;
     border-radius: 0;
     margin-bottom: 15px;
@@ -43,7 +42,7 @@ root {
     font-size: 16px;
     color: white;
     margin-top: 14px;
-    font-weight: lighter;
+    font-weight: bold;
 }
 
 #header .navbar-header .navbar-toggle .icon-bar {
@@ -66,12 +65,12 @@ root {
 }
 
 #header #header-menu .menu-item:hover:not(.active) {
-    background-color: #2A8F57;
+    background-color: #8EBDE5;
 }
 
 #header #header-menu .active {
     color: #C5FFD6;
-    background: #29A067;
+    background: #358DD2;
 }
 
 #footer {
