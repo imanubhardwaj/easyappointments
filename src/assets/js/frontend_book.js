@@ -481,8 +481,8 @@ window.FrontendBook = window.FrontendBook || {};
             '<p>'
             + '<strong class="text-primary">'
             + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
-            + selectedDate + ' ' + $('.selected-hour').text()
-            + serviceCurrency + ' ' + servicePrice
+            + selectedDate + ' ' + $('.selected-hour').text() + '<br>'
+            + servicePrice
             + '</strong>' +
             '</p>';
 
