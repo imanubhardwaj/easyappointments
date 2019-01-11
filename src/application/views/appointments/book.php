@@ -86,32 +86,51 @@
 
                 <div id="wizard-frame-1" class="wizard-frame">
                     <div class="frame-container">
-                        <h4 class="frame-title">Appointment Booking</h4>
+                        <h4 class="frame-title">Book Appointment</h4>
 
                         <div style="display: flex; flex-direction: column">
                             <label for="provider-name" style="margin-bottom: 0"><strong>With</strong></label>
-                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                            <input type="text" id="provider-name" disabled
                                    value="<?php echo $available_providers[0]['first_name'] . ' ' .
                                        $available_providers[0]['last_name'] ?>">
+                            <br>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; margin-top: 10px">
-                            <label for="provider-name" style="margin-bottom: 0"><strong>For</strong></label>
-                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                        <div style="display: flex; flex-direction: column">
+                            <label for="service-name" style="margin-bottom: 0"><strong>For</strong></label>
+                            <input type="text" id="service-name" disabled
                                    value="<?php echo $available_services[0]['name'] ?>">
+                            <br>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; margin-top: 10px">
-                            <label for="provider-name" style="margin-bottom: 0"><strong>Duration</strong></label>
-                            <input type="text" id="provider-name" disabled style="font-size: 20px"
+                        <div style="display: flex; flex-direction: column">
+                            <label for="service-duration" style="margin-bottom: 0"><strong>Duration</strong></label>
+                            <input type="text" id="service-duration" disabled
                                    value="<?php echo $available_services[0]['duration'] ?> minutes">
+                            <br>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; margin-top: 10px">
-                            <label for="provider-name" style="margin-bottom: 0"><strong>Price</strong></label>
-                            <input type="text" id="provider-name" disabled style="font-size: 20px"
-                                   value="$ <?php echo $available_services[0]['price'] ?>">
-                        </div>
+                        <?php if ($available_services[0]['price'] >= 1): ?>
+                            <div style="display: flex; flex-direction: column">
+                                <label for="service-price" style="margin-bottom: 0">
+                                    <strong>Price</strong>
+                                </label>
+                                <input type="text" id="service-price" disabled
+                                       value="$ <?php echo $available_services[0]['price'] ?>">
+                                <br>
+                            </div>
+                        <?php endif ?>
+
+                        <?php if ($available_services[0]['description']): ?>
+                            <div style="display: flex; flex-direction: column">
+                                <label for="service-description" style="margin-bottom: 0">
+                                    <strong>Description</strong>
+                                </label>
+                                <input type="text" id="service-description" disabled
+                                       value="$ <?php echo $available_services[0]['description'] ?>">
+                                <br>
+                            </div>
+                        <?php endif ?>
                     </div>
 
                     <div class="command-buttons">
@@ -136,7 +155,7 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-6">
-                                <div id="available-hours"></div>
+                                <div id="available-hours" style="display: flex; white-space: pre-wrap"></div>
                             </div>
                         </div>
                     </div>
@@ -275,7 +294,7 @@
                             <?= lang('back') ?>
                         </button>
                         <form id="book-appointment-form" style="display:inline-block" method="post">
-                            <button id="book-appointment-submit" type="button" class="btn btn-success">
+                            <button id="book-appointment-submit" type="button" class="btn button-next btn-primary">
                                 <span class="glyphicon glyphicon-ok"></span>
                                 <?= !$manage_mode ? lang('confirm') : lang('update') ?>
                             </button>

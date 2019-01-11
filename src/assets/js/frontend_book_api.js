@@ -73,14 +73,14 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             // service. Fill the available hours div with response data.
             if (response.length > 0) {
                 var currColumn = 1;
-                $('#available-hours').html('<div style="width:80px; float:left;"></div>');
+                $('#available-hours').html('<div style="width:80px"></div>');
 
                 var timeFormat = GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm';
 
                 $.each(response, function (index, availableHour) {
                     if ((currColumn * 10) < (index + 1)) {
                         currColumn++;
-                        $('#available-hours').append('<div style="width:80px; float:left;"></div>');
+                        $('#available-hours').append('<div style="width:80px"></div>');
                     }
 
                     $('#available-hours div:eq(' + (currColumn - 1) + ')').append(

@@ -180,7 +180,7 @@ body {
 }
 
 #book-appointment-wizard #wizard-frame-1 label {
-    font-size: 19px;
+    font-size: 15px;
     margin-bottom: 12px;
 }
 
@@ -324,10 +324,9 @@ body {
     }
 
     #book-appointment-wizard #available-hours {
-        overflow: auto;
         margin: 20px auto;
+        overflow: auto;
         width: 260px;
-        padding-left: 20px; /* center at the bottom of datepicker */
     }
 
     #book-appointment-wizard #available-hours div {

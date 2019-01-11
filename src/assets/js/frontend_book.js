@@ -140,7 +140,7 @@ window.FrontendBook = window.FrontendBook || {};
 
             onChangeMonthYear: function (year, month, instance) {
                 var currentDate = new Date(year, month - 1, 1);
-                FrontendBookApi.getUnavailableDates($('#select-provider').val(), $('#select-service').val(),
+                FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
                     currentDate.toString('yyyy-MM-dd'));
             }
         });
@@ -482,7 +482,7 @@ window.FrontendBook = window.FrontendBook || {};
             + '<strong class="text-primary">'
             + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
             + selectedDate + ' ' + $('.selected-hour').text()
-            + servicePrice + ' ' + serviceCurrency
+            + serviceCurrency + ' ' + servicePrice
             + '</strong>' +
             '</p>';
 
@@ -499,16 +499,16 @@ window.FrontendBook = window.FrontendBook || {};
 
         html =
             '<h4>' + firstName + ' ' + lastName + '</h4>' +
-            '<p>' +
-            EALang.phone + ': ' + phoneNumber +
-            '<br/>' +
-            EALang.email + ': ' + email +
-            '<br/>' +
-            EALang.address + ': ' + address +
-            '<br/>' +
-            EALang.city + ': ' + city +
-            '<br/>' +
-            EALang.zip_code + ': ' + zipCode +
+            '<p><b>' +
+            EALang.phone + '</b>: ' + phoneNumber +
+            '<br/><b>' +
+            EALang.email + '</b>: ' + email +
+            '<br/><b>' +
+            EALang.address + '</b>: ' + address +
+            '<br/><b>' +
+            EALang.city + '</b>: ' + city +
+            '<br/><b>' +
+            EALang.zip_code + '</b>: ' + zipCode +
             '</p>';
 
         $('#customer-details').html(html);
