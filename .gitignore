@@ -7,7 +7,7 @@
 /node_modules/
 /npm-debug.log
 /src/config.php
-/src/storage/cache/*
+/src/storage/*
 !/src/storage/cache/.htaccess
 !/src/storage/cache/index.html
 /src/storage/logs/*

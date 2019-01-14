@@ -18,21 +18,19 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
     <?php
-        $serviceId = $_GET['serviceId'];
-        $providerId = $_GET['providerId'];
-        foreach ($available_services as $service) {
-            if($service['id'] === $serviceId) {
-                $available_services = [$service];
-                break;
-            }
-        }
+    $serviceId          = $_GET['serviceId'];
+    $providerId         = $_GET['providerId'];
+    $available_services = array_values(array_filter($available_services, function ($e) use ($serviceId) {
+        return $e['id'] === $serviceId;
+    }));
 
-        foreach ($available_providers as $provider) {
-            if($provider['id'] === $providerId) {
-                $available_providers = [$provider];
-                break;
-            }
-        }
+    $available_providers = array_values(array_filter($available_providers, function ($e) use ($providerId) {
+        return $e['id'] === $providerId;
+    }));
+
+    if ($serviceId === null || $providerId === null || count($available_services) === 0 || count($available_providers) === 0) {
+        header('Location: https://appointements.invidz.com/user/login');
+    }
     ?>
 </head>
 
