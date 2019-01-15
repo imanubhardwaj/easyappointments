@@ -97,7 +97,7 @@ window.BackendSettings = window.BackendSettings || {};
         });
 
         exports.wp = new WorkingPlan();
-        exports.wp.setup(workingPlan);
+        exports.wp.setup($.parseJSON(GlobalVariables.settings.user.settings.working_plan));
         exports.wp.timepickers(false);
 
         // Load user settings into form
@@ -193,7 +193,9 @@ window.BackendSettings = window.BackendSettings || {};
          */
         $('.save-settings').click(function () {
             var data = settings.get();
-            settings.save(data);
+            const settingsData = {...data, settings: {...data.settings,
+                    working_plan: JSON.stringify(window.WorkingPlan.prototype.get())}};
+            settings.save(settingsData);
         });
 
         /**

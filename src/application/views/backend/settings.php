@@ -162,170 +162,6 @@
             </form>
         </div>
 
-        <!-- BUSINESS LOGIC TAB -->
-
-        <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
-        <div role="tabpanel" class="tab-pane <?= $hidden ?>" id="business-logic">
-            <form>
-                <fieldset>
-                    <legend>
-                        <?= lang('business_logic') ?>
-                        <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <button type="button" class="save-settings btn btn-primary btn-xs"
-                                    title="<?= lang('save') ?>">
-                                <span class="glyphicon glyphicon-floppy-disk"></span>
-                                <?= lang('save') ?>
-                            </button>
-                        <?php endif ?>
-                    </legend>
-
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-7 working-plan-wrapper">
-                            <h4><?= lang('working_plan') ?></h4>
-                            <span class="help-block">
-                                <?= lang('edit_working_plan_hint') ?>
-                            </span>
-
-                            <table class="working-plan table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><?= lang('day') ?></th>
-                                        <th><?= lang('start') ?></th>
-                                        <th><?= lang('end') ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="sunday">
-                                                    <?= lang('sunday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="sunday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="sunday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="monday">
-                                                    <?= lang('monday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="monday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="monday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="tuesday">
-                                                    <?= lang('tuesday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="tuesday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="tuesday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="wednesday">
-                                                    <?= lang('wednesday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="wednesday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="wednesday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="thursday">
-                                                    <?= lang('thursday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="thursday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="thursday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="friday">
-                                                    <?= lang('friday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="friday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="friday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="saturday">
-                                                    <?= lang('saturday') ?>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td><input id="saturday-start" class="work-start form-control input-sm"></td>
-                                        <td><input id="saturday-end" class="work-end form-control input-sm"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <br>
-
-                            <h4><?= lang('book_advance_timeout') ?></h4>
-                            <div class="form-group">
-                                <label for="book-advance-timeout" class="control-label"><?= lang('timeout_minutes') ?></label>
-                                <input id="book-advance-timeout" data-field="book_advance_timeout" class="form-control" type="number" min="15">
-                                <p class="help-block">
-                                    <?= lang('book_advance_timeout_hint') ?>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-5 breaks-wrapper">
-                            <h4><?= lang('breaks') ?></h4>
-
-                            <span class="help-block">
-                                <?= lang('edit_breaks_hint') ?>
-                            </span>
-
-                            <div>
-                                <button type="button" class="add-break btn btn-primary">
-                                    <span class="glyphicon glyphicon-white glyphicon glyphicon-plus"></span>
-                                    <?= lang('add_break');?>
-                                </button>
-                            </div>
-
-                            <br>
-
-                            <table class="breaks table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><?= lang('day') ?></th>
-                                        <th><?= lang('start') ?></th>
-                                        <th><?= lang('end') ?></th>
-                                        <th><?= lang('actions') ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody><!-- Dynamic Content --></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-
         <!-- LEGAL CONTENTS TAB -->
 
         <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
@@ -502,6 +338,138 @@
                         <?= lang('receive_notifications') ?>
                     </button>
                 </fieldset>
+
+                    <fieldset class="col-xs-12 col-sm-6 working-plan-wrapper">
+                    <legend><?= lang('working_plan') ?></legend>
+
+                        <div class="working-plan-view provider-view">
+                            <table class="working-plan table table-striped">
+                                <thead>
+                                <tr>
+                                    <th><?= lang('day') ?></th>
+                                    <th><?= lang('start') ?></th>
+                                    <th><?= lang('end') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="sunday">
+                                                <?= lang('sunday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="sunday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="sunday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="monday">
+                                                <?= lang('monday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="monday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="monday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="tuesday">
+                                                <?= lang('tuesday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="tuesday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="tuesday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="wednesday">
+                                                <?= lang('wednesday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="wednesday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="wednesday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="thursday">
+                                                <?= lang('thursday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="thursday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="thursday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="friday">
+                                                <?= lang('friday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="friday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="friday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="saturday">
+                                                <?= lang('saturday') ?>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><input id="saturday-start" class="work-start form-control input-sm"></td>
+                                    <td><input id="saturday-end" class="work-end form-control input-sm"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <br>
+
+                            <p style="font-size: 20px; padding-bottom: 3px; border-bottom: #e5e5e5 1px solid"><?= lang('breaks') ?></p>
+
+                            <span class="help-block">
+                            <?= lang('add_breaks_during_each_day') ?>
+                            </span>
+
+                            <div>
+                                <button type="button" class="add-break btn btn-primary">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    <?= lang('add_break') ?>
+                                </button>
+                            </div>
+
+                            <br>
+
+                            <table class="breaks table table-striped">
+                                <thead>
+                                <tr>
+                                    <th><?= lang('day') ?></th>
+                                    <th><?= lang('start') ?></th>
+                                    <th><?= lang('end') ?></th>
+                                    <th><?= lang('actions') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody><!-- Dynamic Content --></tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
                 </div>
             </form>
         </div>

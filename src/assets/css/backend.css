@@ -762,6 +762,7 @@ body .form-horizontal .controls {
 
 #settings-page .working-plan-wrapper {
     max-width: 600px;
+    margin-bottom: 20px;
 }
 
 #settings-page .breaks-wrapper {
