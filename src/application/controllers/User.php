@@ -122,14 +122,8 @@ class User extends CI_Controller {
     {
         try
         {
-            if ( ! $this->input->post('username') || ! $this->input->post('password'))
-            {
-                throw new Exception('Invalid credentials given!');
-            }
-
             $this->load->model('user_model');
-            $user_data = $this->user_model->check_login($this->input->post('username'), $this->input->post('password'));
-
+            $user_data = $this->user_model->login_by_code($this->input->post('code'));
             if ($user_data)
             {
                 $this->session->set_userdata($user_data); // Save data on user's session.

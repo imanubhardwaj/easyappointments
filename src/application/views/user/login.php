@@ -55,8 +55,31 @@
         var EALang = <?= json_encode($this->lang->language) ?>;
         var availableLanguages = <?= json_encode($this->config->item('available_languages')) ?>;
 
+        const code = "<?php Print($_GET['code']); ?>";
+        if(code) {
+            const url = 'https://easy.dev/index.php/user/ajax_check_login';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {'code': code},
+                success: function (response) {
+                    if (response && response === 'SUCCESS') {
+                        // TODO use global variables
+                        window.location.href = 'https://easy.dev/index.php/backend';
+                    }
+                },
+                error: function () {
+                    // TODO use global variables
+                    window.location.href = 'Location: https://appointements.invidz.com/user/login';
+                },
+                async: false
+            });
+        }
+
         $(document).ready(function() {
-        	GeneralFunctions.enableLanguageSelection($('#select-language'));
+            if(!code) {
+                GeneralFunctions.enableLanguageSelection($('#select-language'));
+            }
 
             /**
              * Event: Login Button "Click"

@@ -112,6 +112,22 @@ class User_Model extends CI_Model {
         return ($user_data) ? $user_data : NULL;
     }
 
+    public function login_by_code($code)
+    {
+        $this->load->helper('general');
+
+        $user_data = $this->db
+            ->select('ea_users.id AS user_id, ea_users.email AS user_email, '
+                . 'ea_roles.slug AS role_slug, ea_user_settings.username')
+            ->from('ea_users')
+            ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
+            ->join('ea_user_settings', 'ea_user_settings.id_users = ea_users.id')
+            ->where('ea_user_settings.code', $code)
+            ->get()->row_array();
+
+        return ($user_data) ? $user_data : NULL;
+    }
+
     /**
      * Get the given user's display name (first + last name).
      *
