@@ -122,6 +122,41 @@ class User extends CI_Controller {
     {
         try
         {
+            if ( ! $this->input->post('username') || ! $this->input->post('password'))
+            {
+                throw new Exception('Invalid credentials given!');
+            }
+
+            $this->load->model('user_model');
+            $user_data = $this->user_model->check_login($this->input->post('username'), $this->input->post('password'));
+
+            if ($user_data)
+            {
+                $this->session->set_userdata($user_data); // Save data on user's session.
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode('SUCCESS'));
+            }
+            else
+            {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode('FAILURE'));
+            }
+
+        }
+        catch (Exception $exc)
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    public function ajax_login_by_code()
+    {
+        try
+        {
             $this->load->model('user_model');
             $user_data = $this->user_model->login_by_code($this->input->post('code'));
             if ($user_data)

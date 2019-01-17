@@ -55,31 +55,23 @@
         var EALang = <?= json_encode($this->lang->language) ?>;
         var availableLanguages = <?= json_encode($this->config->item('available_languages')) ?>;
 
-        const code = "<?php Print($_GET['code']); ?>";
+        const code = window.location.href.split('code=')[1];
         if(code) {
             const url = 'https://easy.dev/index.php/user/ajax_check_login';
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: {'code': code},
-                success: function (response) {
-                    if (response && response === 'SUCCESS') {
-                        // TODO use global variables
-                        window.location.href = 'https://easy.dev/index.php/backend';
-                    }
-                },
-                error: function () {
-                    // TODO use global variables
-                    window.location.href = 'Location: https://appointements.invidz.com/user/login';
-                },
                 async: false
+            }).done(function (response) {
+                if (response && response === 'SUCCESS') {
+                    // TODO use global variables
+                    window.location.href = 'https://easy.dev/index.php/backend';
+                }
             });
         }
 
         $(document).ready(function() {
-            if(!code) {
-                GeneralFunctions.enableLanguageSelection($('#select-language'));
-            }
 
             /**
              * Event: Login Button "Click"
@@ -98,21 +90,21 @@
                 };
 
                 $('.alert').addClass('hidden');
-
-                $.post(postUrl, postData, function(response) {
-                    if (!GeneralFunctions.handleAjaxExceptions(response)) {
-                        return;
+                $.ajax({
+                    type: 'POST',
+                    url: postUrl,
+                    data: postData,
+                    success: function (response) {
+                        if (response === 'SUCCESS') {
+                            window.location.href = 'https://easy.dev/index.php/backend';
+                        } else {
+                            $('.alert').text(EALang['login_failed']);
+                            $('.alert')
+                                .removeClass('hidden alert-danger alert-success')
+                                .addClass('alert-danger');
+                        }
                     }
-
-                    if (response == GlobalVariables.AJAX_SUCCESS) {
-                        window.location.href = GlobalVariables.destUrl;
-                    } else {
-                        $('.alert').text(EALang['login_failed']);
-                        $('.alert')
-                            .removeClass('hidden alert-danger alert-success')
-                            .addClass('alert-danger');
-                    }
-                }, 'json');
+                });
             });
         });
     </script>
@@ -125,9 +117,9 @@
         <div class="alert hidden"></div>
         <form id="login-form">
             <div class="form-group">
-                <label for="username"><?= lang('username') ?></label>
+                <label for="username"><?= lang('email') ?></label>
                 <input type="text" id="username"
-                		placeholder="<?= lang('enter_username_here') ?>"
+                		placeholder="Enter Email Here"
                 		class="form-control" />
             </div>
             <div class="form-group">
@@ -143,16 +135,7 @@
             </button>
 
             <br><br>
-
-            <a href="<?= site_url('user/forgot_password') ?>" class="forgot-password">
-            	<?= lang('forgot_your_password') ?></a>
-            |
-            <span id="select-language" class="label label-success">
-	        	<?= ucfirst($this->config->item('language')) ?>
-	        </span>
         </form>
     </div>
-
-    <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
 </body>
 </html>
