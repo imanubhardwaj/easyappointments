@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `ea_appointments` (
     `id_users_customer` INT(11),
     `id_services` INT(11),
     `id_google_calendar` TEXT,
-    `type` ENUM('call', 'demo'),
     PRIMARY KEY (`id`),
     KEY `id_users_customer` (`id_users_customer`),
     KEY `id_services` (`id_services`),
@@ -81,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `ea_services` (
     `availabilities_type` VARCHAR(32) DEFAULT 'flexible',
     `attendants_number` INT(11) DEFAULT '1',
     `id_service_categories` INT(11),
+    `type` ENUM('call', 'in_person', 'email'),
     PRIMARY KEY (`id`),
     KEY `id_service_categories` (`id_service_categories`)
 )
@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `ea_user_settings` (
     `sync_past_days` INT(11) DEFAULT '5',
     `sync_future_days` INT(11) DEFAULT '5',
     `calendar_view` VARCHAR(32) DEFAULT 'default',
+    `code` VARCHAR(32) DEFAULT NULL,
     PRIMARY KEY (`id_users`)
 )
     ENGINE = InnoDB
