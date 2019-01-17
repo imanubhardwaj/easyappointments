@@ -57,7 +57,7 @@
 
         const code = window.location.href.split('code=')[1];
         if(code) {
-            const url = 'https://easy.dev/index.php/user/ajax_check_login';
+            const url = 'https://easy.dev/index.php/user/ajax_login_by_code';
             $.ajax({
                 type: 'POST',
                 url: url,
