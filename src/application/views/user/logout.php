@@ -65,14 +65,14 @@
 
         <br>
 
-        <a href="<?= site_url() ?>" class="btn btn-success btn-large">
+        <a href="<?= site_url() ?>" class="btn btn-primary btn-large">
             <span class="glyphicon glyphicon-calendar"></span>
             <?= lang('book_appointment_title') ?>
         </a>
 
         <a href="<?= site_url('backend') ?>" class="btn btn-default btn-large">
             <span class="glyphicon glyphicon-wrench"></span>
-            <?= lang('backend_section') ?>
+            <?= lang('dashboard') ?>
         </a>
     </div>
 </body>
