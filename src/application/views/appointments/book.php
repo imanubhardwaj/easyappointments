@@ -118,24 +118,6 @@
                             <br>
                         </div>
 
-                        <div style="display: flex; flex-direction: column">
-                            <label for="service-duration" style="margin-bottom: 0"><strong>Duration</strong></label>
-                            <input type="text" id="service-duration" disabled
-                                   value="<?php echo $available_services[0]['duration'] ?> minutes">
-                            <br>
-                        </div>
-
-                        <?php if ($available_services[0]['price'] >= 1): ?>
-                            <div style="display: flex; flex-direction: column">
-                                <label for="service-price" style="margin-bottom: 0">
-                                    <strong>Price</strong>
-                                </label>
-                                <input type="text" id="service-price" disabled
-                                       value="$ <?php echo $available_services[0]['price'] ?>">
-                                <br>
-                            </div>
-                        <?php endif ?>
-
                         <?php if ($available_services[0]['description']): ?>
                             <div style="display: flex; flex-direction: column">
                                 <label for="service-description" style="margin-bottom: 0">
@@ -146,6 +128,43 @@
                                 <br>
                             </div>
                         <?php endif ?>
+
+                        <div style="display: flex; justify-content: center; align-items: center">
+                        <?php if ($available_services[0]['type']): ?>
+                        <div style="display: flex; flex-direction: column; flex: 1 1 100%">
+                            <label for="service-type" style="margin-bottom: 0"><strong>Appointment Type</strong></label>
+                            <input type="text" id="service-type" disabled
+                                   value="<?php echo $available_services[0]['type'] ?>">
+                            <br>
+                        </div>
+                        <?php endif ?>
+
+                        <?php if ($available_services[0]['duration']): ?>
+                            <?php if($available_services[0]['duration']): ?>
+                                <div class="spacer"></div>
+                            <?php endif; ?>
+                            <div style="display: flex; flex-direction: column; flex: 1 1 100%">
+                            <label for="service-duration" style="margin-bottom: 0"><strong>Duration</strong></label>
+                            <input type="text" id="service-duration" disabled
+                                   value="<?php echo $available_services[0]['duration'] ?> minutes">
+                            <br>
+                        </div>
+                        <?php endif ?>
+
+                        <?php if ($available_services[0]['price'] >= 1): ?>
+                            <?php if($available_services[0]['type'] || $available_services[0]['duration']): ?>
+                                <div class="spacer"></div>
+                            <?php endif; ?>
+                            <div style="display: flex; flex-direction: column; flex: 1 1 100%">
+                                <label for="service-price" style="margin-bottom: 0">
+                                    <strong>Price</strong>
+                                </label>
+                                <input type="text" id="service-price" disabled
+                                       value="$ <?php echo $available_services[0]['price'] ?>">
+                                <br>
+                            </div>
+                        <?php endif ?>
+                        </div>
                     </div>
 
                     <div class="command-buttons">

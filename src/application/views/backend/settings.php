@@ -310,7 +310,7 @@
                     <fieldset class="col-xs-12 col-sm-6 miscellaneous-wrapper">
                     <legend><?= lang('system_login') ?></legend>
 
-                    <div class="form-group">
+                    <div class="form-group hide">
                         <label for="username"><?= lang('username') ?> *</label>
                         <input id="username" class="form-control required">
                     </div>

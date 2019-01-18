@@ -388,3 +388,7 @@ li.language:hover {
 #message_box pre {
     max-height: 250px;
 }
+
+.spacer {
+    min-width: 50px;
+}
