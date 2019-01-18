@@ -112,7 +112,7 @@
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="select-service" class="control-label"><?= lang('service') ?> *</label>
-                                    <select id="select-service" class="required form-control">
+                                    <select id="select-service" class="required form-control" disabled>
                                         <?php
                                         // Group services by category, only if there is at least one service
                                         // with a parent category.

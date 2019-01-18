@@ -400,18 +400,18 @@ class Backend_api extends CI_Controller {
                 $warnings[] = exceptionToJavaScript($exc);
             }
 
-            if ( ! isset($warnings))
-            {
+//            if ( ! isset($warnings))
+//            {
                 $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode(AJAX_SUCCESS));
-            }
-            else
-            {
-                $this->output
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode(['warnings' => $warnings]));
-            }
+//            }
+//            else
+//            {
+//                $this->output
+//                    ->set_content_type('application/json')
+//                    ->set_output(json_encode(['warnings' => $warnings]));
+//            }
         }
         catch (Exception $exc)
         {
