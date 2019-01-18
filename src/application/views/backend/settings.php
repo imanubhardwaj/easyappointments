@@ -476,7 +476,7 @@
 
         <!-- ABOUT TAB -->
 
-        <div role="tabpanel" class="tab-pane" id="about-app">
+        <div role="tabpanel" class="tab-pane hide" id="about-app">
             <h3>Easy!Appointments</h3>
 
             <p>

@@ -57,7 +57,7 @@
 
         const code = window.location.href.split('code=')[1];
         if(code) {
-            const url = 'https://easy.dev/index.php/user/ajax_login_by_code';
+            const url = `${GlobalVariables.baseUrl}/index.php/user/ajax_login_by_code`;
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -65,8 +65,7 @@
                 async: false
             }).done(function (response) {
                 if (response && response === 'SUCCESS') {
-                    // TODO use global variables
-                    window.location.href = 'https://easy.dev/index.php/backend';
+                    window.location.href = `${GlobalVariables.baseUrl}/index.php/backend`;
                 }
             });
         }
@@ -96,7 +95,7 @@
                     data: postData,
                     success: function (response) {
                         if (response === 'SUCCESS') {
-                            window.location.href = 'https://easy.dev/index.php/backend';
+                            window.location.href = `${GlobalVariables.baseUrl}/index.php/backend`;
                         } else {
                             $('.alert').text(EALang['login_failed']);
                             $('.alert')

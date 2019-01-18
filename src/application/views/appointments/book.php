@@ -29,7 +29,13 @@
     }));
 
     if ($serviceId === null || $providerId === null || count($available_services) === 0 || count($available_providers) === 0) {
-        header('Location: https://appointements.invidz.com/user/login');
+        $url = sprintf(
+            "%s://%s%s",
+            isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http',
+            $_SERVER['SERVER_NAME'],
+            $_SERVER['REQUEST_URI']
+        ). 'user/login';
+        header('Location: '.$url);
     }
     ?>
 </head>
