@@ -165,10 +165,6 @@
             Install Easy!Appointments</button>
     </div>
 
-    <footer>
-        Powered by <a href="http://easyappointments.org">Easy!Appointments</a>
-    </footer>
-
     <script>
         var GlobalVariables = {
             'csrfToken': <?= json_encode($this->security->get_csrf_hash()) ?>,

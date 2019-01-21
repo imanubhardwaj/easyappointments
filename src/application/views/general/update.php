@@ -52,10 +52,6 @@
             <h4>
                 The database was updated successfully!
             </h4>
-
-            <p>
-                You can now use the latest Easy!Appointments version.
-            </p>
         <?php else: ?>
             <h4>
                 There was an error during the update process ...
@@ -77,9 +73,5 @@
             </a>
         </div>
     </div>
-
-    <footer>
-        Powered by <a href="http://easyappointments.org">Easy!Appointments</a>
-    </footer>
 </body>
 </html>

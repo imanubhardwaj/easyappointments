@@ -19,3 +19,5 @@
 /src/storage/uploads/*
 /!src/storage/uploads/index.html
 /vendor/
+/.env
+!/src/application/config/email.php
