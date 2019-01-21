@@ -29,20 +29,7 @@
                     <?php
                         echo '
                             <h3>' . lang('appointment_registered') . '</h3>
-                            <p>' . lang('appointment_details_was_sent_to_you') . '</p>
-                            <a href="' . site_url() . '" class="btn button-next btn-primary btn-large">
-                                <span class="glyphicon glyphicon-calendar"></span> ' .
-                                lang('go_to_booking_page') . '
-                            </a>
-                        ';
-
-                        if ($this->config->item('google_sync_feature')) {
-                            echo '
-                                <button id="add-to-google-calendar" class="btn btn-primary">
-                                    <span class="glyphicon glyphicon-plus"></span>
-                                    ' . lang('add_to_google_calendar') . '
-                                </button>';
-                        }
+                            <p>' . lang('appointment_details_was_sent_to_you') . '</p>';
 
                         // Display exceptions (if any).
                         if (isset($exceptions)) {
