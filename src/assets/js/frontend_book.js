@@ -466,12 +466,20 @@ window.FrontendBook = window.FrontendBook || {};
 
         var selServiceId = selectedService['id'];
         var servicePrice;
-        var serviceCurrency;
+        var serviceDuration;
+        var serviceType;
 
         $.each(GlobalVariables.availableServices, function (index, service) {
             if (service.id == selServiceId) {
-                servicePrice = '<br>' + service.price;
-                serviceCurrency = service.currency;
+                servicePrice = 'Price: ' + service.price;
+                serviceDuration = '<br> Duration: ' + service.duration + ' minutes';
+                if(service.type) {
+                    serviceType = 'Type: ' + service.type.toString().replace('_', ' ').toLowerCase().replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                    });
+                } else {
+                    serviceType = '';
+                }
                 return false; // break loop
             }
         });
@@ -483,6 +491,8 @@ window.FrontendBook = window.FrontendBook || {};
             + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
             + selectedDate + ' ' + $('.selected-hour').text() + ' (EST)' + '<br>'
             + servicePrice
+            + serviceDuration + '<br>'
+            + serviceType
             + '</strong>' +
             '</p>';
 

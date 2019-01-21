@@ -140,13 +140,13 @@
                         <div style="display: flex; flex-direction: column; flex: 1 1 100%">
                             <label for="service-type" style="margin-bottom: 0"><strong>Appointment Type</strong></label>
                             <input type="text" id="service-type" disabled
-                                   value="<?php echo $available_services[0]['type'] ?>">
+                                   value="<?php echo ucwords(str_replace('_', ' ', $available_services[0]['type'])) ?>">
                             <br>
                         </div>
                         <?php endif ?>
 
                         <?php if ($available_services[0]['duration']): ?>
-                            <?php if($available_services[0]['duration']): ?>
+                            <?php if($available_services[0]['type']): ?>
                                 <div class="spacer"></div>
                             <?php endif; ?>
                             <div style="display: flex; flex-direction: column; flex: 1 1 100%">
