@@ -51,7 +51,7 @@
                     <?php if ($available_services[0]['logo']): ?>
                     <img src="<?php echo $available_services[0]['logo'] ?>" class="logo">
                     <?php endif; ?>
-                    <span id="company-name"><?= $company_name ?></span>
+                    <span id="company-name" class="hide"><?= $company_name ?></span>
 
                     <div id="steps">
                         <div id="step-1" class="book-step active-step" title="<?= lang('step_one_title') ?>">
