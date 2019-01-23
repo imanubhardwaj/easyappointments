@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `ea_services` (
     `attendants_number` INT(11) DEFAULT '1',
     `id_service_categories` INT(11),
     `type` ENUM('call', 'in_person', 'chat'),
+    `logo_url` VARCHAR(256),
     PRIMARY KEY (`id`),
     KEY `id_service_categories` (`id_service_categories`)
 )
