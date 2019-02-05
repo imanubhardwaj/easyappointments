@@ -18,7 +18,7 @@ class Migration_Add_service_type extends CI_Migration {
         {
             $fields = [
                 'type' => [
-                    'type'       => 'ENUM'
+                    'type'       => 'VARCHAR'
                 ]
             ];
 

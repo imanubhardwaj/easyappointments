@@ -21,3 +21,4 @@
 /vendor/
 /.env
 !/src/application/config/email.php
+/LocalValetDriver.php
