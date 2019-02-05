@@ -568,22 +568,22 @@ class Appointments extends CI_Controller {
                 $this->load->library('ics_file');
                 $ics_stream = $this->ics_file->get_stream($appointment, $service, $provider, $customer);
 
-                if ($send_customer === TRUE)
-                {
+//                if ($send_customer === TRUE)
+//                {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $customer_title,
                         $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream));
-                }
+//                }
 
                 $send_provider = filter_var($this->providers_model->get_setting('notifications', $provider['id']),
                     FILTER_VALIDATE_BOOLEAN);
 
-                if ($send_provider === TRUE)
-                {
+//                if ($send_provider === TRUE)
+//                {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $provider_title,
                         $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
-                }
+//                }
             }
             catch (Exception $exc)
             {
@@ -658,7 +658,7 @@ class Appointments extends CI_Controller {
                 {
                     // Get the provider record.
                     $curr_provider = $this->providers_model->get_row($curr_provider_id);
-                    
+
                     $empty_periods = $this->_get_provider_available_time_periods($curr_provider_id,
                         $service_id,
                         $current_date->format('Y-m-d'), $exclude_appointments);
@@ -666,7 +666,7 @@ class Appointments extends CI_Controller {
                     $available_hours = $this->_calculate_available_hours($empty_periods, $current_date->format('Y-m-d'),
                         $service['duration'], $manage_mode, $service['availabilities_type']);
                     if (! empty($available_hours)) break;
-                    
+
                     if ($service['attendants_number'] > 1)
                     {
                         $available_hours = $this->_get_multiple_attendants_hours($current_date->format('Y-m-d'), $service,
