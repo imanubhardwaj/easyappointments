@@ -96,14 +96,6 @@ class Google extends CI_Controller {
     {
         try
         {
-            // The user must be logged in.
-            $this->load->library('session');
-
-            if ($this->session->userdata('user_id') == FALSE)
-            {
-                return;
-            }
-
             if ($provider_id === NULL)
             {
                 throw new Exception('Provider id not specified.');
@@ -243,9 +235,6 @@ class Google extends CI_Controller {
         }
         catch (Exception $exc)
         {
-            $this->output
-                ->set_content_type('application/json')
-                ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
         }
     }
 }

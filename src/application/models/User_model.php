@@ -185,4 +185,9 @@ class User_Model extends CI_Model {
 
         return $new_password;
     }
+
+    public function get_user_ids()
+    {
+        return $this->db->select('id')->get('ea_users')->result();
+    }
 }

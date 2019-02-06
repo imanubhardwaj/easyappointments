@@ -27,6 +27,7 @@ class User extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->model('user_model');
 
         // Set user's selected language.
         if ($this->session->userdata('language'))
@@ -230,6 +231,20 @@ class User extends CI_Controller {
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+
+    public function syncUsersToCalendar() {
+        foreach ($this->user_model->get_user_ids() as $user_id) {
+            $arrContextOptions = array(
+                "ssl" => array(
+                    "verify_peer"      => false,
+                    "verify_peer_name" => false,
+                ),
+            );
+            $your_url          = "https://easyappointments.app/index.php/google/sync/" . $user_id->id;
+            $data              = file_get_contents($your_url, false, stream_context_create($arrContextOptions));
+            echo $data;
         }
     }
 }
