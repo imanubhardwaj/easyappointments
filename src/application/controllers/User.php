@@ -242,7 +242,7 @@ class User extends CI_Controller {
                     "verify_peer_name" => false,
                 ),
             );
-            $your_url          = "https://easyappointments.app/index.php/google/sync/" . $user_id->id;
+            $your_url          = Config::BASE_URL. "/index.php/google/sync/" . $user_id->id;
             $data              = file_get_contents($your_url, false, stream_context_create($arrContextOptions));
             echo $data;
         }
