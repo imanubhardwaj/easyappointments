@@ -179,8 +179,8 @@ class Google extends CI_Controller {
                         $is_different = FALSE;
                         $appt_start = strtotime($appointment['start_datetime']);
                         $appt_end = strtotime($appointment['end_datetime']);
-                        $event_start = strtotime($google_event->getStart()->getDateTime());
-                        $event_end = strtotime($google_event->getEnd()->getDateTime());
+                        $event_start = strtotime($this->remove_time_offset($google_event->getStart()->getDateTime()));
+                        $event_end = strtotime($this->remove_time_offset($google_event->getEnd()->getDateTime()));
 
                         if ($appt_start != $event_start || $appt_end != $event_end)
                         {
@@ -211,12 +211,14 @@ class Google extends CI_Controller {
             foreach ($events->getItems() as $event)
             {
                 $results = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
+                $start_time = $this->remove_time_offset($event->start->getDateTime());
+                $end_time = $this->remove_time_offset($event->end->getDateTime());
                 if (count($results) == 0)
                 {
                     // Record doesn't exist in E!A, so add the event now.
                     $appointment = [
-                        'start_datetime' => date('Y-m-d H:i:s', strtotime($event->start->getDateTime())),
-                        'end_datetime' => date('Y-m-d H:i:s', strtotime($event->end->getDateTime())),
+                        'start_datetime' => date('Y-m-d H:i:s', strtotime($start_time)),
+                        'end_datetime' => date('Y-m-d H:i:s', strtotime($end_time)),
                         'is_unavailable' => TRUE,
                         'notes' => $event->getSummary() . ' ' . $event->getDescription(),
                         'id_users_provider' => $provider_id,
@@ -236,5 +238,26 @@ class Google extends CI_Controller {
         catch (Exception $exc)
         {
         }
+    }
+
+    function remove_time_offset($time) {
+        $offset = substr($time, -5);
+        return substr($time, -6, 1) === '+' ? $this->add($time, $offset) : $this->diff($time, $offset);
+    }
+
+    public function add($event_time, $time_offset) {
+        $t1 = new DateTime($event_time);
+        $t2 = new DateTime($time_offset);
+        $start_of_time = new DateTime('00:00:00');
+        $diff = $start_of_time->diff($t2) ;
+        return $t1->add($diff)->format(DATE_ATOM);
+    }
+
+    public function diff($event_time, $time_offset) {
+        $t1 = new DateTime($event_time);
+        $t2 = new DateTime($time_offset);
+        $start_of_time = new DateTime('00:00:00');
+        $diff = $t2->diff($start_of_time) ;
+        return $t1->add($diff)->format(DATE_ATOM);
     }
 }
