@@ -465,11 +465,11 @@ class Appointments extends CI_Controller {
                 return;
             }
 
-            // Check appointment availability.
-            if ( ! $this->_check_datetime_availability())
-            {
-                throw new Exception($this->lang->line('requested_hour_is_unavailable'));
-            }
+//            // Check appointment availability.
+//            if ( ! $this->_check_datetime_availability())
+//            {
+//                throw new Exception($this->lang->line('requested_hour_is_unavailable'));
+//            }
 
             $appointment = $_POST['post_data']['appointment'];
             $customer = $_POST['post_data']['customer'];

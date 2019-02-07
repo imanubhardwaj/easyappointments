@@ -538,9 +538,9 @@ window.FrontendBook = window.FrontendBook || {};
         };
 
         postData.appointment = {
-            start_datetime: $('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
-            + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm') + ':00',
-            end_datetime: _calcEndDatetime(),
+            start_datetime: getUTCString($('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
+                + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm') + ':00'),
+            end_datetime: getUTCString(_calcEndDatetime()),
             notes: $('#notes').val(),
             is_unavailable: false,
             id_users_provider: selectedProvider['id'],
@@ -556,6 +556,10 @@ window.FrontendBook = window.FrontendBook || {};
         $('input[name="csrfToken"]').val(GlobalVariables.csrfToken);
         $('input[name="post_data"]').val(JSON.stringify(postData));
     };
+
+    function getUTCString(time) {
+        return new Date(time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    }
 
     /**
      * This method calculates the end datetime of the current appointment.
