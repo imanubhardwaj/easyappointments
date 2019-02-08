@@ -108,6 +108,21 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };
 
+    function syncData() {
+        const providerId = new URLSearchParams(location.href).get('providerId');
+        var url = GlobalVariables.baseUrl + '/index.php/google/sync/' + providerId;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json'
+        })
+            .done(function (response) {
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+            });
+    }
+
     /**
      * Register an appointment to the database.
      *
@@ -183,6 +198,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
+                syncData();
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_id;
             })
