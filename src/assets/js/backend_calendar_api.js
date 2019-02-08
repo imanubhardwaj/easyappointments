@@ -52,6 +52,7 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
         })
             .done(function (response) {
                 if (successCallback !== undefined) {
+                    syncData(appointment.id_users_provider);
                     successCallback(response);
                 }
             })
@@ -61,6 +62,20 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
                 }
             });
     };
+
+    function syncData(providerId) {
+        var url = GlobalVariables.baseUrl + '/index.php/google/sync/' + providerId;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json'
+        })
+            .done(function (response) {
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+            });
+    }
 
     /**
      * Save unavailable period to database.

@@ -55,8 +55,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var appointment = {
                 id_services: $dialog.find('#select-service').val(),
                 id_users_provider: $dialog.find('#select-provider').val(),
-                start_datetime: startDatetime,
-                end_datetime: endDatetime,
+                start_datetime: getUTCString(startDatetime),
+                end_datetime: getUTCString(endDatetime),
                 notes: $dialog.find('#appointment-notes').val(),
                 is_unavailable: false
             };
@@ -510,5 +510,9 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
     exports.initialize = function () {
         _bindEventHandlers();
     };
+
+    function getUTCString(time) {
+        return new Date(time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    }
 
 })(window.BackendCalendarAppointmentsModal); 
