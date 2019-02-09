@@ -102,7 +102,7 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
                 $dialog.find('.modal-message').addClass('alert-danger').removeClass('hidden');
             };
 
-            BackendCalendarApi.saveUnavailable(unavailable, successCallback, errorCallback);
+            BackendCalendarApi.saveUnavailable(unavailable, $('#select-filter-item').val(), successCallback, errorCallback);
         });
 
         /**

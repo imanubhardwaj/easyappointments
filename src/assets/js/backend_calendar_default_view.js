@@ -502,7 +502,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $calendar.fullCalendar('updateEvent', event);
             };
 
-            BackendCalendarApi.saveUnavailable(unavailable, successCallback);
+            BackendCalendarApi.saveUnavailable(unavailable, $('#select-filter-item').val(), successCallback);
         }
     }
 
@@ -684,7 +684,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $('#footer').css('position', 'static'); // Footer position fix.
             };
 
-            BackendCalendarApi.saveUnavailable(unavailable, successCallback);
+            BackendCalendarApi.saveUnavailable(unavailable, $('#select-filter-item').val(), successCallback);
         }
     }
 

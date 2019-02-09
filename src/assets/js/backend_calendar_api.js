@@ -81,10 +81,11 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * Save unavailable period to database.
      *
      * @param {Object} unavailable Contains the unavailable period data.
+     * @param providerId
      * @param {Function} successCallback The ajax success callback function.
      * @param {Function} errorCallback The ajax failure callback function.
      */
-    exports.saveUnavailable = function (unavailable, successCallback, errorCallback) {
+    exports.saveUnavailable = function (unavailable, providerId, successCallback, errorCallback) {
         var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_unavailable';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
@@ -95,7 +96,12 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
             type: 'POST',
             url: postUrl,
             data: postData,
-            success: successCallback,
+            success: function (response) {
+                if (successCallback !== undefined) {
+                    syncData(providerId);
+                    successCallback(response);
+                }
+            },
             error: errorCallback
         });
     };
