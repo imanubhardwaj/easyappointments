@@ -291,7 +291,7 @@
                 <form>
                     <fieldset>
                         <input id="unavailable-id" type="hidden">
-                        
+
                         <div class="form-group">
                             <label for="unavailable-provider" class="control-label"><?= lang('provider') ?></label>
                             <select id="unavailable-provider" class="form-control"></select>
@@ -347,11 +347,10 @@
 
 <!-- SELECT TIMEZONE MODAL -->
 
-<div id="select-timezone" class="modal fade">
+<div id="select-timezone" class="modal fade" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h3 class="modal-title"><?= lang('select_timezone') ?></h3>
             </div>
             <div class="modal-body">
@@ -362,7 +361,7 @@
             </div>
             <div class="modal-footer">
                 <button id="save-timezone" class="btn btn-primary"><?= lang('save') ?></button>
-                <button id="cancel-timezone" class="btn btn-default" data-dismiss="modal"><?= lang('cancel') ?></button>
+                <button id="cancel-timezone" class="btn btn-default hide" data-dismiss="modal"><?= lang('cancel') ?></button>
             </div>
         </div>
     </div>
