@@ -48,8 +48,8 @@
         $.each(workingPlan, function (index, workingDay) {
             if (workingDay != null) {
                 $('#' + index).prop('checked', true);
-                $('#' + index + '-start').val(Date.parse(workingDay.start).toString(GlobalVariables.timeFormat  === 'regular' ? 'h:mm tt' : 'HH:mm').toUpperCase());
-                $('#' + index + '-end').val(Date.parse(workingDay.end).toString(GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm').toUpperCase());
+                $('#' + index + '-start').val(moment.utc(workingDay.start, 'HH:mm').local().format('h:mm A'));
+                $('#' + index + '-end').val(moment.utc(workingDay.end, 'HH:mm').local().format('h:mm A'));
 
                 // Add the day's breaks on the breaks table.
                 $.each(workingDay.breaks, function (i, brk) {
@@ -58,8 +58,8 @@
                     var tr =
                         '<tr>' +
                         '<td class="break-day editable">' + GeneralFunctions.ucaseFirstLetter(day) + '</td>' +
-                        '<td class="break-start editable">' + Date.parse(brk.start).toString(GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm').toUpperCase() + '</td>' +
-                        '<td class="break-end editable">' + Date.parse(brk.end).toString(GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm').toUpperCase() + '</td>' +
+                        '<td class="break-start editable">' + moment.utc(brk.start, 'HH:mm').local().format('h:mm A') + '</td>' +
+                        '<td class="break-end editable">' + moment.utc(brk.end, 'HH:mm').local().format('h:mm A') + '</td>' +
                         '<td>' +
                         '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
                         '<span class="glyphicon glyphicon-pencil"></span>' +
