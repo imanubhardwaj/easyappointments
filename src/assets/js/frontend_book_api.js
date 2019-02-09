@@ -84,7 +84,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     }
 
                     $('#available-hours div:eq(' + (currColumn - 1) + ')').append(
-                        '<span class="available-hour">' + Date.parse(availableHour).toString(timeFormat) + '</span><br/>');
+                        '<span class="available-hour">' + moment.utc(availableHour, 'HH:mm').local()
+                            .format('h:mm A') + '</span><br/>');
                 });
 
                 if (FrontendBook.manageMode) {
@@ -198,7 +199,6 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
-                syncData();
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_id;
             })

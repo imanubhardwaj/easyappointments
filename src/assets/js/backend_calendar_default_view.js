@@ -771,10 +771,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 var event = {
                     id: appointment.id,
                     title: appointment.service.name + ' - '
-                    + appointment.customer.first_name + ' '
-                    + appointment.customer.last_name,
-                    start: moment(appointment.start_datetime),
-                    end: moment(appointment.end_datetime),
+                        + appointment.customer.first_name + ' '
+                        + appointment.customer.last_name,
+                    start: moment.utc(appointment.start_datetime).local().format('YYYY-MM-DD HH:mm:ss'),
+                    end: moment.utc(appointment.end_datetime).local().format('YYYY-MM-DD HH:mm:ss'),
                     allDay: false,
                     data: appointment // Store appointment data for later use.
                 };
@@ -818,8 +818,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                     var unavailablePeriod = {
                                         title: EALang.unavailable + notes,
-                                        start: moment(unavailable.start_datetime),
-                                        end: moment(unavailable.end_datetime),
+                                        start: moment.utc(unavailable.start_datetime).local()
+                                            .format('YYYY-MM-DD HH:mm:ss'),
+                                        end: moment.utc(unavailable.end_datetime).local()
+                                            .format('YYYY-MM-DD HH:mm:ss'),
                                         allDay: false,
                                         color: '#879DB4',
                                         editable: true,
@@ -938,8 +940,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                     unavailablePeriod = {
                                         title: EALang.unavailable + notes,
-                                        start: moment(unavailable.start_datetime),
-                                        end: moment(unavailable.end_datetime),
+                                        start: moment.utc(unavailable.start_datetime).local()
+                                            .format('YYYY-MM-DD HH:mm:ss'),
+                                        end: moment.utc(unavailable.end_datetime).local()
+                                            .format('YYYY-MM-DD HH:mm:ss'),
                                         allDay: false,
                                         color: '#879DB4',
                                         editable: true,

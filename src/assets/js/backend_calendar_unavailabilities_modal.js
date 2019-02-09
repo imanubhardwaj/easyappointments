@@ -47,8 +47,8 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
 
             // Unavailable period records go to the appointments table.
             var unavailable = {
-                start_datetime: start.toString('yyyy-MM-dd HH:mm'),
-                end_datetime: end.toString('yyyy-MM-dd HH:mm'),
+                start_datetime: getUTCString(start.toString('yyyy-MM-dd HH:mm')),
+                end_datetime: getUTCString(end.toString('yyyy-MM-dd HH:mm')),
                 notes: $dialog.find('#unavailable-notes').val(),
                 id_users_provider: $('#unavailable-provider').val() // curr provider
             };
@@ -256,5 +256,9 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
 
         _bindEventHandlers();
     };
+
+    function getUTCString(time) {
+        return new Date(time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    }
 
 })(window.BackendCalendarUnavailabilitiesModal); 

@@ -77,6 +77,39 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
             });
     }
 
+    exports.saveTimezone = function (timezone, providerId, successCallback, errorCallback) {
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_timezone';
+        var postData = {
+            csrfToken: GlobalVariables.csrfToken,
+            timezone: timezone,
+            provider_id: providerId
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: postUrl,
+            data: postData,
+            success: successCallback,
+            error: errorCallback
+        });
+    };
+
+    exports.checkIfTimezoneSet = function (providerId, successCallback, errorCallback) {
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_check_timezone_setting';
+        var postData = {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: postUrl,
+            data: postData,
+            success: successCallback,
+            error: errorCallback
+        });
+    };
+
     /**
      * Save unavailable period to database.
      *
@@ -98,7 +131,6 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
             data: postData,
             success: function (response) {
                 if (successCallback !== undefined) {
-                    syncData(providerId);
                     successCallback(response);
                 }
             },
