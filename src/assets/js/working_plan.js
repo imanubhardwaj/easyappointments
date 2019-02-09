@@ -319,8 +319,8 @@
             var id = $(checkbox).attr('id');
             if ($(checkbox).prop('checked') == true) {
                 workingPlan[id] = {
-                    start: Date.parse($('#' + id + '-start').val()).toString('HH:mm'),
-                    end: Date.parse($('#' + id + '-end').val()).toString('HH:mm'),
+                    start: moment($('#' + id + '-start').val(), 'h:mm A').utc().format('HH:mm'),
+                    end: moment($('#' + id + '-end').val(), 'h:mm A').utc().format('HH:mm'),
                     breaks: []
                 };
 
@@ -332,8 +332,8 @@
                         var end = $(tr).find('.break-end').text();
 
                         workingPlan[id].breaks.push({
-                            start: Date.parse(start).toString('HH:mm'),
-                            end: Date.parse(end).toString('HH:mm')
+                            start: moment(start, 'h:mm A').utc().format('HH:mm'),
+                            end: moment(end, 'h:mm A').utc().format('HH:mm')
                         });
                     }
 
