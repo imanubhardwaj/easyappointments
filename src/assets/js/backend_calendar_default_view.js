@@ -849,7 +849,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                 // Add unavailable period before work starts.
                                 var calendarDateStart = moment($calendar.fullCalendar('getView').start.format('YYYY-MM-DD') + ' 00:00:00');
-                                var startHour = workingPlan[selectedDayName].start.split(':');
+                                var startHour = moment.utc(workingPlan[selectedDayName].start, 'HH:mm').local()
+                                    .format('HH:mm').split(':');
                                 var workDateStart = calendarDateStart.clone();
                                 workDateStart.hour(parseInt(startHour[0]));
                                 workDateStart.minute(parseInt(startHour[1]));
@@ -869,7 +870,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                 // Add unavailable period after work ends.
                                 var calendarDateEnd = moment($calendar.fullCalendar('getView').end.format('YYYY-MM-DD') + ' 00:00:00');
-                                var endHour = workingPlan[selectedDayName].end.split(':');
+                                var endHour = moment.utc(workingPlan[selectedDayName].end, 'HH:mm').local()
+                                    .format('HH:mm').split(':');
                                 var workDateEnd = calendarDateStart.clone();
 
                                 workDateEnd.hour(parseInt(endHour[0]));
@@ -894,12 +896,14 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                 var breakEnd;
 
                                 $.each(workingPlan[selectedDayName].breaks, function (index, currentBreak) {
-                                    var breakStartString = currentBreak.start.split(':');
+                                    var breakStartString = moment.utc(currentBreak.start, 'HH:mm').local()
+                                        .format('HH:mm').split(':');
                                     breakStart = calendarDateStart.clone();
                                     breakStart.hour(parseInt(breakStartString[0]));
                                     breakStart.minute(parseInt(breakStartString[1]));
 
-                                    var breakEndString = currentBreak.end.split(':');
+                                    var breakEndString = moment.utc(currentBreak.end, 'HH:mm').local()
+                                        .format('HH:mm').split(':');
                                     breakEnd = calendarDateStart.clone();
                                     breakEnd.hour(parseInt(breakEndString[0]));
                                     breakEnd.minute(parseInt(breakEndString[1]));
