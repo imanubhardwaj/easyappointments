@@ -226,7 +226,6 @@ class Google extends CI_Controller {
                         'id_users_customer' => NULL,
                         'id_services' => NULL,
                     ];
-
                     $this->appointments_model->add($appointment);
                 }
             }
@@ -242,7 +241,7 @@ class Google extends CI_Controller {
 
     function remove_time_offset($time) {
         $offset = substr($time, -5);
-        return substr($time, -6, 1) === '+' ? $this->add($time, $offset) : $this->diff($time, $offset);
+        return substr($time, -6, 1) === '-' ? $this->add($time, $offset) : $this->diff($time, $offset);
     }
 
     public function add($event_time, $time_offset) {
@@ -250,7 +249,7 @@ class Google extends CI_Controller {
         $t2 = new DateTime($time_offset);
         $start_of_time = new DateTime('00:00:00');
         $diff = $start_of_time->diff($t2) ;
-        return $t1->add($diff)->format(DATE_ATOM);
+        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
     }
 
     public function diff($event_time, $time_offset) {
@@ -258,6 +257,6 @@ class Google extends CI_Controller {
         $t2 = new DateTime($time_offset);
         $start_of_time = new DateTime('00:00:00');
         $diff = $t2->diff($start_of_time) ;
-        return $t1->add($diff)->format(DATE_ATOM);
+        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
     }
 }

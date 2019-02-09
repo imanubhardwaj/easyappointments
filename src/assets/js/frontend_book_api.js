@@ -199,6 +199,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
+                syncData();
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_id;
             })

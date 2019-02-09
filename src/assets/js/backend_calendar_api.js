@@ -131,6 +131,7 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
             data: postData,
             success: function (response) {
                 if (successCallback !== undefined) {
+                    syncData(providerId);
                     successCallback(response);
                 }
             },
