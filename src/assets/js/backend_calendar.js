@@ -84,6 +84,7 @@ window.BackendCalendar = window.BackendCalendar || {};
             BackendCalendarDefaultView.initialize();
         }
 
+        BackendCalendarTimezoneModal.initialize();
         BackendCalendarGoogleSync.initialize();
         BackendCalendarAppointmentsModal.initialize();
         BackendCalendarUnavailabilitiesModal.initialize();

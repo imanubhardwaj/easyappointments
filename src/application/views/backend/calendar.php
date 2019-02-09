@@ -10,6 +10,7 @@
 <script src="<?= asset_url('assets/js/backend_calendar_google_sync.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_appointments_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_unavailabilities_modal.js') ?>"></script>
+<script src="<?= asset_url('assets/js/backend_calendar_timezone_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>"></script>
 <script>
     var GlobalVariables = {
@@ -339,6 +340,29 @@
             <div class="modal-footer">
                 <button id="select-calendar" class="btn btn-primary"><?= lang('select') ?></button>
                 <button id="close-calendar" class="btn btn-default" data-dismiss="modal"><?= lang('close') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SELECT TIMEZONE MODAL -->
+
+<div id="select-timezone" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title"><?= lang('select_timezone') ?></h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="timezone" class="control-label"><?= lang('select_timezone_prompt') ?></label>
+                    <select id="timezone" class="form-control"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-timezone" class="btn btn-primary"><?= lang('save') ?></button>
+                <button id="cancel-timezone" class="btn btn-default" data-dismiss="modal"><?= lang('cancel') ?></button>
             </div>
         </div>
     </div>

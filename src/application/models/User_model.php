@@ -190,4 +190,19 @@ class User_Model extends CI_Model {
     {
         return $this->db->select('id')->get('ea_users')->result();
     }
+
+    public function check_user_timezone($providerId) {
+        return $this->db->select('timezone')->get_where('ea_user_settings', ['id_users' => $providerId])
+            ->result()[0]->timezone ? TRUE : FALSE;
+    }
+
+    public function save_user_timezone($timezone, $workPlan, $providerId) {
+        $this->db->where('id_users', $providerId);
+        if ( ! $this->db->update('ea_user_settings', ['timezone' => $timezone, 'working_plan' => $workPlan]))
+        {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
 }
