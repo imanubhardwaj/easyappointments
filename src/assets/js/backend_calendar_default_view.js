@@ -786,13 +786,13 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $calendar.fullCalendar('addEventSource', calendarEvents);
 
             var weekDays = [
-                'sunday', 
-                'monday', 
-                'tuesday', 
-                'wednesday', 
-                'thursday', 
-                'friday', 
-                'saturday' 
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday'
             ];
 
             // :: ADD PROVIDER'S UNAVAILABLE TIME PERIODS
@@ -979,7 +979,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                         unavailablePeriod = {
                                             title: EALang.not_working,
                                             start: moment(currentDateStart.format('YYYY-MM-DD') + ' 00:00:00'),
-                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + workingDay.start + ':00'),
+                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(workingDay.start, 'HH:mm').local().format('HH:mm') + ':00'),
                                             allDay: false,
                                             color: '#BEBEBE',
                                             editable: false,
@@ -998,7 +998,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                     if (currentDateEnd > end) {
                                         unavailablePeriod = {
                                             title: EALang.not_working,
-                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + workingDay.end + ':00'),
+                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(workingDay.end, 'HH:mm').local().format('HH:mm') + ':00'),
                                             end: moment(currentDateEnd.format('YYYY-MM-DD') + ' 00:00:00'),
                                             allDay: false,
                                             color: '#BEBEBE',
@@ -1026,8 +1026,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                         var unavailablePeriod = {
                                             title: EALang.break,
-                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + currentBreak.start),
-                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + currentBreak.end),
+                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(currentBreak.start, 'HH:mm').local().format('HH:mm')),
+                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(currentBreak.end, 'HH:mm').local().format('HH:mm')),
                                             allDay: false,
                                             color: '#BEBEBE',
                                             editable: false,
