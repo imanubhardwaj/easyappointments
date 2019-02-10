@@ -159,6 +159,16 @@ CREATE TABLE IF NOT EXISTS `ea_user_settings` (
     DEFAULT CHARSET = utf8;
 
 
+CREATE TABLE IF NOT EXISTS `ea_login_codes` (
+    `code` VARCHAR(256),
+    `id_users` INT(11) NOT NULL,
+    `created_at` DATETIME
+    PRIMARY KEY (`code`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
+
+
 ALTER TABLE `ea_appointments`
     ADD CONSTRAINT `appointments_users_customer` FOREIGN KEY (`id_users_customer`) REFERENCES `ea_users` (`id`)
     ON DELETE CASCADE
@@ -198,5 +208,10 @@ ALTER TABLE `ea_users`
 
 ALTER TABLE `ea_user_settings`
     ADD CONSTRAINT `user_settings_users` FOREIGN KEY (`id_users`) REFERENCES `ea_users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE `ea_login_codes`
+    ADD CONSTRAINT `login_codes_users` FOREIGN KEY (`id_users`) REFERENCES `ea_users` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE;

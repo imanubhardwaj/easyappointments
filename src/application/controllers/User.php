@@ -247,4 +247,8 @@ class User extends CI_Controller {
             echo $data;
         }
     }
+
+    public function clearLoginCodes() {
+        $this->user_model->remove_previous_login_codes();
+    }
 }

@@ -118,11 +118,11 @@ class User_Model extends CI_Model {
 
         $user_data = $this->db
             ->select('ea_users.id AS user_id, ea_users.email AS user_email, '
-                . 'ea_roles.slug AS role_slug, ea_user_settings.username')
+                . 'ea_roles.slug AS role_slug')
             ->from('ea_users')
             ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
-            ->join('ea_user_settings', 'ea_user_settings.id_users = ea_users.id')
-            ->where('ea_user_settings.code', $code)
+            ->join('ea_login_codes', 'ea_login_codes.id_users = ea_users.id')
+            ->where('ea_login_codes.code', $code)
             ->get()->row_array();
 
         return ($user_data) ? $user_data : NULL;
@@ -204,5 +204,19 @@ class User_Model extends CI_Model {
         }
 
         return TRUE;
+    }
+
+    public function remove_previous_login_codes() {
+        $date  = new DateTime();
+        $time = str_replace('T', ' ', $this->diff($date->format('Y-m-d H:i:s'), '00:30'));
+        $this->db->where('created_at < "'. $time . '"')->delete('ea_login_codes');
+    }
+
+    public function diff($time1, $time2) {
+        $t1 = new DateTime($time1);
+        $t2 = new DateTime($time2);
+        $start_of_time = new DateTime('00:00:00');
+        $diff = $t2->diff($start_of_time) ;
+        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
     }
 }
