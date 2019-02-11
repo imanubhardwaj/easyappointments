@@ -190,7 +190,7 @@
                 <div id="wizard-frame-2" class="wizard-frame" style="display:none;">
                     <div class="frame-container">
 
-                        <h4 class="frame-title"><?= lang('step_two_title') ?> (EST)</h4>
+                        <h4 class="frame-title"><?= lang('step_two_title') ?></h4>
 
                         <div class="frame-content row">
                             <div class="col-xs-12 col-sm-6">
