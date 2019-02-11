@@ -66,6 +66,7 @@ window.BackendCalendarTimezoneModal = window.BackendCalendarTimezoneModal || {};
                     $dialog.find('.alert').addClass('hidden');
                     $dialog.modal('hide');
                     $('#select-filter-item').trigger('change');
+                    window.location.reload(true);
                 }, 2000);
             };
 
