@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS `ea_user_settings` (
     `sync_future_days` INT(11) DEFAULT '5',
     `calendar_view` VARCHAR(32) DEFAULT 'default',
     `code` VARCHAR(32) DEFAULT NULL,
+    `timezone` VARCHAR(32) DEFAULT NULL,
     PRIMARY KEY (`id_users`)
 )
     ENGINE = InnoDB
