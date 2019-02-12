@@ -228,7 +228,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_customers';
             var postData = {
                 csrfToken: GlobalVariables.csrfToken,
-                key: key
+                key: key,
+                providerId: localStorage.getItem('providerId')
             };
 
             // Try to get the updated customer list.
