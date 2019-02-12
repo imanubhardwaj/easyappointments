@@ -800,7 +800,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
             if (filterType === FILTER_TYPE_PROVIDER && calendarView !== 'month') {
                 $.each(GlobalVariables.availableProviders, function (index, provider) {
-                    if (provider.id == recordId) {
+                    if (provider && provider.id == recordId) {
                         var workingPlan = jQuery.parseJSON(provider.settings.working_plan);
                         var unavailablePeriod;
 
@@ -1132,7 +1132,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                 } else {
                     var provider = GlobalVariables.availableProviders.find(function (provider) {
-                        return provider.id == $('#select-filter-item').val();
+                        return provider && provider.id == $('#select-filter-item').val();
                     });
 
                     var service = GlobalVariables.availableServices.find(function (service) {
@@ -1196,13 +1196,15 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             var optgroupHtml = '<optgroup label="' + EALang.providers + '" type="providers-group">';
 
             $.each(GlobalVariables.availableProviders, function (index, provider) {
-                var hasGoogleSync = provider.settings.google_sync === '1' ? 'true' : 'false';
+                if(provider) {
+                    var hasGoogleSync = provider.settings.google_sync === '1' ? 'true' : 'false';
 
-                optgroupHtml +=
-                    '<option value="' + provider.id + '" type="' + FILTER_TYPE_PROVIDER + '" '
-                    + 'google-sync="' + hasGoogleSync + '">'
-                    + provider.first_name + ' ' + provider.last_name
-                    + '</option>';
+                    optgroupHtml +=
+                        '<option value="' + provider.id + '" type="' + FILTER_TYPE_PROVIDER + '" '
+                        + 'google-sync="' + hasGoogleSync + '">'
+                        + provider.first_name + ' ' + provider.last_name
+                        + '</option>';
+                }
             });
 
             optgroupHtml += '</optgroup>';
