@@ -269,7 +269,7 @@
 
                         <div class="form-group">
                             <label for="email"><?= lang('email') ?> *</label>
-                            <input id="email" class="form-control required">
+                            <input id="email" class="form-control required" disabled>
                         </div>
 
                         <div class="form-group">
