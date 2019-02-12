@@ -89,6 +89,7 @@ window.BackendCalendar = window.BackendCalendar || {};
         BackendCalendarAppointmentsModal.initialize();
         BackendCalendarUnavailabilitiesModal.initialize();
 
+        localStorage.setItem('providerId', $('#select-filter-item').val());
         _bindEventHandlers();
     };
 

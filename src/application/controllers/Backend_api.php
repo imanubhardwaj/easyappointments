@@ -523,6 +523,7 @@ class Backend_api extends CI_Controller {
             $this->load->model('customers_model');
 
             $key = $this->db->escape_str($this->input->post('key'));
+            $providerId = $this->input->post('providerId');
             $key = strtoupper($key);
 
             $where_clause =
@@ -535,11 +536,21 @@ class Backend_api extends CI_Controller {
                 'zip_code LIKE upper("%' . $key . '%") OR ' .
                 'notes LIKE upper("%' . $key . '%"))';
 
-            $customers = $this->customers_model->get_batch($where_clause);
+//            $customers = $this->customers_model->get_batch($where_clause);
+
+            $appts = $this->appointments_model
+                ->get_batch(['id_users_provider' => $providerId]);
+
+            $customers = [];
+            foreach ($appts as $appt) {
+                if($appt['id_users_customer']) {
+                    array_push($customers, $this->customers_model->get_row($appt['id_users_customer']));
+                }
+            }
 
             foreach ($customers as &$customer) {
                 $appointments = $this->appointments_model
-                    ->get_batch(['id_users_customer' => $customer['id']]);
+                    ->get_batch(['id_users_customer' => $customer['id'], 'id_users_provider' => $providerId]);
 
                 foreach ($appointments as &$appointment) {
                     $appointment['service']  = $this->services_model->get_row($appointment['id_services']);

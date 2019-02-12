@@ -1,3 +1,4 @@
+<script src="../../../assets/ext/moment/moment.min.js"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers.js') ?>"></script>

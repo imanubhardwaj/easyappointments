@@ -327,9 +327,10 @@
 
             var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
             var end = GeneralFunctions.formatDate(Date.parse(appointment.end_datetime), GlobalVariables.dateFormat, true);
+            var f = 'YYYY/mm/dd HH:mm:ss';
             var html =
                 '<div class="appointment-row" data-id="' + appointment.id + '">' +
-                start + ' - ' + end + '<br>' +
+                moment.utc(start).local().format(f) + ' - ' + moment.utc(end).local().format(f) + '<br>' +
                 appointment.service.name + ', ' +
                 appointment.provider.first_name + ' ' + appointment.provider.last_name +
                 '</div>';
@@ -353,7 +354,8 @@
         var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_customers';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
-            key: key
+            key: key,
+            providerId: localStorage.getItem('providerId')
         };
 
         $.post(postUrl, postData, function (response) {

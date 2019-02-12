@@ -15,6 +15,7 @@
 
     <script>
         var EALang = <?= json_encode($this->lang->language) ?>;
+        localStorage.removeItem('providerId');
     </script>
 
     <link

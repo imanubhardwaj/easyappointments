@@ -54,6 +54,7 @@
 
         var EALang = <?= json_encode($this->lang->language) ?>;
         var availableLanguages = <?= json_encode($this->config->item('available_languages')) ?>;
+        localStorage.removeItem('providerId');
 
         const code = window.location.href.split('code=')[1];
         if(code) {
