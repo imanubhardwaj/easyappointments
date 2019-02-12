@@ -1197,7 +1197,9 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
             $.each(GlobalVariables.availableProviders, function (index, provider) {
                 if(provider) {
-                    var hasGoogleSync = provider.settings.google_sync === '1' ? 'true' : 'false';
+                    if(provider.settings) {
+                        var hasGoogleSync = provider.settings.google_sync === '1' ? 'true' : 'false';
+                    }
 
                     optgroupHtml +=
                         '<option value="' + provider.id + '" type="' + FILTER_TYPE_PROVIDER + '" '
