@@ -240,17 +240,6 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     $.each(response, function (index, c) {
                         $list.append('<div data-id="' + c.id + '">'
                             + c.first_name + ' ' + c.last_name + '</div>');
-
-                        // Verify if this customer is on the old customer list.
-                        var result = $.grep(GlobalVariables.customers,
-                            function (e) {
-                                return e.id == c.id;
-                            });
-
-                        // Add it to the customer list.
-                        if (result.length == 0) {
-                            GlobalVariables.customers.push(c);
-                        }
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -524,7 +513,6 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             global: false,
             success: function (response) {
                 $list.empty();
-                $list.slideDown('slow');
                 $.each(response, function (index, c) {
                     $list.append('<div data-id="' + c.id + '">'
                         + c.first_name + ' ' + c.last_name + '</div>');
