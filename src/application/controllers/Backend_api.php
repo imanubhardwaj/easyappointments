@@ -526,7 +526,7 @@ class Backend_api extends CI_Controller {
             $providerId = $this->input->post('providerId');
             $key = strtoupper($key);
 
-            $where_clause =
+            $key_clause =
                 '(first_name LIKE upper("%' . $key . '%") OR ' .
                 'last_name  LIKE upper("%' . $key . '%") OR ' .
                 'email LIKE upper("%' . $key . '%") OR ' .
@@ -534,35 +534,50 @@ class Backend_api extends CI_Controller {
                 'address LIKE upper("%' . $key . '%") OR ' .
                 'city LIKE upper("%' . $key . '%") OR ' .
                 'zip_code LIKE upper("%' . $key . '%") OR ' .
-                'notes LIKE upper("%' . $key . '%"))';
-
-//            $customers = $this->customers_model->get_batch($where_clause);
+                'notes LIKE upper("%' . $key . '%")))';
 
             $appts = $this->appointments_model
                 ->get_batch(['id_users_provider' => $providerId]);
 
-            $customers = [];
+            $where_clause = '((id IN (';
+
+            $customer_ids = [];
             foreach ($appts as $appt) {
                 if($appt['id_users_customer']) {
-                    array_push($customers, $this->customers_model->get_row($appt['id_users_customer']));
+                    array_push($customer_ids, $appt['id_users_customer']);
                 }
             }
+            $customer_ids = array_unique($customer_ids);
 
-            foreach ($customers as &$customer) {
-                $appointments = $this->appointments_model
-                    ->get_batch(['id_users_customer' => $customer['id'], 'id_users_provider' => $providerId]);
+            if(count($customer_ids) === 0) {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode([]));
+            } else {
 
-                foreach ($appointments as &$appointment) {
-                    $appointment['service']  = $this->services_model->get_row($appointment['id_services']);
-                    $appointment['provider'] = $this->providers_model->get_row($appointment['id_users_provider']);
+                foreach ($customer_ids as $id) {
+                    $where_clause = $where_clause . $id . ',';
+                }
+                $where_clause = substr($where_clause, 0, -1) . ')) AND ' . $key_clause;
+
+                $customers = $this->customers_model->get_batch($where_clause);
+
+                foreach ($customers as &$customer) {
+                    $appointments = $this->appointments_model
+                        ->get_batch(['id_users_customer' => $customer['id'], 'id_users_provider' => $providerId]);
+
+                    foreach ($appointments as &$appointment) {
+                        $appointment['service']  = $this->services_model->get_row($appointment['id_services']);
+                        $appointment['provider'] = $this->providers_model->get_row($appointment['id_users_provider']);
+                    }
+
+                    $customer['appointments'] = $appointments;
                 }
 
-                $customer['appointments'] = $appointments;
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($customers));
             }
-
-            $this->output
-                ->set_content_type('application/json')
-                ->set_output(json_encode($customers));
         } catch (Exception $exc) {
             $this->output
                 ->set_content_type('application/json')

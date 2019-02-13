@@ -180,14 +180,9 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             if (!$list.is(':visible')) {
                 $(this).text(EALang.hide);
-                $list.empty();
                 $list.slideDown('slow');
                 $('#filter-existing-customers').fadeIn('slow');
                 $('#filter-existing-customers').val('');
-                $.each(GlobalVariables.customers, function (index, c) {
-                    $list.append('<div data-id="' + c.id + '">'
-                        + c.first_name + ' ' + c.last_name + '</div>');
-                });
             } else {
                 $list.slideUp('slow');
                 $('#filter-existing-customers').fadeOut('slow');
@@ -510,6 +505,34 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
     exports.initialize = function () {
         _bindEventHandlers();
+
+        var $list = $('#existing-customers-list');
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_customers';
+        var postData = {
+            csrfToken: GlobalVariables.csrfToken,
+            key: '',
+            providerId: localStorage.getItem('providerId')
+        };
+
+        // Try to get the updated customer list.
+        $.ajax({
+            type: 'POST',
+            url: postUrl,
+            data: postData,
+            dataType: 'json',
+            timeout: 1000,
+            global: false,
+            success: function (response) {
+                $list.empty();
+                $list.slideDown('slow');
+                $.each(response, function (index, c) {
+                    $list.append('<div data-id="' + c.id + '">'
+                        + c.first_name + ' ' + c.last_name + '</div>');
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
     };
 
     function getUTCString(time) {
