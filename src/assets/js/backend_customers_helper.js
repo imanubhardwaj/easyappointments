@@ -327,10 +327,10 @@
 
             var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
             var end = GeneralFunctions.formatDate(Date.parse(appointment.end_datetime), GlobalVariables.dateFormat, true);
-            var f = 'YYYY/mm/dd HH:mm:ss';
+            var f = 'YYYY/mm/dd HH:mm:ss A';
             var html =
                 '<div class="appointment-row" data-id="' + appointment.id + '">' +
-                moment.utc(start).local().format(f) + ' - ' + moment.utc(end).local().format(f) + '<br>' +
+                moment.utc(appointment.start_datetime).local().format(f) + ' - ' + moment.utc(appointment.end_datetime).local().format(f) + '<br>' +
                 appointment.service.name + ', ' +
                 appointment.provider.first_name + ' ' + appointment.provider.last_name +
                 '</div>';
@@ -445,12 +445,12 @@
     CustomersHelper.prototype.displayAppointment = function (appointment) {
         var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
         var end = GeneralFunctions.formatDate(Date.parse(appointment.end_datetime), GlobalVariables.dateFormat, true);
-
+        var f = 'YYYY/mm/dd HH:mm:ss A';
         var html =
             '<div>' +
             '<strong>' + appointment.service.name + '</strong><br>' +
             appointment.provider.first_name + ' ' + appointment.provider.last_name + '<br>' +
-            start + ' - ' + end + '<br>' +
+            moment.utc(appointment.start_datetime).local().format(f) + ' - ' + moment.utc(appointment.end_datetime).local().format(f) + '<br>' +
             '</div>';
 
         $('#appointment-details').html(html).removeClass('hidden');

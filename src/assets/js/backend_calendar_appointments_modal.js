@@ -180,14 +180,9 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             if (!$list.is(':visible')) {
                 $(this).text(EALang.hide);
-                $list.empty();
                 $list.slideDown('slow');
                 $('#filter-existing-customers').fadeIn('slow');
                 $('#filter-existing-customers').val('');
-                $.each(GlobalVariables.customers, function (index, c) {
-                    $list.append('<div data-id="' + c.id + '">'
-                        + c.first_name + ' ' + c.last_name + '</div>');
-                });
             } else {
                 $list.slideUp('slow');
                 $('#filter-existing-customers').fadeOut('slow');
@@ -245,17 +240,6 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     $.each(response, function (index, c) {
                         $list.append('<div data-id="' + c.id + '">'
                             + c.first_name + ' ' + c.last_name + '</div>');
-
-                        // Verify if this customer is on the old customer list.
-                        var result = $.grep(GlobalVariables.customers,
-                            function (e) {
-                                return e.id == c.id;
-                            });
-
-                        // Add it to the customer list.
-                        if (result.length == 0) {
-                            GlobalVariables.customers.push(c);
-                        }
                     });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -510,6 +494,33 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
     exports.initialize = function () {
         _bindEventHandlers();
+
+        var $list = $('#existing-customers-list');
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_filter_customers';
+        var postData = {
+            csrfToken: GlobalVariables.csrfToken,
+            key: '',
+            providerId: localStorage.getItem('providerId')
+        };
+
+        // Try to get the updated customer list.
+        $.ajax({
+            type: 'POST',
+            url: postUrl,
+            data: postData,
+            dataType: 'json',
+            timeout: 1000,
+            global: false,
+            success: function (response) {
+                $list.empty();
+                $.each(response, function (index, c) {
+                    $list.append('<div data-id="' + c.id + '">'
+                        + c.first_name + ' ' + c.last_name + '</div>');
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
     };
 
     function getUTCString(time) {
