@@ -50,7 +50,7 @@
 
         <div id="calendar-actions" class="col-xs-12 col-sm-7">
             <?php if (($role_slug == DB_SLUG_ADMIN || $role_slug == DB_SLUG_PROVIDER)
-                    && Config::GOOGLE_SYNC_FEATURE == TRUE): ?>
+                && Config::GOOGLE_SYNC_FEATURE == TRUE): ?>
                 <button id="google-sync" class="btn btn-primary"
                         title="<?= lang('trigger_google_sync_hint') ?>">
                     <span class="glyphicon glyphicon-refresh"></span>
@@ -113,7 +113,60 @@
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="select-service" class="control-label"><?= lang('service') ?> *</label>
-                                    <select id="select-service" class="required form-control">
+                                    <select id="select-service" class="required form-control" disabled>
+                                        <?php
+                                        // Group services by category, only if there is at least one service
+                                        // with a parent category.
+                                        $has_category = FALSE;
+                                        foreach($available_services as $service) {
+                                            if ($service['category_id'] != NULL) {
+                                                $has_category = TRUE;
+                                                break;
+                                            }
+                                        }
+
+                                        if ($has_category) {
+                                            $grouped_services = array();
+
+                                            foreach($available_services as $service) {
+                                                if ($service['category_id'] != NULL) {
+                                                    if (!isset($grouped_services[$service['category_name']])) {
+                                                        $grouped_services[$service['category_name']] = array();
+                                                    }
+
+                                                    $grouped_services[$service['category_name']][] = $service;
+                                                }
+                                            }
+
+                                            // We need the uncategorized services at the end of the list so
+                                            // we will use another iteration only for the uncategorized services.
+                                            $grouped_services['uncategorized'] = array();
+                                            foreach($available_services as $service) {
+                                                if ($service['category_id'] == NULL) {
+                                                    $grouped_services['uncategorized'][] = $service;
+                                                }
+                                            }
+
+                                            foreach($grouped_services as $key => $group) {
+                                                $group_label = ($key != 'uncategorized')
+                                                    ? $group[0]['category_name'] : 'Uncategorized';
+
+                                                if (count($group) > 0) {
+                                                    echo '<optgroup label="' . $group_label . '">';
+                                                    foreach($group as $service) {
+                                                        echo '<option value="' . $service['id'] . '">'
+                                                            . $service['name'] . '</option>';
+                                                    }
+                                                    echo '</optgroup>';
+                                                }
+                                            }
+                                        }  else {
+                                            foreach($available_services as $service) {
+                                                echo '<option value="' . $service['id'] . '">'
+                                                    . $service['name'] . '</option>';
+                                            }
+                                        }
+                                        ?>
                                     </select>
                                 </div>
 

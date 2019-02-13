@@ -90,12 +90,6 @@ window.BackendCalendar = window.BackendCalendar || {};
         BackendCalendarUnavailabilitiesModal.initialize();
 
         localStorage.setItem('providerId', $('#select-filter-item').val());
-        GlobalVariables.availableServices.forEach(function (service) {
-            if(service['user_id'] === $('#select-filter-item').val()) {
-                $('#select-service').append('<option value="' + service['id'] + '">'
-                    + service['name'] + '</option>');
-            }
-        });
         _bindEventHandlers();
     };
 
