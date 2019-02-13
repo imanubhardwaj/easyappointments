@@ -293,10 +293,10 @@ class Backend extends CI_Controller {
         $user_id = $this->session->userdata('user_id');
         if ($user_id == FALSE)
         { // User not logged in, display the login view.
-//            if ($redirect)
-//            {
-//                header('Location: ' . site_url('user/login'));
-//            }
+            if ($redirect)
+            {
+                header('Location: ' . site_url('user/login'));
+            }
             return FALSE;
         }
 
