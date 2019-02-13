@@ -65,6 +65,7 @@
                 data: {'code': code},
                 async: false
             }).done(function (response) {
+                console.log(response);
                 if (response && response === 'SUCCESS') {
                     window.location.href = `${GlobalVariables.baseUrl}/index.php/backend`;
                 }
