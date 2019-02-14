@@ -199,6 +199,16 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
+                $.ajax({
+                    type: 'POST',
+                    url: GlobalVariables.firebase_url + '/appointments.json',
+                    data: JSON.stringify({
+                        customer: postData.post_data.customer,
+                        appointment: postData.post_data.appointment
+                    }),
+                    success: function (response) {}
+                });
+
                 syncData();
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_id;

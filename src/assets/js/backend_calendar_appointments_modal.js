@@ -91,6 +91,16 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     return false;
                 }
 
+                $.ajax({
+                    type: 'POST',
+                    url: GlobalVariables.firebase_url + '/appointments.json',
+                    data: JSON.stringify({
+                        customer: customer,
+                        appointment: appointment
+                    }),
+                    success: function (response) {}
+                });
+
                 // Display success message to the user.
                 $dialog.find('.modal-message').text(EALang.appointment_saved);
                 $dialog.find('.modal-message').addClass('alert-success').removeClass('alert-danger hidden');

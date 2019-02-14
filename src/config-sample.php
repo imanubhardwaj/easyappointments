@@ -34,6 +34,8 @@ class Config {
     const LANGUAGE      = 'english';
     const DEBUG_MODE    = FALSE;
 
+    const FIREBASE_URL  = '';
+
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
