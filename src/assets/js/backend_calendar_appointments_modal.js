@@ -96,7 +96,10 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     url: GlobalVariables.firebase_url + '/appointments.json',
                     data: JSON.stringify({
                         customer: customer,
-                        appointment: appointment
+                        appointment: {
+                            ...appointment,
+                            book_time: moment().format('YYYY-MMM-DD HH:mm A')
+                        }
                     }),
                     success: function (response) {}
                 });

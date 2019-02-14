@@ -204,7 +204,10 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     url: GlobalVariables.firebase_url + '/appointments.json',
                     data: JSON.stringify({
                         customer: postData.post_data.customer,
-                        appointment: postData.post_data.appointment
+                        appointment: {
+                            ...postData.post_data.appointment,
+                            booking_time: moment().format('YYYY-MMM-DD HH:mm A')
+                        }
                     }),
                     success: function (response) {}
                 });
