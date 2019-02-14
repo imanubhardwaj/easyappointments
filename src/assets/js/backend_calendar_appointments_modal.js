@@ -22,6 +22,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
     'use strict';
 
+    var customers = [];
+
     function _bindEventHandlers() {
         /**
          * Event: Manage Appointments Dialog Cancel Button "Click"
@@ -179,6 +181,13 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var $list = $('#existing-customers-list');
 
             if (!$list.is(':visible')) {
+                $list.empty();
+                if (customers && customers.length > 0) {
+                    $.each(customers, function (index, c) {
+                        $list.append('<div data-id="' + c.id + '">'
+                            + c.first_name + ' ' + c.last_name + '</div>');
+                    });
+                }
                 $(this).text(EALang.hide);
                 $list.slideDown('slow');
                 $('#filter-existing-customers').fadeIn('slow');
@@ -497,11 +506,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             timeout: 1000,
             global: false,
             success: function (response) {
-                $list.empty();
-                $.each(response, function (index, c) {
-                    $list.append('<div data-id="' + c.id + '">'
-                        + c.first_name + ' ' + c.last_name + '</div>');
-                });
+                customers = response;
             },
             error: function (jqXHR, textStatus, errorThrown) {
             }

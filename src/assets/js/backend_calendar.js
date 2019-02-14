@@ -86,10 +86,10 @@ window.BackendCalendar = window.BackendCalendar || {};
 
         BackendCalendarTimezoneModal.initialize();
         BackendCalendarGoogleSync.initialize();
+        localStorage.setItem('providerId', $('#select-filter-item').val());
         BackendCalendarAppointmentsModal.initialize();
         BackendCalendarUnavailabilitiesModal.initialize();
 
-        localStorage.setItem('providerId', $('#select-filter-item').val());
         GlobalVariables.availableServices.forEach(function (service) {
             if(service['user_id'] === $('#select-filter-item').val()) {
                 $('#select-service').append('<option value="' + service['id'] + '">'
