@@ -286,10 +286,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 + '.popover-content button {margin-right: 10px;}'
                 + '</style>' +
                 '<strong>' + EALang.start + '</strong> '
-                + GeneralFunctions.formatDate(event.start.format('YYYY-MM-DD HH:mm:ss'), GlobalVariables.dateFormat, true)
+                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
                 + '<br>' +
                 '<strong>' + EALang.end + '</strong> '
-                + GeneralFunctions.formatDate(event.end.format('YYYY-MM-DD HH:mm:ss'), GlobalVariables.dateFormat, true)
+                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
                 + '<br>'
                 + notes
                 + '<hr>' +
@@ -310,10 +310,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 + '.popover-content button {margin-right: 10px;}'
                 + '</style>' +
                 '<strong>' + EALang.start + '</strong> '
-                + GeneralFunctions.formatDate(event.start.format('YYYY-MM-DD HH:mm:ss'), GlobalVariables.dateFormat, true)
+                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
                 + '<br>' +
                 '<strong>' + EALang.end + '</strong> '
-                + GeneralFunctions.formatDate(event.end.format('YYYY-MM-DD HH:mm:ss'), GlobalVariables.dateFormat, true)
+                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
                 + '<br>' +
                 '<strong>' + EALang.service + '</strong> '
                 + event.data.service.name

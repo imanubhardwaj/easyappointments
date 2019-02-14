@@ -489,7 +489,7 @@ window.FrontendBook = window.FrontendBook || {};
             '<p>'
             + '<strong class="text-primary">'
             + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
-            + selectedDate + ' ' + $('.selected-hour').text() + '<br>'
+            + moment($('#select-date').datepicker('getDate'), 'YYYY/MM/DD').format('YYYY-MMM-DD') + ' ' + $('.selected-hour').text() + '<br>'
             + servicePrice
             + serviceDuration + '<br>'
             + serviceType

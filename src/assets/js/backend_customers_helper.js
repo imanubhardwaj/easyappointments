@@ -327,7 +327,7 @@
 
             var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
             var end = GeneralFunctions.formatDate(Date.parse(appointment.end_datetime), GlobalVariables.dateFormat, true);
-            var f = 'YYYY/mm/dd HH:mm:ss A';
+            var f = 'YYYY-MMM-DD HH:mm:ss A';
             var html =
                 '<div class="appointment-row" data-id="' + appointment.id + '">' +
                 moment.utc(appointment.start_datetime).local().format(f) + ' - ' + moment.utc(appointment.end_datetime).local().format(f) + '<br>' +
@@ -445,7 +445,7 @@
     CustomersHelper.prototype.displayAppointment = function (appointment) {
         var start = GeneralFunctions.formatDate(Date.parse(appointment.start_datetime), GlobalVariables.dateFormat, true);
         var end = GeneralFunctions.formatDate(Date.parse(appointment.end_datetime), GlobalVariables.dateFormat, true);
-        var f = 'YYYY/mm/dd HH:mm:ss A';
+        var f = 'YYYY-MMM-DD HH:mm:ss A';
         var html =
             '<div>' +
             '<strong>' + appointment.service.name + '</strong><br>' +
