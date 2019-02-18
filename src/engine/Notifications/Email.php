@@ -167,7 +167,7 @@ class Email {
         $mailer = $this->_createMailer();
 
         $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
+        $mailer->FromName = 'Vaetas Calendar';
         $mailer->AddAddress($recipientEmail->get());
         $mailer->Subject = $title->get();
         $mailer->Body = $html;
@@ -272,7 +272,7 @@ class Email {
 
         // Send email to recipient.
         $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
+        $mailer->FromName = 'Vaetas Calendar';
         $mailer->AddAddress($recipientEmail->get()); // "Name" argument crushes the phpmailer class.
         $mailer->Subject = $this->framework->lang->line('appointment_cancelled_title');
         $mailer->Body = $html;
@@ -308,7 +308,7 @@ class Email {
         $mailer = $this->_createMailer();
 
         $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
+        $mailer->FromName = 'Vaetas Calendar';
         $mailer->AddAddress($recipientEmail->get()); // "Name" argument crushes the phpmailer class.
         $mailer->Subject = $this->framework->lang->line('new_account_password');
         $mailer->Body = $html;

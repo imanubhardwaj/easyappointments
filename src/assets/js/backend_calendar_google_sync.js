@@ -40,7 +40,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
 
                 var redirectUrl = GlobalVariables.baseUrl + '/index.php/google/oauth_callback';
 
-                var windowHandle = window.open(authUrl, 'Authorize Easy!Appointments',
+                var windowHandle = window.open(authUrl, 'Authorize Vaetas Calendar',
                     'width=800, height=600');
 
                 var authInterval = window.setInterval(function () {
@@ -125,8 +125,10 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     return;
                 }
+                syncGoogleCalendar(false);
                 Backend.displayNotification(EALang.google_calendar_selected);
                 $('#select-google-calendar').modal('hide');
+                window.location.reload(true);
             }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
         });
 
@@ -143,35 +145,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
          * Trigger the synchronization algorithm.
          */
         $('#google-sync').click(function () {
-            var url = GlobalVariables.baseUrl + '/index.php/google/sync/' + $('#select-filter-item').val();
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'json'
-            })
-                .done(function (response) {
-                    if (response.exceptions) {
-                        response.exceptions = GeneralFunctions.parseExceptions(response.exceptions);
-                        GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE,
-                            GeneralFunctions.EXCEPTIONS_MESSAGE);
-                        $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
-                        return;
-                    }
-
-                    if (response.warnings) {
-                        response.warnings = GeneralFunctions.parseExceptions(response.warnings);
-                        GeneralFunctions.displayMessageBox(GeneralFunctions.WARNINGS_TITLE,
-                            GeneralFunctions.WARNINGS_MESSAGE);
-                        $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.warnings));
-                    }
-
-                    Backend.displayNotification(EALang.google_sync_completed);
-                    $('#reload-appointments').trigger('click');
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    Backend.displayNotification(EALang.google_sync_failed);
-                });
+            syncGoogleCalendar(true);
         });
     }
 
@@ -198,6 +172,39 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                 $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
             }
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
+    }
+
+    function syncGoogleCalendar(async) {
+        var url = GlobalVariables.baseUrl + '/index.php/google/sync/' + $('#select-filter-item').val();
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            async: async
+        })
+            .done(function (response) {
+                if (response.exceptions) {
+                    response.exceptions = GeneralFunctions.parseExceptions(response.exceptions);
+                    GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE,
+                        GeneralFunctions.EXCEPTIONS_MESSAGE);
+                    $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
+                    return;
+                }
+
+                if (response.warnings) {
+                    response.warnings = GeneralFunctions.parseExceptions(response.warnings);
+                    GeneralFunctions.displayMessageBox(GeneralFunctions.WARNINGS_TITLE,
+                        GeneralFunctions.WARNINGS_MESSAGE);
+                    $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.warnings));
+                }
+
+                Backend.displayNotification(EALang.google_sync_completed);
+                $('#reload-appointments').trigger('click');
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                Backend.displayNotification(EALang.google_sync_failed);
+            });
     }
 
 

@@ -63,7 +63,7 @@
                 <li class="<?= $active . $hidden ?>">
                     <a href="<?= site_url('backend/customers') ?>" class="menu-item"
                             title="<?= lang('manage_customers_hint') ?>">
-                        <?= lang('customers') ?>
+                        Clients
                     </a>
                 </li>
 

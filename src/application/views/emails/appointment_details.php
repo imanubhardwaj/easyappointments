@@ -35,7 +35,7 @@
                 </tr>
             </table>
 
-            <h2>Customer Details</h2>
+            <h2>Client Details</h2>
             <table id="customer-details">
                 <tr>
                     <td class="label" style="padding: 3px;font-weight: bold;">Name</td>

@@ -45,7 +45,7 @@
                 </div>
     		</form>
 
-            <h3><?= lang('customers') ?></h3>
+            <h3>Clients</h3>
             <div class="results"></div>
     	</div>
 
