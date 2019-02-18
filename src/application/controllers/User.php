@@ -235,16 +235,18 @@ class User extends CI_Controller {
     }
 
     public function syncUsersToCalendar() {
-        foreach ($this->user_model->get_user_ids() as $user_id) {
-            $arrContextOptions = array(
-                "ssl" => array(
-                    "verify_peer"      => false,
-                    "verify_peer_name" => false,
-                ),
-            );
-            $your_url          = Config::BASE_URL. "/index.php/google/sync/" . $user_id->id;
-            $data              = file_get_contents($your_url, false, stream_context_create($arrContextOptions));
-            echo $data;
+        $this->load->model('appointments_model');
+        try
+        {
+            foreach ($this->user_model->get_user_ids() as $user_id) {
+                if($user_id && $user_id->id) {
+                    $this->appointments_model->syncEvents((int) $user_id->id);
+                }
+            }
+        }
+        catch (Exception $exc)
+        {
+            echo $exc->getMessage();
         }
     }
 
