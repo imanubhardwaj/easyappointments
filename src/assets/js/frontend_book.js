@@ -471,7 +471,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         $.each(GlobalVariables.availableServices, function (index, service) {
             if (service.id == selServiceId) {
-                servicePrice = 'Price: ' + service.price;
+                servicePrice = 'Price: ' + '$' + service.price;
                 serviceDuration = '<br> Duration: ' + service.duration + ' minutes';
                 if(service.type) {
                     serviceType = 'Type: ' + service.type.toString().replace('_', ' ').toLowerCase().replace(/\b[a-z]/g, function (letter) {
