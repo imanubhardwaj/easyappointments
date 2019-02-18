@@ -188,7 +188,8 @@ class User_Model extends CI_Model {
 
     public function get_user_ids()
     {
-        return $this->db->select('id')->get('ea_users')->result();
+        return $this->db->select('id')->from('ea_users')->join('ea_user_settings', 'ea_users.id = ea_user_settings.id_users')
+            ->where('google_sync', 1)->get()->result();
     }
 
     public function check_user_timezone($providerId) {
