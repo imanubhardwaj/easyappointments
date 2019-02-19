@@ -202,7 +202,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 if(user_id && eventNamespace) {
                     $.ajax({
                         type: 'POST',
-                        url: GlobalVariables.firebase_url + '/video_events/' + video.user_id + '/' + eventNamespace + '.json',
+                        url: GlobalVariables.firebase_url + '/video_events/' + user_id + '/' + eventNamespace + '.json',
                         data: JSON.stringify({
                             'cta_data': {
                                 customer: postData.post_data.customer,
