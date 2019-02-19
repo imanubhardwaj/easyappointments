@@ -142,7 +142,9 @@ class Google_Sync {
 
         $event = new Google_Event();
         $event->setSummary(($service != NULL) ? $service['name'] : 'Unavailable');
-        $event->setLocation($company_settings['company_name']);
+        if($appointment['location']) {
+            $event->setLocation($appointment['location']);
+        }
 
         $start = new Google_EventDateTime();
         $start->setDateTime(date3339(strtotime($appointment['start_datetime'])));
@@ -199,7 +201,9 @@ class Google_Sync {
             $appointment['id_google_calendar']);
 
         $event->setSummary($service['name']);
-        $event->setLocation($company_settings['company_name']);
+        if($appointment['location']) {
+            $event->setLocation($appointment['location']);
+        }
 
         $start = new Google_EventDateTime();
         $start->setDateTime(date3339(strtotime($appointment['start_datetime'])));

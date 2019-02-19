@@ -65,7 +65,7 @@ window.FrontendBook = window.FrontendBook || {};
             window.console = function () {
             }; // IE compatibility
         }
-        
+
         if (GlobalVariables.displayCookieNotice) {
             cookieconsent.initialise({
                 palette: {
@@ -544,7 +544,8 @@ window.FrontendBook = window.FrontendBook || {};
             notes: $('#notes').val(),
             is_unavailable: false,
             id_users_provider: selectedProvider['id'],
-            id_services: selectedService['id']
+            id_services: selectedService['id'],
+            location: selectedService['location']
         };
 
         postData.manage_mode = FrontendBook.manageMode;

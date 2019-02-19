@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `ea_appointments` (
     `id_users_customer` INT(11),
     `id_services` INT(11),
     `id_google_calendar` TEXT,
+    `location` VARCHAR(256) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `id_users_customer` (`id_users_customer`),
     KEY `id_services` (`id_services`),
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `ea_services` (
     `id_service_categories` INT(11),
     `type` TEXT,
     `logo_url` VARCHAR(256),
+    `location` VARCHAR(256) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `id_service_categories` (`id_service_categories`)
 )
