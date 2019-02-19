@@ -199,18 +199,23 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
-                $.ajax({
-                    type: 'POST',
-                    url: GlobalVariables.firebase_url + '/appointments.json',
-                    data: JSON.stringify({
-                        customer: postData.post_data.customer,
-                        appointment: {
-                            ...postData.post_data.appointment,
-                            booking_time: moment().format('YYYY-MMM-DD HH:mm A')
+                if(user_id && eventNamespace) {
+                    $.ajax({
+                        type: 'POST',
+                        url: GlobalVariables.firebase_url + '/video_events/' + video.user_id + '/' + eventNamespace + '.json',
+                        data: JSON.stringify({
+                            'cta_data': {
+                                customer: postData.post_data.customer,
+                                appointment: {
+                                    ...postData.post_data.appointment,
+                                    booking_time: moment().format('YYYY-MMM-DD HH:mm A')
+                                }
+                            }
+                        }),
+                        success: function (response) {
                         }
-                    }),
-                    success: function (response) {}
-                });
+                    });
+                }
 
                 syncData();
                 window.location.href = GlobalVariables.baseUrl

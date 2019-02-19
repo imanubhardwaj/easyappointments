@@ -18,6 +18,7 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
     <script src="../../../assets/ext/moment/moment.min.js"></script>
+    <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
     <?php
     $serviceId          = $_GET['serviceId'];
     $providerId         = $_GET['providerId'];
@@ -39,6 +40,20 @@
         header('Location: '.$url);
     }
     ?>
+    <script type="text/javascript">
+        function getParameterByName(name) {
+            var val = (location.search.split(name + '=')[1] || '').split('&')[0];
+
+            if (val.indexOf('?') >= 0) {
+                val = val.split('?')[0];
+            }
+
+            return val;
+        }
+
+        var user_id = getParameterByName('user_id');
+        var eventNamespace = getParameterByName('eventNamespace');
+    </script>
 </head>
 
 <body>
