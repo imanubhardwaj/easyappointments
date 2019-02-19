@@ -205,11 +205,9 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         url: GlobalVariables.firebase_url + '/video_events/' + user_id + '/' + eventNamespace + '.json',
                         data: JSON.stringify({
                             'cta_data': {
-                                customer: postData.post_data.customer,
-                                appointment: {
-                                    ...postData.post_data.appointment,
-                                    booking_time: moment().format('YYYY-MMM-DD HH:mm A')
-                                }
+                                ...postData.post_data.customer,
+                                ...postData.post_data.appointment,
+                                booking_time: moment().format('YYYY-MMM-DD HH:mm A')
                             }
                         }),
                         success: function (response) {
