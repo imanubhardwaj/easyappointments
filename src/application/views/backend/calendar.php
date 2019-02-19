@@ -30,8 +30,7 @@
             'email'     : <?= json_encode($user_email) ?>,
             'role_slug' : <?= json_encode($role_slug) ?>,
             'privileges': <?= json_encode($privileges) ?>
-        },
-        'firebase_url'          : <?= json_encode(Config::FIREBASE_URL) ?>
+        }
     };
 
     $(document).ready(function() {
