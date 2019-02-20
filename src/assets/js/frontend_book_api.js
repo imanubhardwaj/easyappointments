@@ -200,14 +200,22 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 }
 
                 if(user_id && eventNamespace) {
+                    let data = {};
+                    if(postData.post_data.appointment) {
+                        data = {
+                            ...data,
+                            'start_datetime': postData.post_data.appointment.start_datetime,
+                            'end_datetime': postData.post_data.appointment.end_datetime,
+                            'notes': postData.post_data.appointment.notes
+                        };
+                    }
                     $.ajax({
-                        type: 'POST',
+                        type: 'PATCH',
                         url: GlobalVariables.firebase_url + '/video_events/' + user_id + '/' + eventNamespace + '.json',
                         data: JSON.stringify({
                             'cta_data': {
-                                ...postData.post_data.customer,
-                                ...postData.post_data.appointment,
-                                booking_time: moment().format('YYYY-MMM-DD HH:mm A')
+                                customer: postData.post_data.customer,
+                                appointment: data
                             }
                         }),
                         success: function (response) {

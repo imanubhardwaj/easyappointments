@@ -18,7 +18,6 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
     <script src="../../../assets/ext/moment/moment.min.js"></script>
-    <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
     <?php
     $serviceId          = $_GET['serviceId'];
     $providerId         = $_GET['providerId'];
