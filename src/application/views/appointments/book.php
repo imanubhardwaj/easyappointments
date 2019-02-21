@@ -17,6 +17,8 @@
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
+    <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="../../../assets/ext/moment/moment.min.js"></script>
     <?php
     $serviceId          = $_GET['serviceId'];
@@ -50,8 +52,22 @@
             return val;
         }
 
-        var user_id = getParameterByName('user_id');
-        var eventNamespace = getParameterByName('eventNamespace');
+        var user_id = getParameterByName('uid');
+        var video_id = getParameterByName('vid');
+        var email_id = getParameterByName('eid');
+    </script>
+    <script type="text/javascript">
+        var geoData = {};
+        $.ajax({
+            type: 'GET',
+            url: 'https://geoip-devslane.herokuapp.com/json/',
+            dataType: 'jsonp',
+            crossDomain: true,
+            async: false,
+            success: function (res) {
+                geoData = res;
+            }
+        });
     </script>
 </head>
 
@@ -398,8 +414,6 @@
     </script>
 
     <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-qtip/jquery.qtip.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/cookieconsent/cookieconsent.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>
