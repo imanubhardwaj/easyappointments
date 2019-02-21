@@ -17,6 +17,8 @@
 
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
+    <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="../../../assets/ext/moment/moment.min.js"></script>
     <?php
     $serviceId          = $_GET['serviceId'];
@@ -39,6 +41,34 @@
         header('Location: '.$url);
     }
     ?>
+    <script type="text/javascript">
+        function getParameterByName(name) {
+            var val = (location.search.split(name + '=')[1] || '').split('&')[0];
+
+            if (val.indexOf('?') >= 0) {
+                val = val.split('?')[0];
+            }
+
+            return val;
+        }
+
+        var user_id = getParameterByName('uid');
+        var video_id = getParameterByName('vid');
+        var email_id = getParameterByName('eid');
+    </script>
+    <script type="text/javascript">
+        var geoData = {};
+        $.ajax({
+            type: 'GET',
+            url: 'https://geoip-devslane.herokuapp.com/json/',
+            dataType: 'jsonp',
+            crossDomain: true,
+            async: false,
+            success: function (res) {
+                geoData = res;
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -375,7 +405,8 @@
             appointmentData     : <?= json_encode($appointment_data) ?>,
             providerData        : <?= json_encode($provider_data) ?>,
             customerData        : <?= json_encode($customer_data) ?>,
-            csrfToken           : <?= json_encode($this->security->get_csrf_hash()) ?>
+            csrfToken           : <?= json_encode($this->security->get_csrf_hash()) ?>,
+            firebase_url         : <?= json_encode(Config::FIREBASE_URL) ?>
         };
 
         var EALang = <?= json_encode($this->lang->language) ?>;
@@ -383,8 +414,6 @@
     </script>
 
     <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-qtip/jquery.qtip.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/cookieconsent/cookieconsent.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.min.js') ?>"></script>

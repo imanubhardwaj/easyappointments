@@ -199,6 +199,50 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     return false;
                 }
 
+                if(user_id) {
+                    let data = {};
+                    if(postData.post_data.appointment) {
+                        data = {
+                            ...data,
+                            'start_datetime': postData.post_data.appointment.start_datetime,
+                            'end_datetime': postData.post_data.appointment.end_datetime,
+                            'notes': postData.post_data.appointment.notes
+                        };
+                    }
+                    let event = {
+                        'cta_data': {
+                            customer: postData.post_data.customer,
+                            appointment: data
+                        },
+                        'video_id': video_id,
+                        'viewer_id': postData.post_data.customer.first_name + ' ' + postData.post_data.customer.last_name,
+                        'email_id': email_id,
+                        'time': new Date(),
+                        'cta_type': 8
+                    };
+                    if(selectedService) {
+                        event = {
+                            ...event,
+                            'cta_title': selectedService['name']
+                        };
+                    }
+                    if(geoData) {
+                        event = {
+                            ...event,
+                            'city': geoData.city,
+                            'region': geoData.region_name,
+                            'country_code': geoData.country_code
+                        };
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: GlobalVariables.firebase_url + '/video_events/' + user_id + '.json',
+                        data: JSON.stringify(event),
+                        success: function (response) {
+                        }
+                    });
+                }
+
                 syncData();
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_id;

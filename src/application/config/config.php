@@ -286,6 +286,8 @@ $config['cache_busting_token'] = '52FX8';
 */
 $config['encryption_key'] = Config::BASE_URL;
 
+$config['firebase_url'] = Config::FIREBASE_URL;
+
 /*
 |--------------------------------------------------------------------------
 | Session Variables
