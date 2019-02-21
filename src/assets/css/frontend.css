@@ -46,6 +46,9 @@ body {
     padding: 5px;
     height: 90px;
     background: #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 #book-appointment-wizard #company-name {
@@ -57,18 +60,16 @@ body {
 }
 
 #book-appointment-wizard .logo {
-    display: inline-block;
-    margin: 16px 0 0 15px;
+    margin-left: 16px;
     float: left;
-    max-width: 150px;
-    max-height: 60px;
+    width: 50px;
+    height: auto;
 }
 
 #book-appointment-wizard #steps {
     width: 180px;
     display: inline-block;
     float: right;
-    margin-top: 17px;
 }
 
 #book-appointment-wizard .wizard-frame {
