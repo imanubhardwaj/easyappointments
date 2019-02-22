@@ -206,8 +206,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         const timezoneAbbr = GeneralFunctions.timezones.filter(zone => zone.offset === timezone)[0];
                         data = {
                             ...data,
-                            'start_datetime': getFormattedTime(postData.post_data.appointment.start_datetime, timezone) + ' (' + timezoneAbbr.abbr + ' ' + timezone + ')',
-                            'end_datetime': getFormattedTime(postData.post_data.appointment.end_datetime, timezone) + ' (' + timezoneAbbr.abbr + ' ' + timezone + ')',
+                            'start_datetime': getFormattedTime(postData.post_data.appointment.start_datetime, timezone) + ' (' + timezoneAbbr.abbr + ')',
+                            'end_datetime': getFormattedTime(postData.post_data.appointment.end_datetime, timezone) + ' (' + timezoneAbbr.abbr + ')',
                             'notes': postData.post_data.appointment.notes
                         };
                     }
