@@ -90,7 +90,8 @@ class Appointments extends CI_Controller {
                     'id' => $provider['id'],
                     'first_name' => $provider['first_name'],
                     'last_name' => $provider['last_name'],
-                    'services' => $provider['services']
+                    'services' => $provider['services'],
+                    'timezone' => $provider['settings']['timezone']
                 ];
                 $available_providers[$index] = $stripped_data;
             }

@@ -202,10 +202,12 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 if(user_id) {
                     let data = {};
                     if(postData.post_data.appointment) {
+                        const timezone = selectedProvider['timezone'];
+                        const timezoneAbbr = GeneralFunctions.timezones.filter(zone => zone.offset === timezone)[0];
                         data = {
                             ...data,
-                            'start_datetime': postData.post_data.appointment.start_datetime,
-                            'end_datetime': postData.post_data.appointment.end_datetime,
+                            'start_datetime': getFormattedTime(postData.post_data.appointment.start_datetime, timezone) + ' (' + timezoneAbbr.abbr + ' ' + timezone + ')',
+                            'end_datetime': getFormattedTime(postData.post_data.appointment.end_datetime, timezone) + ' (' + timezoneAbbr.abbr + ' ' + timezone + ')',
                             'notes': postData.post_data.appointment.notes
                         };
                     }
@@ -377,5 +379,24 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             location.href = GlobalVariables.baseUrl;
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };
+
+    function getFormattedTime(date, timezone) {
+        const zone = timezone.substring(1);
+        if(timezone.charAt(0) === '+') {
+            return addTimeToDate(date, zone);
+        } else {
+            return subtractTimeFromDate(date, zone);
+        }
+    }
+
+    function addTimeToDate(dateString, timezone) {
+        return moment.utc(dateString).add(timezone.split(':')[0], 'hours')
+            .add(timezone.split(':')[1], 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    function subtractTimeFromDate(dateString, timezone) {
+        return moment.utc(dateString).subtract(timezone.split(':')[0], 'hours')
+            .subtract(timezone.split(':')[1], 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    }
 
 })(window.FrontendBookApi);
