@@ -422,6 +422,19 @@ window.FrontendBook = window.FrontendBook || {};
                 throw EALang.fields_are_required;
             }
 
+            var zipCodeRegex = /^\d{5}-\d{4}|\d{5}|[A-Z]\d[A-Z] \d[A-Z]\d$/;
+            var phoneNumberRegex = /^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/;
+            const zipCode = $('#zip-code').val();
+            const phoneNumber = $('#phone-number').val();
+            if (!zipCodeRegex.test(zipCode))
+            {
+                throw 'Invalid Zip Code';
+            }
+            if (!phoneNumberRegex.test(phoneNumber))
+            {
+                throw 'Invalid Phone Number';
+            }
+
             var $acceptToTermsAndConditions = $('#accept-to-terms-and-conditions');
             if ($acceptToTermsAndConditions.length && !$acceptToTermsAndConditions.prop('checked')) {
                 $acceptToTermsAndConditions.parents('label').addClass('text-danger');
