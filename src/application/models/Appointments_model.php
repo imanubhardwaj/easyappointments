@@ -553,8 +553,8 @@ class Appointments_Model extends CI_Model {
         $this->google_sync->refresh_token($google_token->refresh_token);
 
         // Fetch provider's appointments that belong to the sync time period.
-        $sync_past_days = $this->providers_model->get_setting('sync_past_days', $provider['id']);
-        $sync_future_days = $this->providers_model->get_setting('sync_future_days', $provider['id']);
+        $sync_past_days = Config::SYNC_PAST_DAYS;
+        $sync_future_days = Config::SYNC_FUTURE_DAYS;
         $start = strtotime('-' . $sync_past_days . ' days', strtotime(date('Y-m-d')));
         $end = strtotime('+' . $sync_future_days . ' days', strtotime(date('Y-m-d')));
 
