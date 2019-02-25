@@ -225,10 +225,12 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 if ($('#select-filter-item option:selected').attr('google-sync') === 'true') {
                     $('#enable-sync').addClass('btn-danger enabled');
                     $('#enable-sync span:eq(1)').text(EALang.disable_sync);
+                    $('#enable-sync').prop('title', 'Disable synchronization with Google Calendar account');
                     $('#google-sync').prop('disabled', false);
                 } else {
                     $('#enable-sync').removeClass('btn-danger enabled');
                     $('#enable-sync span:eq(1)').text(EALang.enable_sync);
+                    $('#enable-sync').prop('title', 'Enable synchronization with Google Calendar account');
                     $('#google-sync').prop('disabled', true);
                 }
             }
@@ -284,6 +286,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 '<style type="text/css">'
                 + '.popover-content strong {min-width: 80px; display:inline-block;}'
                 + '.popover-content button {margin-right: 10px;}'
+                + '.popover-content {word-wrap: break-word !important;}'
                 + '</style>' +
                 '<strong>' + EALang.start + '</strong> '
                 + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
@@ -308,6 +311,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 '<style type="text/css">'
                 + '.popover-content strong {min-width: 80px; display:inline-block;}'
                 + '.popover-content button {margin-right: 10px;}'
+                + '.popover-content {word-wrap: break-word !important;}'
                 + '</style>' +
                 '<strong>' + EALang.start + '</strong> '
                 + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')

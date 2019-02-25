@@ -55,6 +55,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                                 window.clearInterval(authInterval);
                                 $('#enable-sync').addClass('btn-danger enabled');
                                 $('#enable-sync span:eq(1)').text(EALang.disable_sync);
+                                $('#enable-sync').prop('title', 'Disable synchronization with Google Calendar account');
                                 $('#google-sync').prop('disabled', false);
                                 $('#select-filter-item option:selected').attr('google-sync', 'true');
 
@@ -103,6 +104,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                         $('#enable-sync').removeClass('btn-danger enabled');
                         $('#enable-sync span:eq(1)').text(EALang.enable_sync);
                         $('#google-sync').prop('disabled', true);
+                        $('#enable-sync').prop('title', 'Enable synchronization with Google Calendar account');
                         $('#select-filter-item option:selected').attr('google-sync', 'false');
 
                         return false;

@@ -164,6 +164,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     '<style type="text/css">'
                     + '.popover-content strong {min-width: 80px; display:inline-block;}'
                     + '.popover-content button {margin-right: 10px;}'
+                    + '.popover-content {word-wrap: break-word !important;}'
                     + '</style>' +
                     '<strong>' + EALang.start + '</strong> '
                     + GeneralFunctions.formatDate(entry.start_datetime, GlobalVariables.dateFormat, true)
@@ -183,6 +184,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                     '<style type="text/css">'
                     + '.popover-content strong {min-width: 80px; display:inline-block;}'
                     + '.popover-content button {margin-right: 10px;}'
+                    + '.popover-content {word-wrap: break-word !important;}'
                     + '</style>' +
                     '<strong>' + EALang.start + '</strong> '
                     + GeneralFunctions.formatDate(entry.start_datetime, GlobalVariables.dateFormat, true)
