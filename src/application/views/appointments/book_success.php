@@ -13,6 +13,19 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
 </head>
+<script type="text/javascript">
+    function getParameterByName(name) {
+        var val = (location.search.split(name + '=')[1] || '').split('&')[0];
+
+        if (val.indexOf('?') >= 0) {
+            val = val.split('?')[0];
+        }
+
+        return val;
+    }
+
+    var user_id = getParameterByName('user_id');
+</script>
 <body>
     <div id="main" class="container">
         <div class="wrapper row">
@@ -60,7 +73,8 @@
             'companyName'       : <?= json_encode($company_name) ?>,
             'googleApiKey'      : <?= json_encode(Config::GOOGLE_API_KEY) ?>,
             'googleClientId'    : <?= json_encode(Config::GOOGLE_CLIENT_ID) ?>,
-            'googleApiScope'    : 'https://www.googleapis.com/auth/calendar'
+            'googleApiScope'    : 'https://www.googleapis.com/auth/calendar',
+            'firebase_url'      : <?= json_encode(Config::FIREBASE_URL) ?>
         };
 
         var EALang = <?= json_encode($this->lang->language) ?>;

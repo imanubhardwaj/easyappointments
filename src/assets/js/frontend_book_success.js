@@ -10,6 +10,9 @@
  * ---------------------------------------------------------------------------- */
 
 $(document).ready(function () {
+    if(user_id) {
+        getUserNotificationCount();
+    }
     /**
      * Event: Add Appointment to Google Calendar "Click"
      *
@@ -111,3 +114,22 @@ $(document).ready(function () {
         }
     }
 });
+
+function getUserNotificationCount() {
+    $.ajax({
+        type: 'GET',
+        url: GlobalVariables.firebase_url + '/notifications/' + user_id + '.json',
+        success: function (response) {
+            updateUserNotificationsCount(response);
+        }
+    })
+}
+
+function updateUserNotificationsCount(notificationsCount) {
+    $.ajax({
+        type: 'PATCH',
+        url: GlobalVariables.firebase_url + '/notifications.json',
+        data: JSON.stringify({[user_id]: notificationsCount + 1}),
+        success: function (response) {}
+    })
+}

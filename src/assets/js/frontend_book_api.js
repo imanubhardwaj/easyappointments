@@ -211,6 +211,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                             'notes': postData.post_data.appointment.notes
                         };
                     }
+                    const dateTime = new Date().toISOString().replace('T', ' ').replace('Z', '');
                     let event = {
                         'cta_data': {
                             customer: postData.post_data.customer,
@@ -219,7 +220,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         'video_id': video_id,
                         'viewer_id': postData.post_data.customer.first_name + ' ' + postData.post_data.customer.last_name,
                         'email_id': email_id,
-                        'time': new Date(),
+                        'time': dateTime,
                         'cta_type': 8
                     };
                     if(selectedService) {
@@ -246,8 +247,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 }
 
                 syncData();
-                window.location.href = GlobalVariables.baseUrl
-                    + '/index.php/appointments/book_success/' + response.appointment_id;
+                const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
+                window.location.href = user_id ? url + '?user_id=' + user_id : url;
             })
             .fail(function (jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
