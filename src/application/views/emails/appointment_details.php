@@ -55,20 +55,26 @@
         </tr>
         <tr>
             <td colspan="3">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outlook.com_icon.svg/2000px-Outlook.com_icon.svg.png" style="width: 30px;height: 30px">
-                <p>$outlook_url</p>
+                <a href="$outlook_url">
+                    <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outlook.com_icon.svg/2000px-Outlook.com_icon.svg.png" style="width: 30px;height: 30px;margin-right: 10px">
+                <span>Add to Outlook Calendar</span>
+                </a>
             </td>
         </tr>
         <tr>
             <td colspan="3">
-                <img src="http://www.stickpng.com/assets/images/5847f9cbcef1014c0b5e48c8.png" style="width: 30px;height: 30px">
-                <p>$google_url</p>
+                <a href="$google_url">
+                    <img align="http://www.stickpng.com/assets/images/5847f9cbcef1014c0b5e48c8.png" style="width: 30px;height: 30px;margin-right: 10px">
+                    <span>Add to Google Calendar</span>
+                </a>
             </td>
         </tr>
         <tr>
             <td colspan="3">
-                <img src="https://image.flaticon.com/icons/png/512/14/14288.png" style="width: 30px;height: 30px">
-                <p>$yahoo_url</p>
+                <a href="$yahoo_url">
+                    <img align="center" src="https://image.flaticon.com/icons/png/512/14/14288.png" style="width: 30px;height: 30px;margin-right: 10px">
+                    <span>Add to Yahoo Calendar</span>
+                </a>
             </td>
         </tr>
         <tr>
