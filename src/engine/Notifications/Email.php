@@ -139,6 +139,7 @@ class Email {
             '$email_title' => $title->get(),
             '$email_message' => $message->get(),
             '$appointment_service' => $service['name'],
+            '$appointment_service_type' => $service['type'],
             '$appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
             '$appointment_start_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
             '$appointment_end_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['end_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
