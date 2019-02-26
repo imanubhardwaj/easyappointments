@@ -155,9 +155,9 @@ class Email {
             '$customer_email' => $customer['email'],
             '$customer_phone' => $customer['phone_number'],
             '$customer_address' => $customer['address'],
-            '$outlook_url' => 'https://outlook.live.com/owa/?path=/calendar/view/Month&startdt='.$this->getFormattedTime($appointment['start_datetime']).'&enddt='.$this->getFormattedTime($appointment['end_datetime']).'&subject='.$service['name'],
-            '$google_url' => 'https://calendar.google.com/calendar/r/eventedit?text='.$service['name'].'&dates='.$this->getFormattedTime($appointment['start_datetime']).'/'.$this->getFormattedTime($appointment['end_datetime']).'&location='.$service['location'],
-            '$yahoo_url' => 'https://calendar.yahoo.com/?v=60&st='.$this->getFormattedTime($appointment['start_datetime']).'&et='.$this->getFormattedTime($appointment['end_datetime']).'&title='.$service['name'].'&in_loc='.$service['location'],
+            '$outlook_url' => 'https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent&startdt='.$this->getFormattedTime($appointment['start_datetime']).'Z'.'&enddt='.$this->getFormattedTime($appointment['end_datetime']).'Z'.'&subject='.str_replace(' ', '+', $service['name']).'&location='.str_replace(' ', '+', $service['location']),
+            '$google_url' => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='.str_replace(' ', '+', $service['name']).'&dates='.$this->getFormattedTime($appointment['start_datetime']).'Z'.'/'.$this->getFormattedTime($appointment['end_datetime']).'Z'.'&location='.str_replace(' ', '+', $service['location']),
+            '$yahoo_url' => 'https://calendar.yahoo.com/?v=60&st='.$this->getFormattedTime($appointment['start_datetime']).'Z'.'&et='.$this->getFormattedTime($appointment['end_datetime']).'Z'.'&title='.str_replace(' ', '+', $service['name']).'&in_loc='.str_replace(' ', '+', $service['location']),
 
             // Translations
             'Appointment Details' => $this->framework->lang->line('appointment_details_title'),
