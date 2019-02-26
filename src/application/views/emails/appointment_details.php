@@ -57,16 +57,26 @@
             <td colspan="3">
                 <a href="$outlook_url">
                     <img align="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Outlook.com_icon.svg/2000px-Outlook.com_icon.svg.png" style="width: 30px;height: 30px;margin-right: 10px">
-                <span>Add to Outlook Calendar</span>
+                    <span>Add to Outlook Calendar</span>
                 </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>&nbsp;</div>
             </td>
         </tr>
         <tr>
             <td colspan="3">
                 <a href="$google_url">
-                    <img align="http://www.stickpng.com/assets/images/5847f9cbcef1014c0b5e48c8.png" style="width: 30px;height: 30px;margin-right: 10px">
+                    <img align="center" src="http://www.stickpng.com/assets/images/5847f9cbcef1014c0b5e48c8.png" style="width: 30px;height: 30px;margin-right: 10px">
                     <span>Add to Google Calendar</span>
                 </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>&nbsp;</div>
             </td>
         </tr>
         <tr>
