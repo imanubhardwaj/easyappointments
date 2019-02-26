@@ -45,6 +45,7 @@ body {
 #book-appointment-wizard #header {
     padding: 5px;
     height: 90px;
+    min-height: fit-content;
     background: #3498db;
     display: flex;
     align-items: center;
