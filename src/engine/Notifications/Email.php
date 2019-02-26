@@ -105,7 +105,8 @@ class Email {
         Text $message,
         Url $appointmentLink,
         EmailAddress $recipientEmail,
-        Text $icsStream
+        Text $icsStream,
+        $isCustomer = true
     ) {
         switch ($company['date_format'])
         {
@@ -140,12 +141,16 @@ class Email {
             '$email_message' => $message->get(),
             '$appointment_service' => $service['name'],
             '$appointment_service_type' => $service['type'],
+            '$logo_display' => $service['logo'] ? '': 'none',
+            '$logo_url' => $service['logo'],
+            '$user_type' => $isCustomer ? 'Your' : 'Customer',
             '$appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
             '$appointment_start_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
             '$appointment_end_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['end_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
             '$appointment_link' => $appointmentLink->get(),
             '$company_link' => $company['company_link'],
             '$company_name' => $company['company_name'],
+            '$user_name' => $isCustomer ? $customer['first_name'] . ' ' . $customer['last_name'] : $provider['first_name'] . ' ' . $provider['last_name'],
             '$customer_name' => $customer['first_name'] . ' ' . $customer['last_name'],
             '$customer_email' => $customer['email'],
             '$customer_phone' => $customer['phone_number'],

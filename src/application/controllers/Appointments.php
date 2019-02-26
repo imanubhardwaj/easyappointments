@@ -547,9 +547,9 @@ class Appointments extends CI_Controller {
                 if ($post_data['manage_mode'] == FALSE)
                 {
                     $customer_title = new Text($this->lang->line('appointment_booked'));
-                    $customer_message = new Text($this->lang->line('thank_you_for_appointment'));
+                    $customer_message = new Text('Your appointment with ' . $provider['first_name'] . ' ' . $provider['last_name'] .' is confirmed. Please check below for more details.');
                     $provider_title = new Text($this->lang->line('appointment_added_to_your_plan'));
-                    $provider_message = new Text($this->lang->line('appointment_link_description'));
+                    $provider_message = new Text($customer['first_name'] . ' ' . $customer['last_name'] . ' has booked an appointment for '. $service['name']. '.');
 
                 }
                 else
@@ -573,7 +573,7 @@ class Appointments extends CI_Controller {
 //                {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $customer_title,
-                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream));
+                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
 //                }
 
                 $send_provider = filter_var($this->providers_model->get_setting('notifications', $provider['id']),
@@ -583,7 +583,7 @@ class Appointments extends CI_Controller {
 //                {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $provider_title,
-                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
+                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
 //                }
             }
             catch (Exception $exc)
