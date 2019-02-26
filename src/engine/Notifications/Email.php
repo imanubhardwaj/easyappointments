@@ -155,6 +155,9 @@ class Email {
             '$customer_email' => $customer['email'],
             '$customer_phone' => $customer['phone_number'],
             '$customer_address' => $customer['address'],
+            '$outlook_url' => 'https://outlook.live.com/owa/?path=/calendar/view/Month&startdt='.$this->getFormattedTime($appointment['start_datetime']).'&enddt='.$this->getFormattedTime($appointment['end_datetime']).'&subject='.$service['name'],
+            '$google_url' => 'https://calendar.google.com/calendar/r/eventedit?text='.$service['name'].'&dates='.$this->getFormattedTime($appointment['start_datetime']).'/'.$this->getFormattedTime($appointment['end_datetime']).'&location='.$service['location'],
+            '$yahoo_url' => 'https://calendar.yahoo.com/?v=60&st='.$this->getFormattedTime($appointment['start_datetime']).'&et='.$this->getFormattedTime($appointment['end_datetime']).'&title='.$service['name'].'&in_loc='.$service['location'],
 
             // Translations
             'Appointment Details' => $this->framework->lang->line('appointment_details_title'),
@@ -787,5 +790,9 @@ class Email {
                 return $zone;
             }
         }
+    }
+
+    function getFormattedTime($dateTime) {
+        return str_replace(' ', 'T', str_replace(':', '', str_replace('-', '', $dateTime)));
     }
 }
