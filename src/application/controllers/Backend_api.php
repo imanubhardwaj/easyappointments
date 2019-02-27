@@ -333,13 +333,13 @@ class Backend_api extends CI_Controller {
                 if ((bool)$send_customer === TRUE) {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $customer_title,
-                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream));
+                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
                 }
 
                 if ($send_provider == TRUE) {
                     $email->sendAppointmentDetails($appointment, $provider,
                         $service, $customer, $company_settings, $provider_title,
-                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
+                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
                 }
 
             } catch (Exception $exc) {
@@ -434,7 +434,7 @@ class Backend_api extends CI_Controller {
                 if ((bool)$send_provider === TRUE) {
                     $email->sendDeleteAppointment($appointment, $provider,
                         $service, $customer, $company_settings, new Email($provider['email']),
-                        new Text($this->input->post('delete_reason')));
+                        new Text($this->input->post('delete_reason')), false);
                 }
 
                 $send_customer = $this->settings_model->get_setting('customer_notifications');
@@ -442,7 +442,7 @@ class Backend_api extends CI_Controller {
                 if ((bool)$send_customer === TRUE) {
                     $email->sendDeleteAppointment($appointment, $provider,
                         $service, $customer, $company_settings, new Email($customer['email']),
-                        new Text($this->input->post('delete_reason')));
+                        new Text($this->input->post('delete_reason')), true);
                 }
             } catch (Exception $exc) {
                 $warnings[] = exceptionToJavaScript($exc);

@@ -244,22 +244,22 @@ class Appointments extends CI_Controller {
                 $send_provider = filter_var($this->providers_model
                     ->get_setting('notifications', $provider['id']), FILTER_VALIDATE_BOOLEAN);
 
-                if ($send_provider === TRUE)
-                {
+//                if ($send_provider === TRUE)
+//                {
                     $email->sendDeleteAppointment($appointment, $provider,
                         $service, $customer, $company_settings, new Email($provider['email']),
-                        new Text($this->input->post('cancel_reason')));
-                }
+                        new Text($this->input->post('cancel_reason')), false);
+//                }
 
                 $send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
                     FILTER_VALIDATE_BOOLEAN);
 
-                if ($send_customer === TRUE)
-                {
+//                if ($send_customer === TRUE)
+//                {
                     $email->sendDeleteAppointment($appointment, $provider,
                         $service, $customer, $company_settings, new Email($customer['email']),
-                        new Text($this->input->post('cancel_reason')));
-                }
+                        new Text($this->input->post('cancel_reason')), true);
+//                }
 
             }
             catch (Exception $exc)
@@ -571,9 +571,9 @@ class Appointments extends CI_Controller {
 
 //                if ($send_customer === TRUE)
 //                {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $customer_title,
-                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
+                $email->sendAppointmentDetails($appointment, $provider,
+                    $service, $customer, $company_settings, $customer_title,
+                    $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
 //                }
 
                 $send_provider = filter_var($this->providers_model->get_setting('notifications', $provider['id']),
@@ -581,9 +581,9 @@ class Appointments extends CI_Controller {
 
 //                if ($send_provider === TRUE)
 //                {
-                    $email->sendAppointmentDetails($appointment, $provider,
-                        $service, $customer, $company_settings, $provider_title,
-                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
+                $email->sendAppointmentDetails($appointment, $provider,
+                    $service, $customer, $company_settings, $provider_title,
+                    $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
 //                }
             }
             catch (Exception $exc)

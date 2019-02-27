@@ -218,7 +218,8 @@ class Email {
         array $customer,
         array $company,
         EmailAddress $recipientEmail,
-        Text $reason
+        Text $reason,
+        $isCustomer = true
     ) {
         switch ($company['date_format'])
         {
@@ -253,8 +254,14 @@ class Email {
             '$email_title' => $this->framework->lang->line('appointment_cancelled_title'),
             '$email_message' => $this->framework->lang->line('appointment_removed_from_schedule'),
             '$appointment_service' => $service['name'],
+            '$logo_display' => $service['logo'] ? '': 'none',
+            '$logo_url' => $service['logo'],
+            '$user_name' => $isCustomer ? $customer['first_name'] . ' ' . $customer['last_name'] : $provider['first_name'] . ' ' . $provider['last_name'],
+            '$user_type' => $isCustomer ? 'Your' : 'Customer',
+            '$show_reason' => $reason->get() ? '' : 'none',
             '$appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
-            '$appointment_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
+            '$appointment_start_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
+            '$appointment_end_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['end_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
             '$appointment_duration' => $service['duration'] . ' ' . $this->framework->lang->line('minutes'),
             '$company_link' => $company['company_link'],
             '$company_name' => $company['company_name'],
