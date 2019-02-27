@@ -311,10 +311,10 @@ class Backend_api extends CI_Controller {
                     ->get_setting('notifications', $provider['id']);
 
                 if (!$manage_mode) {
-                    $customer_title   = new Text($this->lang->line('appointment_booked'));
-                    $customer_message = new Text($this->lang->line('thank_you_for_appointment'));
-                    $provider_title   = new Text($this->lang->line('appointment_added_to_your_plan'));
-                    $provider_message = new Text($this->lang->line('appointment_link_description'));
+                    $customer_title = new Text($this->lang->line('appointment_booked'));
+                    $customer_message = new Text('Your appointment with ' . $provider['first_name'] . ' ' . $provider['last_name'] .' is confirmed. Please check below for more details.');
+                    $provider_title = new Text($this->lang->line('appointment_added_to_your_plan'));
+                    $provider_message = new Text($customer['first_name'] . ' ' . $customer['last_name'] . ' has booked an appointment for '. $service['name']. '.');
                 } else {
                     $customer_title   = new Text($this->lang->line('appointment_changes_saved'));
                     $customer_message = new Text('');
