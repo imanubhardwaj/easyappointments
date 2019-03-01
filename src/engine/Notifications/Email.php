@@ -367,7 +367,7 @@ class Email {
     }
 
     function manage_timezone($time, $timezone) {
-        $offset = substr($timezone, 1);
+        $offset = substr($timezone, -5);
         return substr($timezone, 0, 1) === '+' ? $this->addTime($time, $offset) : $this->diff($time, $offset);
     }
 
