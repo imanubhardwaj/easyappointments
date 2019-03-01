@@ -555,8 +555,12 @@ class Appointments_Model extends CI_Model {
         // Fetch provider's appointments that belong to the sync time period.
         $sync_past_days = Config::SYNC_PAST_DAYS;
         $sync_future_days = Config::SYNC_FUTURE_DAYS;
+        $google_past_days = Config::SYNC_GOOGLE_PAST_DAYS;
+        $google_future_days = Config::SYNC_GOOGLE_FUTURE_DAYS;
         $start = strtotime('-' . $sync_past_days . ' days', strtotime(date('Y-m-d')));
         $end = strtotime('+' . $sync_future_days . ' days', strtotime(date('Y-m-d')));
+        $google_start = strtotime('-' . $google_past_days . ' days', strtotime(date('Y-m-d')));
+        $google_end = strtotime('+' . $google_future_days . ' days', strtotime(date('Y-m-d')));
 
         $where_clause = [
             'start_datetime >=' => date('Y-m-d H:i:s', $start),
@@ -637,7 +641,7 @@ class Appointments_Model extends CI_Model {
 
         // :: ADD GCAL EVENTS THAT ARE NOT PRESENT ON E!A
         $google_calendar = $provider['settings']['google_calendar'];
-        $events = $this->google_sync->get_sync_events($google_calendar, $start, $end);
+        $events = $this->google_sync->get_sync_events($google_calendar, $google_start, $google_end);
 
         foreach ($events->getItems() as $event)
         {
