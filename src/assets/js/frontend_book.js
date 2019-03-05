@@ -424,7 +424,7 @@ window.FrontendBook = window.FrontendBook || {};
 
             var zipCodeRegex = /^\d{5}-\d{4}|\d{5}|[A-Z]\d[A-Z] \d[A-Z]\d$/;
             var phoneNumberRegex = /^[0-9]{7,13}$/;
-            var cityRegex = /^[A-Za-z]+$/;
+            var cityRegex = /^[a-zA-Z.-]+(?:[\s-][\/a-zA-Z.]+)*$/;
             const zipCode = $('#zip-code').val();
             const phoneNumber = $('#phone-number').val();
             const city = $('#city').val();
@@ -435,6 +435,10 @@ window.FrontendBook = window.FrontendBook || {};
             if (!phoneNumberRegex.test(phoneNumber))
             {
                 throw 'Invalid Phone Number';
+            }
+            if (!cityRegex.test(city))
+            {
+                throw 'Invalid City Name';
             }
 
             var $acceptToTermsAndConditions = $('#accept-to-terms-and-conditions');
