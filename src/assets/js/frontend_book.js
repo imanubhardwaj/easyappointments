@@ -436,10 +436,6 @@ window.FrontendBook = window.FrontendBook || {};
             {
                 throw 'Invalid Phone Number';
             }
-            if (!cityRegex.test(city))
-            {
-                throw 'Invalid City Name';
-            }
 
             var $acceptToTermsAndConditions = $('#accept-to-terms-and-conditions');
             if ($acceptToTermsAndConditions.length && !$acceptToTermsAndConditions.prop('checked')) {
