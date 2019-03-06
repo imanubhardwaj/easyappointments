@@ -428,10 +428,6 @@ window.FrontendBook = window.FrontendBook || {};
             const zipCode = $('#zip-code').val();
             const phoneNumber = $('#phone-number').val();
             const city = $('#city').val();
-            if (!zipCodeRegex.test(zipCode))
-            {
-                throw 'Invalid Zip Code';
-            }
             if (!phoneNumberRegex.test(phoneNumber))
             {
                 throw 'Invalid Phone Number';
