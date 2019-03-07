@@ -626,7 +626,7 @@ class Appointments_Model extends CI_Model {
 
                     if ($is_different)
                     {
-                        if($event_start && $event_end) {
+                        if($event_start && $event_end && $event_start !== $event_end) {
                             $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
                             $appointment['end_datetime']   = date('Y-m-d H:i:s', $event_end);
                             $this->appointments_model->add($appointment);
@@ -649,7 +649,7 @@ class Appointments_Model extends CI_Model {
 
         foreach ($events->getItems() as $event)
         {
-            if($event->start && $event->end) {
+            if($event->start && $event->end && $event->start !== $event->end) {
                 $results    = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
                 $start_time = $this->remove_time_offset($event->start->getDateTime());
                 $end_time   = $this->remove_time_offset($event->end->getDateTime());
