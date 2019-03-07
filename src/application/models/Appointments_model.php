@@ -626,9 +626,11 @@ class Appointments_Model extends CI_Model {
 
                     if ($is_different)
                     {
-                        $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
-                        $appointment['end_datetime'] = date('Y-m-d H:i:s', $event_end);
-                        $this->appointments_model->add($appointment);
+                        if($event_start && $event_end) {
+                            $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
+                            $appointment['end_datetime']   = date('Y-m-d H:i:s', $event_end);
+                            $this->appointments_model->add($appointment);
+                        }
                     }
 
                 }
