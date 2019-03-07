@@ -243,6 +243,9 @@ class User extends CI_Controller {
                     $this->appointments_model->syncEvents((int) $user_id->id);
                 }
             }
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(AJAX_SUCCESS));
         }
         catch (Exception $exc)
         {
