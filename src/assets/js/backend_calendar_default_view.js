@@ -263,6 +263,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
         var html;
         var displayEdit;
         var displayDelete;
+        console.log(event);
 
         // Depending where the user clicked the event (title or empty space) we
         // need to use different selectors to reach the parent element.
@@ -288,11 +289,11 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 + '.popover-content button {margin-right: 10px;}'
                 + '.popover-content {word-wrap: break-word !important;}'
                 + '</style>' +
-                '<strong>' + EALang.start + '</strong> '
-                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
+                event.start ? '<strong>' + EALang.start + '</strong> '
+                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A') : ''
                 + '<br>' +
-                '<strong>' + EALang.end + '</strong> '
-                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
+                event.end ? '<strong>' + EALang.end + '</strong> '
+                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A') : ''
                 + '<br>'
                 + notes
                 + '<hr>' +
@@ -313,11 +314,11 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 + '.popover-content button {margin-right: 10px;}'
                 + '.popover-content {word-wrap: break-word !important;}'
                 + '</style>' +
-                '<strong>' + EALang.start + '</strong> '
-                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
+                event.start ? '<strong>' + EALang.start + '</strong> '
+                + moment(event.start.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A') : ''
                 + '<br>' +
-                '<strong>' + EALang.end + '</strong> '
-                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A')
+                event.end ? '<strong>' + EALang.end + '</strong> '
+                + moment(event.end.format('YYYY-MM-DD HH:mm:ss')).format('YYYY-MMM-DD HH:mm A') : ''
                 + '<br>' +
                 '<strong>' + EALang.service + '</strong> '
                 + event.data.service.name
