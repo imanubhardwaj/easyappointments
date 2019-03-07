@@ -614,18 +614,25 @@ class Appointments_Model extends CI_Model {
                     $is_different = FALSE;
                     $appt_start = strtotime($appointment['start_datetime']);
                     $appt_end = strtotime($appointment['end_datetime']);
-                    $event_start = strtotime($this->remove_time_offset($google_event->getStart()->getDateTime()));
-                    $event_end = strtotime($this->remove_time_offset($google_event->getEnd()->getDateTime()));
-
-                    if ($appt_start != $event_start || $appt_end != $event_end)
-                    {
-                        $is_different = TRUE;
+                    if($google_event->getStart()) {
+                        $event_start = strtotime($this->remove_time_offset($google_event->getStart()->getDateTime()));
+                    }
+                    if($google_event->getEnd()) {
+                        $event_end = strtotime($this->remove_time_offset($google_event->getEnd()->getDateTime()));
                     }
 
-                    if ($is_different)
-                    {
-                        $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
-                        $appointment['end_datetime'] = date('Y-m-d H:i:s', $event_end);
+                    if($event_start && $event_end) {
+
+                        if ($appt_start != $event_start || $appt_end != $event_end) {
+                            $is_different = TRUE;
+                        }
+
+                        if ($is_different) {
+                            $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
+                            $appointment['end_datetime']   = date('Y-m-d H:i:s', $event_end);
+                            $this->appointments_model->add($appointment);
+                        }
+                    } else {
                         $this->appointments_model->add($appointment);
                     }
 
