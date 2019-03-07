@@ -231,16 +231,7 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-6">
-                                <div style="display: flex; justify-content: space-around">
-                                    <div>
-                                        <label for="available-hours">Select hour</label>
-                                        <select id="available-hours"></select>
-                                    </div>
-                                    <div>
-                                        <label for="available-minutes">Select minute</label>
-                                        <select id="available-minutes"></select>
-                                    </div>
-                                </div>
+                                <div id="available-hours" style="display: flex; white-space: pre-wrap"></div>
                             </div>
                         </div>
                     </div>
