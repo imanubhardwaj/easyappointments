@@ -614,20 +614,20 @@ class Appointments_Model extends CI_Model {
                     $is_different = FALSE;
                     $appt_start = strtotime($appointment['start_datetime']);
                     $appt_end = strtotime($appointment['end_datetime']);
-                    if($google_event->getStart()) {
+                    try {
                         $event_start = strtotime($this->remove_time_offset($google_event->getStart()->getDateTime()));
-                    }
-                    if($google_event->getEnd()) {
-                        $event_end = strtotime($this->remove_time_offset($google_event->getEnd()->getDateTime()));
-                    }
+                        $event_end   = strtotime($this->remove_time_offset($google_event->getEnd()->getDateTime()));
+                    } catch (Exception $e) {}
 
-                    if ($appt_start != $event_start || $appt_end != $event_end) {
+                    if ($appt_start != $event_start || $appt_end != $event_end)
+                    {
                         $is_different = TRUE;
                     }
 
-                    if ($is_different) {
-                        $appointment['start_datetime'] = $event_start ? date('Y-m-d H:i:s', $event_start) : null;
-                        $appointment['end_datetime']   = $event_end ? date('Y-m-d H:i:s', $event_end) : null;
+                    if ($is_different)
+                    {
+                        $appointment['start_datetime'] = date('Y-m-d H:i:s', $event_start);
+                        $appointment['end_datetime'] = date('Y-m-d H:i:s', $event_end);
                         $this->appointments_model->add($appointment);
                     }
 
@@ -647,29 +647,24 @@ class Appointments_Model extends CI_Model {
 
         foreach ($events->getItems() as $event)
         {
-            $results = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
-            if($event->start) {
+            if($event->start && $event->end) {
+                $results    = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
                 $start_time = $this->remove_time_offset($event->start->getDateTime());
-            }
-            if($event->end) {
-                $end_time = $this->remove_time_offset($event->end->getDateTime());
-            }
-
-
-            if (count($results) == 0)
-            {
-                // Record doesn't exist in E!A, so add the event now.
-                $appointment = [
-                    'start_datetime' => ($start_time ? date('Y-m-d H:i:s', strtotime($start_time)) : null),
-                    'end_datetime' => ($end_time ? date('Y-m-d H:i:s', strtotime($end_time)) : null),
-                    'is_unavailable' => TRUE,
-                    'notes' => $event->getSummary() . ' ' . $event->getDescription(),
-                    'id_users_provider' => $provider_id,
-                    'id_google_calendar' => $event->getId(),
-                    'id_users_customer' => NULL,
-                    'id_services' => NULL,
-                ];
-                $this->appointments_model->add($appointment);
+                $end_time   = $this->remove_time_offset($event->end->getDateTime());
+                if (count($results) == 0) {
+                    // Record doesn't exist in E!A, so add the event now.
+                    $appointment = [
+                        'start_datetime'     => date('Y-m-d H:i:s', strtotime($start_time)),
+                        'end_datetime'       => date('Y-m-d H:i:s', strtotime($end_time)),
+                        'is_unavailable'     => TRUE,
+                        'notes'              => $event->getSummary() . ' ' . $event->getDescription(),
+                        'id_users_provider'  => $provider_id,
+                        'id_google_calendar' => $event->getId(),
+                        'id_users_customer'  => NULL,
+                        'id_services'        => NULL,
+                    ];
+                    $this->appointments_model->add($appointment);
+                }
             }
         }
     }
