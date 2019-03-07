@@ -256,4 +256,78 @@ class User extends CI_Controller {
     public function clearLoginCodes() {
         $this->user_model->remove_previous_login_codes();
     }
+
+    public function gcd($provider_id) {
+        $this->load->model('appointments_model');
+        $this->load->model('providers_model');
+        $this->load->model('services_model');
+        $this->load->model('customers_model');
+        $this->load->model('settings_model');
+
+        $provider = $this->providers_model->get_row($provider_id);
+
+        $google_sync = $this->providers_model->get_setting('google_sync', $provider['id']);
+
+        if ( ! $google_sync)
+        {
+            throw new Exception('The selected provider has not the google synchronization setting enabled.');
+        }
+
+        $google_token = json_decode($this->providers_model->get_setting('google_token', $provider['id']));
+        $this->load->library('google_sync');
+        $this->google_sync->refresh_token($google_token->refresh_token);
+
+        $google_past_days = Config::SYNC_GOOGLE_PAST_DAYS;
+        $google_future_days = Config::SYNC_GOOGLE_FUTURE_DAYS;
+        $google_start = strtotime('-' . $google_past_days . ' days', strtotime(date('Y-m-d')));
+        $google_end = strtotime('+' . $google_future_days . ' days', strtotime(date('Y-m-d')));
+
+        $abc = [];
+
+        $google_calendar = $provider['settings']['google_calendar'];
+        $events = $this->google_sync->get_sync_events($google_calendar, $google_start, $google_end);
+
+        foreach ($events->getItems() as $event)
+        {
+            $results = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
+            $start_time = $this->remove_time_offset($event->start->getDateTime());
+            $end_time = $this->remove_time_offset($event->end->getDateTime());
+            if (count($results) == 0)
+            {
+                $appointment = [
+                    'start_datetime' => date('Y-m-d H:i:s', strtotime($start_time)),
+                    'end_datetime' => date('Y-m-d H:i:s', strtotime($end_time)),
+                    'is_unavailable' => TRUE,
+                    'notes' => $event->getSummary() . ' ' . $event->getDescription(),
+                    'id_users_provider' => $provider_id,
+                    'id_google_calendar' => $event->getId(),
+                    'id_users_customer' => NULL,
+                    'id_services' => NULL,
+                ];
+                $abc[] = $appointment;
+            }
+        }
+        var_dump($abc);
+    }
+
+    function remove_time_offset($time) {
+        $offset = substr($time, -5);
+        return substr($time, -6, 1) === '-' ? $this->addTime($time, $offset) : $this->diff($time, $offset);
+    }
+
+    public function addTime($event_time, $time_offset) {
+        $t1 = new DateTime($event_time);
+        $t2 = new DateTime($time_offset);
+        $start_of_time = new DateTime('00:00:00');
+        $diff = $start_of_time->diff($t2) ;
+        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
+    }
+
+    public function diff($event_time, $time_offset) {
+        $t1 = new DateTime($event_time);
+        $t2 = new DateTime($time_offset);
+        $start_of_time = new DateTime('00:00:00');
+        $diff = $t2->diff($start_of_time) ;
+        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
+    }
 }
