@@ -287,25 +287,20 @@ class User extends CI_Controller {
         $google_calendar = $provider['settings']['google_calendar'];
         $events = $this->google_sync->get_sync_events($google_calendar, $google_start, $google_end);
 
-        foreach ($events->getItems() as $event)
-        {
-            $results = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
-            $start_time = $this->remove_time_offset($event->start->getDateTime());
-            $end_time = $this->remove_time_offset($event->end->getDateTime());
-            if (count($results) == 0)
-            {
-                $appointment = [
-                    'start_datetime' => date('Y-m-d H:i:s', strtotime($start_time)),
-                    'end_datetime' => date('Y-m-d H:i:s', strtotime($end_time)),
-                    'is_unavailable' => TRUE,
-                    'notes' => $event->getSummary() . ' ' . $event->getDescription(),
-                    'id_users_provider' => $provider_id,
-                    'id_google_calendar' => $event->getId(),
-                    'id_users_customer' => NULL,
-                    'id_services' => NULL,
-                ];
-                $abc[] = $appointment;
-            }
+        foreach ($events->getItems() as $event) {
+            $start_time  = $this->remove_time_offset($event->start->getDateTime());
+            $end_time    = $this->remove_time_offset($event->end->getDateTime());
+            $appointment = [
+                'start_datetime'     => date('Y-m-d H:i:s', strtotime($start_time)),
+                'end_datetime'       => date('Y-m-d H:i:s', strtotime($end_time)),
+                'is_unavailable'     => TRUE,
+                'notes'              => $event->getSummary() . ' ' . $event->getDescription(),
+                'id_users_provider'  => $provider_id,
+                'id_google_calendar' => $event->getId(),
+                'id_users_customer'  => NULL,
+                'id_services'        => NULL,
+            ];
+            $abc[]       = $appointment;
         }
         var_dump($abc);
     }
