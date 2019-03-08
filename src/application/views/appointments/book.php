@@ -231,7 +231,18 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-6">
-                                <div id="available-hours" style="display: flex; white-space: pre-wrap"></div>
+                                <div id="no-time">No time slots available for this day. Please select a different date.</div>
+                                <div class="f-row" style="justify-content: space-around" id="time-select">
+                                    <div class="f-col">
+                                        <label for="available-hours">Select hour</label>
+                                        <select id="available-hours"></select>
+                                    </div>
+                                    <div class="f-col" id="minutes-select">
+                                        <label for="available-minutes">Select minute</label>
+                                        <select id="available-minutes"></select>
+                                    </div>
+                                    <div id="no-minutes">No time slots available for this hour. Please select a different hour.</div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -430,3 +430,13 @@ body {
         height: 100%;
     }
 }
+.f-col {
+    display: flex;
+    flex-direction: column;
+}
+.f-row {
+    display: flex;
+}
+select:focus {
+    outline: none;
+}
