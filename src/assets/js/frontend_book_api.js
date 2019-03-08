@@ -138,7 +138,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 .remove()
                 .end();
             hours[+value].forEach(min => {
-                const option = '<option value="' + min + '">' + min + '</option>';
+                const minute = moment(min, 'm').format('mm');
+                const option = '<option value="' + minute + '">' + minute + '</option>';
                 $('#available-minutes').append(option);
             });
         } else {
