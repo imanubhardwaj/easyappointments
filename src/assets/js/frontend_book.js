@@ -220,13 +220,7 @@ window.FrontendBook = window.FrontendBook || {};
             // If we are on the 2nd tab then the user should have an appointment hour
             // selected.
             if ($(this).attr('data-step_index') === '2') {
-                if ($('.selected-hour').length == 0) {
-                    if ($('#select-hour-prompt').length == 0) {
-                        $('#available-hours').append('<br><br>'
-                            + '<span id="select-hour-prompt" class="text-danger">'
-                            + EALang.appointment_hour_missing
-                            + '</span>');
-                    }
+                if (!$('#available-hours').val() || !$('#available-minutes').val()) {
                     return;
                 }
             }
@@ -464,9 +458,6 @@ window.FrontendBook = window.FrontendBook || {};
      * customer settings and input for the appointment booking.
      */
     exports.updateConfirmFrame = function () {
-        if ($('.selected-hour').text() === '') {
-            return;
-        }
 
         // Appointment Details
         var selectedDate = $('#select-date').datepicker('getDate');
@@ -500,7 +491,7 @@ window.FrontendBook = window.FrontendBook || {};
             '<p>'
             + '<strong class="text-primary">'
             + selectedProvider['first_name'] + ' ' + selectedProvider['last_name'] + '<br>'
-            + moment($('#select-date').datepicker('getDate'), 'YYYY/MM/DD').format('YYYY-MMM-DD') + ' ' + $('.selected-hour').text() + '<br>'
+            + moment($('#select-date').datepicker('getDate'), 'YYYY/MM/DD').format('YYYY-MMM-DD') + ' ' + moment($('#available-hours').val() + ':'+$('#available-minutes').val() + ':00', 'h:mm').format('h:mm A') + '<br>'
             + servicePrice
             + serviceDuration + '<br>'
             + serviceType
@@ -548,16 +539,18 @@ window.FrontendBook = window.FrontendBook || {};
             zip_code: $('#zip-code').val()
         };
 
-        postData.appointment = {
-            start_datetime: getUTCString($('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
-                + ' ' + Date.parse($('#available-hours').val() + ':'+$('#available-minutes').val()).toString('HH:mm') + ':00'),
-            end_datetime: getUTCString(_calcEndDatetime()),
-            notes: $('#notes').val(),
-            is_unavailable: false,
-            id_users_provider: selectedProvider['id'],
-            id_services: selectedService['id'],
-            location: selectedService['location']
-        };
+        if($('#available-hours').val() && $('#available-minutes').val()) {
+            postData.appointment = {
+                start_datetime: getUTCString($('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
+                    + ' ' + $('#available-hours').val() + ':' + $('#available-minutes').val() + ':00'),
+                end_datetime: getUTCString(_calcEndDatetime()),
+                notes: $('#notes').val(),
+                is_unavailable: false,
+                id_users_provider: selectedProvider['id'],
+                id_services: selectedService['id'],
+                location: selectedService['location']
+            };
+        }
 
         postData.manage_mode = FrontendBook.manageMode;
 
@@ -592,7 +585,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         // Add the duration to the start datetime.
         var startDatetime = $('#select-date').datepicker('getDate').toString('dd-MM-yyyy')
-            + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm');
+            + ' ' + $('#available-hours').val() + ':'+$('#available-minutes').val();
         startDatetime = Date.parseExact(startDatetime, 'dd-MM-yyyy HH:mm');
         var endDatetime = undefined;
 
