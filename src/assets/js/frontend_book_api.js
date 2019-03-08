@@ -72,21 +72,23 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             // The response contains the available hours for the selected provider and
             // service. Fill the available hours div with response data.
             if (response.length > 0) {
-                var currColumn = 1;
-                $('#available-hours').html('<div style="width:80px"></div>');
-
+                $('#time-select').show();
+                $('#no-time').hide();
                 var timeFormat = GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm';
+                var availableHours = {};
 
                 $.each(response, function (index, availableHour) {
-                    if ((currColumn * 10) < (index + 1)) {
-                        currColumn++;
-                        $('#available-hours').append('<div style="width:80px"></div>');
-                    }
-
-                    $('#available-hours div:eq(' + (currColumn - 1) + ')').append(
-                        '<span class="available-hour">' + moment.utc(availableHour, 'HH:mm').local()
-                            .format('h:mm A') + '</span><br/>');
+                    const hour = moment.utc(availableHour, 'HH:mm').local().hour();
+                    const minute = moment.utc(availableHour, 'HH:mm').local().minute();
+                    availableHours = {
+                        ...availableHours,
+                        [hour]: [
+                            ...(availableHours[hour] ? availableHours[hour] : []),
+                            minute
+                        ]
+                    };
                 });
+                setSelectData(availableHours);
 
                 if (FrontendBook.manageMode) {
                     // Set the appointment's start time as the default selection.
@@ -104,10 +106,42 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 FrontendBook.updateConfirmFrame();
 
             } else {
-                $('#available-hours').text(EALang.no_available_hours);
+                $('#time-select').hide();
+                $('#no-time').show();
             }
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };
+
+    function setSelectData(hours) {
+        const select = $('#available-hours');
+        Object.keys(hours).forEach(hr => {
+            const option = '<option value="' + hr + '">' + hr + '</option>';
+            select.append(option);
+        });
+        select.change(function() {
+            setMinutesOptions(select, hours);
+        });
+        setMinutesOptions(select, hours);
+    }
+
+    function setMinutesOptions(select, hours) {
+        const value = select.val();
+        if(hours[+value] && hours[+value].length) {
+            $('#minutes-select').show();
+            $('#no-minutes').hide();
+            $('#available-minutes')
+                .find('option')
+                .remove()
+                .end();
+            hours[+value].forEach(min => {
+                const option = '<option value="' + min + '">' + min + '</option>';
+                $('#available-minutes').append(option);
+            });
+        } else {
+            $('#minutes-select').hide();
+            $('#no-minutes').show();
+        }
+    }
 
     function syncData() {
         const providerId = new URLSearchParams(location.href).get('providerId');

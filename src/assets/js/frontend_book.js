@@ -550,7 +550,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         postData.appointment = {
             start_datetime: getUTCString($('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
-                + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm') + ':00'),
+                + ' ' + Date.parse($('#available-hours').val() + ':'+$('#available-minutes').val()).toString('HH:mm') + ':00'),
             end_datetime: getUTCString(_calcEndDatetime()),
             notes: $('#notes').val(),
             is_unavailable: false,
