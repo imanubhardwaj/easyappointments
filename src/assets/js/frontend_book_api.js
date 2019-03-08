@@ -115,7 +115,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
     function setSelectData(hours) {
         const select = $('#available-hours');
         Object.keys(hours).forEach(hr => {
-            const option = '<option value="' + hr + '">' + hr + '</option>';
+            const option = '<option value="' + hr + '">' + moment(hr, 'h').format('h A') + '</option>';
             select.append(option);
         });
         select.change(function() {

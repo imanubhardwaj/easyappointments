@@ -1084,7 +1084,7 @@ class Appointments extends CI_Controller {
         {
             $start_hour = new DateTime($selected_date . ' ' . $period['start']);
             $end_hour = new DateTime($selected_date . ' ' . $period['end']);
-            $interval = $availabilities_type === AVAILABILITIES_TYPE_FIXED ? (int)$service_duration : 15;
+            $interval = $availabilities_type === AVAILABILITIES_TYPE_FIXED ? (int)$service_duration : 5;
 
             $current_hour = $start_hour;
             $diff = $current_hour->diff($end_hour);
