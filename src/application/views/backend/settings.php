@@ -334,7 +334,7 @@
                         </select>
                     </div>
 
-                    <button type="button" id="user-notifications" class="btn btn-default" data-toggle="button">
+                    <button type="button" id="user-notifications" class="btn btn-default hide" data-toggle="button">
                         <span class="glyphicon glyphicon-envelope"></span>
                         <?= lang('receive_notifications') ?>
                     </button>
