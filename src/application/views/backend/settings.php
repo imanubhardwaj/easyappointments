@@ -136,7 +136,7 @@
                             <div class="form-group">
                                 <label><?= lang('customer_notifications') ?></label>
                                 <br>
-                                <button type="button" id="customer-notifications" class="btn btn-default" data-toggle="button" aria-pressed="false">
+                                <button type="button" id="customer-notifications" class="btn btn-default hide" data-toggle="button" aria-pressed="false">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                     <?= lang('receive_notifications') ?>
                                 </button>
@@ -326,7 +326,7 @@
                         <input type="password" id="retype-password" class="form-control">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group hide">
                         <label for="calendar-view"><?= lang('calendar') ?> *</label>
                         <select id="calendar-view" class="form-control required">
                             <option value="default">Default</option>
