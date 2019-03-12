@@ -62,7 +62,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             service_duration: selServiceDuration,
             manage_mode: FrontendBook.manageMode,
             appointment_id: appointmentId,
-            timezone: selectedProvider['timezone']
+            timezone: moment().format('Z'),
+            time: moment().format('YYYY-MM-DD HH:mm:ss')
         };
 
         $.post(postUrl, postData, function (response) {
@@ -79,8 +80,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 var availableHours = {};
 
                 $.each(response, function (index, availableHour) {
-                    const hour = moment.utc(availableHour, 'HH:mm').local().hour();
-                    const minute = moment.utc(availableHour, 'HH:mm').local().minute();
+                    const hour = moment(availableHour, 'HH:mm').format('HH');
+                    const minute = moment(availableHour, 'HH:mm').format('mm');
                     availableHours = {
                         ...availableHours,
                         [hour]: [
@@ -119,10 +120,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             .find('option')
             .remove()
             .end();
-        Object.keys(hours).forEach(hr => {
-            const option = '<option value="' + hr + '">' + moment(hr, 'h').format('h A') + '</option>';
-            select.append(option);
-        });
+        Object.keys(hours).forEach(key => select.append(new Option(moment(key, 'HH').format('hh A'), key)));
         select.change(function() {
             setMinutesOptions(select, hours);
         });
@@ -131,17 +129,15 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
     function setMinutesOptions(select, hours) {
         const value = select.val();
-        if(hours[+value] && hours[+value].length) {
+        if(hours[value] && hours[value].length) {
             $('#minutes-select').show();
             $('#no-minutes').hide();
             $('#available-minutes')
                 .find('option')
                 .remove()
                 .end();
-            hours[+value].forEach(min => {
-                const minute = moment(min, 'm').format('mm');
-                const option = '<option value="' + minute + '">' + minute + '</option>';
-                $('#available-minutes').append(option);
+            hours[value].forEach(min => {
+                $('#available-minutes').append(new Option(min, min));
             });
         } else {
             $('#minutes-select').hide();
@@ -220,6 +216,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             .done(function (response) {
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     $('.captcha-title small').trigger('click');
+                    $('.command-buttons').show();
                     return false;
                 }
 
@@ -293,6 +290,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             .fail(function (jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
                 GeneralFunctions.ajaxFailureHandler(jqxhr, textStatus, errorThrown);
+                $('.command-buttons').show();
             })
             .always(function () {
                 $layer.remove();

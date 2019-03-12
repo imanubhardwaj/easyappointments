@@ -345,82 +345,38 @@ class Appointments extends CI_Controller {
      */
     public function ajax_get_available_hours()
     {
-        $this->load->model('providers_model');
-        $this->load->model('appointments_model');
-        $this->load->model('settings_model');
-        $this->load->model('services_model');
+        $currentDay = $this->input->post('selected_date');
+        if($currentDay) {
+            try {
+                $nextDay     = (new DateTime($currentDay . ' +1 day'))->format('Y-m-d');
+                $previousDay = (new DateTime($currentDay . ' -1 day'))->format('Y-m-d');
 
+            } catch (Exception $e) {
+            }
+        }
         try
         {
-            // Do not continue if there was no provider selected (more likely there is no provider in the system).
-            if (empty($this->input->post('provider_id')))
-            {
-                $this->output
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode([]));
-                return;
-            }
+            $previous_day_hours = $this->get_available_hours_for_day($previousDay, $this->input->post('provider_id'),
+                $this->input->post('manage_mode'), $this->input->post('appointment_id'),
+                $this->input->post('service_id'), $this->input->post('service_duration'));
 
-            // If manage mode is TRUE then the following we should not consider the selected
-            // appointment when calculating the available time periods of the provider.
-            $exclude_appointments = ($this->input->post('manage_mode') === 'true')
-                ? [$this->input->post('appointment_id')]
-                : [];
+            $available_hours = $this->get_available_hours_for_day($currentDay, $this->input->post('provider_id'),
+                $this->input->post('manage_mode'), $this->input->post('appointment_id'),
+                $this->input->post('service_id'), $this->input->post('service_duration'));
 
-            // If the user has selected the "any-provider" option then we will need to search
-            // for an available provider that will provide the requested service.
-            if ($this->input->post('provider_id') === ANY_PROVIDER)
-            {
-                $_POST['provider_id'] = $this->_search_any_provider($this->input->post('service_id'),
-                    $this->input->post('selected_date'));
-                if ($this->input->post('provider_id') === NULL)
-                {
-                    $this->output
-                        ->set_content_type('application/json')
-                        ->set_output(json_encode([]));
-                    return;
+            $next_day_hours = $this->get_available_hours_for_day($nextDay, $this->input->post('provider_id'),
+                $this->input->post('manage_mode'), $this->input->post('appointment_id'),
+                $this->input->post('service_id'), $this->input->post('service_duration'));
+
+            $hours = $this->process_hours($previousDay, $previous_day_hours, $currentDay, $available_hours,
+                $nextDay, $next_day_hours, $this->input->post('timezone'), (new DateTime($currentDay))->format('d'));
+
+            $available_hours = [];
+            foreach ($hours as $hour) {
+                if(new DateTime($currentDay.$hour.':00') > new DateTime($this->input->post('time'))) {
+                    array_push($available_hours, $hour);
                 }
             }
-
-            $service = $this->services_model->get_row($this->input->post('service_id'));
-            $provider = $this->providers_model->get_row($_POST['provider_id']);
-
-            $empty_periods = $this->_get_provider_available_time_periods($this->input->post('provider_id'),
-                $this->input->post('service_id'),
-                $this->input->post('selected_date'), $exclude_appointments);
-
-            $available_hours = $this->_calculate_available_hours($empty_periods, $this->input->post('selected_date'),
-                $this->input->post('service_duration'),
-                filter_var($this->input->post('manage_mode'), FILTER_VALIDATE_BOOLEAN),
-                $service['availabilities_type']);
-
-            if ($service['attendants_number'] > 1)
-            {
-                $available_hours = $this->_get_multiple_attendants_hours($this->input->post('selected_date'), $service,
-                    $provider);
-            }
-
-            // If the selected date is today, remove past hours. It is important  include the timeout before
-            // booking that is set in the back-office the system. Normally we might want the customer to book
-            // an appointment that is at least half or one hour from now. The setting is stored in minutes.
-            if (date('Y-m-d', strtotime($this->input->post('selected_date'))) === date('Y-m-d'))
-            {
-                $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
-
-                foreach ($available_hours as $index => $value)
-                {
-                    $available_hour = strtotime($value);
-                    $current_hour = strtotime('+' . $book_advance_timeout . ' minutes', strtotime('now'));
-                    if ($available_hour <= $current_hour)
-                    {
-                        unset($available_hours[$index]);
-                    }
-                }
-            }
-
-            $available_hours = array_values($available_hours);
-            sort($available_hours, SORT_STRING);
-            $available_hours = array_values($available_hours);
 
             $this->output
                 ->set_content_type('application/json')
@@ -512,7 +468,7 @@ class Appointments extends CI_Controller {
         $hours = [];
         foreach ($available_hours as $hour) {
             $localTime = $this->remove_time_offset($currentDate.' '.$hour.':00', $timezone);
-            $time = (new DateTime($localTime))->format('h:i');
+            $time = (new DateTime($localTime))->format('H:i');
             $day = (new DateTime($localTime))->format('d');
             if($day === $currentDay) {
                 array_push($hours, $time);
@@ -520,7 +476,7 @@ class Appointments extends CI_Controller {
         }
         foreach ($previous_day_hours as $hour) {
             $localTime = $this->remove_time_offset($prevDay.' '.$hour.':00', $timezone);
-            $time = (new DateTime($localTime))->format('h:i');
+            $time = (new DateTime($localTime))->format('H:i');
             $day = (new DateTime($localTime))->format('d');
             if($day === $currentDay) {
                 array_push($hours, $time);
@@ -528,7 +484,7 @@ class Appointments extends CI_Controller {
         }
         foreach ($next_day_hours as $hour) {
             $localTime = $this->remove_time_offset($nextDay.' '.$hour.':00', $timezone);
-            $time = (new DateTime($localTime))->format('h:i');
+            $time = (new DateTime($localTime))->format('H:i');
             $day = (new DateTime($localTime))->format('d');
             if($day === $currentDay) {
                 array_push($hours, $time);
@@ -548,7 +504,7 @@ class Appointments extends CI_Controller {
         $t2 = new DateTime($time_offset);
         $start_of_time = new DateTime('00:00:00');
         $diff = $start_of_time->diff($t2) ;
-        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
+        return str_replace('T', ' ', substr($t1->add($diff)->format(DATE_ATOM), 0, -6));
     }
 
     public function diff($event_time, $time_offset) {
@@ -556,7 +512,7 @@ class Appointments extends CI_Controller {
         $t2 = new DateTime($time_offset);
         $start_of_time = new DateTime('00:00:00');
         $diff = $t2->diff($start_of_time) ;
-        return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
+        return str_replace('T', ' ', substr($t1->add($diff)->format(DATE_ATOM), 0, -6));
     }
 
     /**
