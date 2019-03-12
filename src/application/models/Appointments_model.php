@@ -464,7 +464,7 @@ class Appointments_Model extends CI_Model {
             throw new Exception('Invalid argument type $provider_id: ' . $provider_id);
         }
 
-        $this->db->where('id_services ==', null)->where('id_google_calendar !=', null)->delete('ea_appointments', ['id_users_provider' => $provider_id]);
+        $this->db->where('id_services =', null)->where('id_google_calendar !=', null)->delete('ea_appointments', ['id_users_provider' => $provider_id]);
 
         $this->db->update('ea_appointments', ['id_google_calendar' => NULL],
             ['id_users_provider' => $provider_id]);
