@@ -62,7 +62,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             service_duration: selServiceDuration,
             manage_mode: FrontendBook.manageMode,
             appointment_id: appointmentId,
-            timezone: selectedProvider['timezone']
+            timezone: moment().format('Z'),
+            time: moment().format('YYYY-MM-DD HH:mm:ss')
         };
 
         $.post(postUrl, postData, function (response) {
@@ -79,8 +80,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 var availableHours = {};
 
                 $.each(response, function (index, availableHour) {
-                    const hour = moment.utc(availableHour, 'HH:mm').local().hour();
-                    const minute = moment.utc(availableHour, 'HH:mm').local().minute();
+                    const hour = moment(availableHour, 'HH:mm').hour();
+                    const minute = moment(availableHour, 'HH:mm').minute();
                     availableHours = {
                         ...availableHours,
                         [hour]: [
