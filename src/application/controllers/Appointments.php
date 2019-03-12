@@ -368,12 +368,19 @@ class Appointments extends CI_Controller {
                 $this->input->post('manage_mode'), $this->input->post('appointment_id'),
                 $this->input->post('service_id'), $this->input->post('service_duration'));
 
-            $hours = $this->process_hours($previousDay, $previous_day_hours, (new DateTime($currentDay))->format('d'), $available_hours,
-                $nextDay, $next_day_hours, $this->input->post('timezone'));
+            $hours = $this->process_hours($previousDay, $previous_day_hours, $currentDay, $available_hours,
+                $nextDay, $next_day_hours, $this->input->post('timezone'), (new DateTime($currentDay))->format('d'));
+
+            $available_hours = [];
+            foreach ($hours as $hour) {
+                if(new DateTime($currentDay.$hour.':00') > new DateTime($this->input->post('time'))) {
+                    array_push($available_hours, $hour);
+                }
+            }
 
             $this->output
                 ->set_content_type('application/json')
-                ->set_output(json_encode($hours));
+                ->set_output(json_encode($available_hours));
         }
         catch (Exception $exc)
         {
@@ -456,25 +463,35 @@ class Appointments extends CI_Controller {
         return array_values($available_hours);
     }
 
-    private function process_hours($prevDay, $previous_day_hours, $currentDay, $available_hours, $nextDay, $next_day_hours, $timezone) {
+    private function process_hours($prevDay, $previous_day_hours, $currentDate, $available_hours, $nextDay, $next_day_hours,
+                                   $timezone, $currentDay) {
+        $hours = [];
+        foreach ($available_hours as $hour) {
+            $localTime = $this->remove_time_offset($currentDate.' '.$hour.':00', $timezone);
+            $time = (new DateTime($localTime))->format('h:i');
+            $day = (new DateTime($localTime))->format('d');
+            if($day === $currentDay) {
+                array_push($hours, $time);
+            }
+        }
         foreach ($previous_day_hours as $hour) {
             $localTime = $this->remove_time_offset($prevDay.' '.$hour.':00', $timezone);
             $time = (new DateTime($localTime))->format('h:i');
             $day = (new DateTime($localTime))->format('d');
             if($day === $currentDay) {
-                array_push($available_hours, $time);
+                array_push($hours, $time);
             }
         }
         foreach ($next_day_hours as $hour) {
-            $localTime = $this->remove_time_offset($prevDay.' '.$hour.':00', $timezone);
+            $localTime = $this->remove_time_offset($nextDay.' '.$hour.':00', $timezone);
             $time = (new DateTime($localTime))->format('h:i');
             $day = (new DateTime($localTime))->format('d');
             if($day === $currentDay) {
-                array_push($available_hours, $time);
+                array_push($hours, $time);
             }
         }
 
-        return array_unique($available_hours);
+        return array_unique($hours);
     }
 
     function remove_time_offset($time, $timezone) {
