@@ -232,7 +232,7 @@
 
                             <div class="col-xs-12 col-sm-6">
                                 <div id="no-time">No time slots available for this day. Please select a different date.</div>
-                                <div class="f-row" style="justify-content: space-around" id="time-select">
+                                <div class="f-row hide" style="justify-content: space-around" id="time-select">
                                     <div class="f-col">
                                         <label for="available-hours">Select hour</label>
                                         <select id="available-hours"></select>
