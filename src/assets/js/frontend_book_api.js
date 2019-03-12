@@ -84,8 +84,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     const minute = moment(availableHour, 'HH:mm').format('mm');
                     availableHours = {
                         ...availableHours,
-                        [hour]: [
-                            ...(availableHours[hour] ? availableHours[hour] : []),
+                        [+hour]: [
+                            ...(availableHours[+hour] ? availableHours[+hour] : []),
                             minute
                         ]
                     };
