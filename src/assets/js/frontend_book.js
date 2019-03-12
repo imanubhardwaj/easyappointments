@@ -139,8 +139,19 @@ window.FrontendBook = window.FrontendBook || {};
             },
 
             onChangeMonthYear: function (year, month, instance) {
+                var currentDate = new Date(year, month - 1, 1);
+                FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
+                    currentDate.toString('yyyy-MM-dd'));
             }
         });
+
+        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
+            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+        FrontendBook.updateConfirmFrame();
+
+        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
+            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+        FrontendBook.updateConfirmFrame();
 
         // Bind the event handlers (might not be necessary every time we use this class).
         if (bindEventHandlers) {
@@ -164,11 +175,11 @@ window.FrontendBook = window.FrontendBook || {};
 
             $selectService.trigger('change'); // Load the available hours.
 
-            // Check if a specific provider was selected. 
+            // Check if a specific provider was selected.
             var selectedProviderId = GeneralFunctions.getUrlParameter(location.href, 'provider');
 
             if (selectedProviderId && $selectProvider.find('option[value="' + selectedProviderId + '"]').length === 0) {
-                // Select a service of this provider in order to make the provider available in the select box. 
+                // Select a service of this provider in order to make the provider available in the select box.
                 for (var index in GlobalVariables.availableProviders) {
                     var provider = GlobalVariables.availableProviders[index];
 
@@ -377,7 +388,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         $('#select-date').on('mousedown', '.ui-datepicker-calendar td', function (event) {
             setTimeout(function () {
-                // FrontendBookApi.applyPreviousUnavailableDates(); // New jQuery UI version will replace the td elements.
+                FrontendBookApi.applyPreviousUnavailableDates(); // New jQuery UI version will replace the td elements.
             }, 300); // There is no draw event unfortunately.
         })
     }
