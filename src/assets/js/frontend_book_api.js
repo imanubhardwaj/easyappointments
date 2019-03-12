@@ -58,10 +58,11 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             csrfToken: GlobalVariables.csrfToken,
             service_id: selectedService['id'],
             provider_id: selectedProvider['id'],
-            selected_date: moment(selDate).format('YYYY-MM-DD'),
+            selected_date: selDate,
             service_duration: selServiceDuration,
             manage_mode: FrontendBook.manageMode,
-            appointment_id: appointmentId
+            appointment_id: appointmentId,
+            timezone: selectedProvider['timezone']
         };
 
         $.post(postUrl, postData, function (response) {
