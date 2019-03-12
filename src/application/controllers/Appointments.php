@@ -1006,15 +1006,27 @@ class Appointments extends CI_Controller {
                             // others.
                             unset($periods[$index]);
 
-                            $periods[] = [
+                            // TODO undo this
+//                            $periods[] = [
+//                                'start' => $period_start->format('H:i'),
+//                                'end' => $appointment_start->format('H:i')
+//                            ];
+//
+//                            $periods[] = [
+//                                'start' => $appointment_end->format('H:i'),
+//                                'end' => $period_end->format('H:i')
+//                            ];
+
+                            // TODO remove this
+                            $periods = array_merge($periods, [
                                 'start' => $period_start->format('H:i'),
                                 'end' => $appointment_start->format('H:i')
-                            ];
+                            ]);
 
-                            $periods[] = [
+                            $periods = array_merge($periods, [
                                 'start' => $appointment_end->format('H:i'),
                                 'end' => $period_end->format('H:i')
-                            ];
+                            ]);
                         }
                         else if ($appointment_start == $period_start && $appointment_end == $period_end)
                         {
