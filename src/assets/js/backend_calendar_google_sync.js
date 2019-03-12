@@ -173,6 +173,7 @@ window.BackendCalendarGoogleSync = window.BackendCalendarGoogleSync || {};
                 GeneralFunctions.displayMessageBox(GeneralFunctions.EXCEPTIONS_TITLE, GeneralFunctions.EXCEPTIONS_MESSAGE);
                 $('#message_box').append(GeneralFunctions.exceptionsToHtml(response.exceptions));
             }
+            $('#reload-appointments').trigger('click');
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     }
 
