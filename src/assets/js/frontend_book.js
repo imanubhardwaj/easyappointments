@@ -139,19 +139,8 @@ window.FrontendBook = window.FrontendBook || {};
             },
 
             onChangeMonthYear: function (year, month, instance) {
-                var currentDate = new Date(year, month - 1, 1);
-                FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
-                    currentDate.toString('yyyy-MM-dd'));
             }
         });
-
-        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
-            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
-        FrontendBook.updateConfirmFrame();
-
-        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
-            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
-        FrontendBook.updateConfirmFrame();
 
         // Bind the event handlers (might not be necessary every time we use this class).
         if (bindEventHandlers) {
