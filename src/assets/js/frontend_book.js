@@ -538,7 +538,7 @@ window.FrontendBook = window.FrontendBook || {};
         if($('#available-hours').val() && $('#available-minutes').val()) {
             postData.appointment = {
                 start_datetime: getUTCString($('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
-                    + ' ' + $('#available-hours').val() + ':' + $('#available-minutes').val() + ':00'),
+                    + ' ' + $('#available-hours').val().padStart(2, 0) + ':' + $('#available-minutes').val().padStart(2, 0) + ':00'),
                 end_datetime: getUTCString(_calcEndDatetime()),
                 notes: $('#notes').val(),
                 is_unavailable: false,
@@ -581,7 +581,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         // Add the duration to the start datetime.
         var startDatetime = $('#select-date').datepicker('getDate').toString('dd-MM-yyyy')
-            + ' ' + $('#available-hours').val() + ':'+$('#available-minutes').val();
+            + ' ' + $('#available-hours').val().padStart(2, 0) + ':'+$('#available-minutes').val().padStart(2, 0);
         startDatetime = Date.parseExact(startDatetime, 'dd-MM-yyyy HH:mm');
         var endDatetime = undefined;
 
