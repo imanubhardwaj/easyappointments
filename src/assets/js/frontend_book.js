@@ -377,7 +377,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         $('#select-date').on('mousedown', '.ui-datepicker-calendar td', function (event) {
             setTimeout(function () {
-                FrontendBookApi.applyPreviousUnavailableDates(); // New jQuery UI version will replace the td elements.
+                // FrontendBookApi.applyPreviousUnavailableDates(); // New jQuery UI version will replace the td elements.
             }, 300); // There is no draw event unfortunately.
         })
     }
