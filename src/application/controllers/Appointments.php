@@ -923,177 +923,78 @@ class Appointments extends CI_Controller {
         $this->load->model('providers_model');
         $this->load->model('services_model');
 
-        // Get the service, provider's working plan and provider appointments.
+        // Get the service, provider's working plan.
         $working_plan = json_decode($this->providers_model->get_setting('working_plan', $provider_id), TRUE);
 
+        // Get the service, provider's appointments.
         $provider_appointments = $this->appointments_model->get_batch([
             'id_users_provider' => $provider_id,
         ]);
 
-        // Sometimes it might be necessary to not take into account some appointment records in order to display what
-        // the providers' available time periods would be without them.
-        foreach ($excluded_appointment_ids as $excluded_appointment_id)
-        {
-            foreach ($provider_appointments as $index => $reserved)
-            {
-                if ($reserved['id'] == $excluded_appointment_id)
-                {
-                    unset($provider_appointments[$index]);
-                }
-            }
-        }
-
-        // Find the empty spaces on the plan. The first split between the plan is due to a break (if any). After that
-        // every reserved appointment is considered to be a taken space in the plan.
-        $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selected_date)))];
-
         $periods = [];
 
-        if (isset($selected_date_working_plan['breaks']))
-        {
-            $periods[] = [
-                'start' => $selected_date_working_plan['start'],
-                'end' => $selected_date_working_plan['end']
-            ];
+        $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selected_date)))];
 
-            $day_start = new DateTime($selected_date_working_plan['start']);
-            $day_end = new DateTime($selected_date_working_plan['end']);
+        // Add period before work start
+        array_push($periods, [
+            'start' => '00:00',
+            'end'   => $selected_date_working_plan['start']
+        ]);
 
-            // Split the working plan to available time periods that do not contain the breaks in them.
-            foreach ($selected_date_working_plan['breaks'] as $index => $break)
-            {
-                $break_start = new DateTime($break['start']);
-                $break_end = new DateTime($break['end']);
+        // Add period after work end
+        array_push($periods, [
+            'start' => $selected_date_working_plan['end'],
+            'end'   => '23:59'
+        ]);
 
-                if ($break_start < $day_start)
-                {
-                    $break_start = $day_start;
-                }
+        // Add period for breaks
+        if (isset($selected_date_working_plan['breaks'])) {
+            foreach ($selected_date_working_plan['breaks'] as $index => $break) {
+                $break_start = (new DateTime($break['start']))->format('H:i');
+                $break_end   = (new DateTime($break['end']))->format('H:i');
 
-                if ($break_end > $day_end)
-                {
-                    $break_end = $day_end;
-                }
-
-                if ($break_start >= $break_end)
-                {
-                    continue;
-                }
-
-                foreach ($periods as $key => $period)
-                {
-                    $period_start = new DateTime($period['start']);
-                    $period_end = new DateTime($period['end']);
-
-                    $remove_current_period = FALSE;
-
-                    if ($break_start > $period_start && $break_start < $period_end && $break_end > $period_start)
-                    {
-                        $periods[] = [
-                            'start' => $period_start->format('H:i'),
-                            'end' => $break_start->format('H:i')
-                        ];
-
-                        $remove_current_period = TRUE;
-                    }
-
-                    if ($break_start < $period_end && $break_end > $period_start && $break_end < $period_end)
-                    {
-                        $periods[] = [
-                            'start' => $break_end->format('H:i'),
-                            'end' => $period_end->format('H:i')
-                        ];
-
-                        $remove_current_period = TRUE;
-                    }
-
-                    if ($break_start == $period_start && $break_end == $period_end)
-                    {
-                        $remove_current_period = TRUE;
-                    }
-
-                    if ($remove_current_period)
-                    {
-                        unset($periods[$key]);
-                    }
-                }
+                array_push($periods, [
+                    'start' => $break_start,
+                    'end'   => $break_end
+                ]);
             }
         }
 
-        // Break the empty periods with the reserved appointments.
-        foreach ($provider_appointments as $provider_appointment)
-        {
-            foreach ($periods as $index => &$period)
-            {
-                $appointment_start = new DateTime($provider_appointment['start_datetime']);
-                $appointment_end = new DateTime($provider_appointment['end_datetime']);
-                $period_start = new DateTime($selected_date . ' ' . $period['start']);
-                $period_end = new DateTime($selected_date . ' ' . $period['end']);
+        // Add period for appointments
+        foreach ($provider_appointments as $provider_appointment) {
+            $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+            if($appt_date == $selected_date) {
+                $appointment_start = (new DateTime($provider_appointment['start_datetime']))->format('H:i');
+                $appointment_end   = (new DateTime($provider_appointment['end_datetime']))->format('H:i');
 
-                if ($appointment_start <= $period_start && $appointment_end <= $period_end && $appointment_end <= $period_start)
-                {
-                    // The appointment does not belong in this time period, so we  will not change anything.
-                }
-                else
-                {
-                    if ($appointment_start <= $period_start && $appointment_end <= $period_end && $appointment_end >= $period_start)
-                    {
-                        // The appointment starts before the period and finishes somewhere inside. We will need to break
-                        // this period and leave the available part.
-                        $period['start'] = $appointment_end->format('H:i');
-                    }
-                    else
-                    {
-                        if ($appointment_start >= $period_start && $appointment_end < $period_end)
-                        {
-                            // The appointment is inside the time period, so we will split the period into two new
-                            // others.
-                            unset($periods[$index]);
-
-                            $periods[] = [
-                                'start' => $period_start->format('H:i'),
-                                'end' => $appointment_start->format('H:i')
-                            ];
-
-                            $periods[] = [
-                                'start' => $appointment_end->format('H:i'),
-                                'end' => $period_end->format('H:i')
-                            ];
-                        }
-                        else if ($appointment_start == $period_start && $appointment_end == $period_end)
-                        {
-                            unset($periods[$index]); // The whole period is blocked so remove it from the available periods array.
-                        }
-                        else
-                        {
-                            if ($appointment_start >= $period_start && $appointment_end >= $period_start && $appointment_start <= $period_end)
-                            {
-                                // The appointment starts in the period and finishes out of it. We will need to remove
-                                // the time that is taken from the appointment.
-                                $period['end'] = $appointment_start->format('H:i');
-                            }
-                            else
-                            {
-                                if ($appointment_start >= $period_start && $appointment_end >= $period_end && $appointment_start >= $period_end)
-                                {
-                                    // The appointment does not belong in the period so do not change anything.
-                                }
-                                else
-                                {
-                                    if ($appointment_start <= $period_start && $appointment_end >= $period_end && $appointment_start <= $period_end)
-                                    {
-                                        // The appointment is bigger than the period, so this period needs to be removed.
-                                        unset($periods[$index]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                array_push($periods, [
+                    'start' => $appointment_start,
+                    'end'   => $appointment_end
+                ]);
             }
         }
 
-        return array_values($periods);
+        // Sort periods for further comparisons
+        $sorted_periods = array();
+        foreach ($periods as $key => $row)
+        {
+            $sorted_periods[$key] = $row['start'];
+        }
+        array_multisort($sorted_periods, SORT_ASC, $periods);
+
+        $free_periods = [];
+
+        // Find free periods by adjacent comparisons
+        for($i = 0; $i < count($periods); $i++) {
+            if(($i + 1) < count($periods) && $periods[$i]['end'] < $periods[$i+1]['start']) {
+                array_push($free_periods, [
+                    'start' => $periods[$i]['end'],
+                    'end' => $periods[$i+1]['start']
+                ]);
+            }
+        }
+
+        return array_values($free_periods);
     }
 
     /**
