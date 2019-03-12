@@ -149,10 +149,6 @@ window.FrontendBook = window.FrontendBook || {};
             $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
         FrontendBook.updateConfirmFrame();
 
-        FrontendBookApi.getUnavailableDates(selectedProvider['id'], selectedService['id'],
-            $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
-        FrontendBook.updateConfirmFrame();
-
         // Bind the event handlers (might not be necessary every time we use this class).
         if (bindEventHandlers) {
             _bindEventHandlers();
