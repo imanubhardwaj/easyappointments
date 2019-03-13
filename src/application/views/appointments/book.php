@@ -374,7 +374,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="command-buttons">
+                    <div class="command-buttons" id="final-actions">
                         <button type="button" id="button-back-4" class="btn button-back btn-default"
                                 data-step_index="4">
                             <span class="glyphicon glyphicon-backward"></span>

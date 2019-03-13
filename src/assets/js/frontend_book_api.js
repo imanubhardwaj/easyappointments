@@ -216,7 +216,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             .done(function (response) {
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     $('.captcha-title small').trigger('click');
-                    $('.command-buttons').show();
+                    $('#final-actions').css({'display': 'block'});
                     return false;
                 }
 
@@ -290,7 +290,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             .fail(function (jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
                 GeneralFunctions.ajaxFailureHandler(jqxhr, textStatus, errorThrown);
-                $('.command-buttons').show();
+                $('#final-actions').css({'display': 'block'});
             })
             .always(function () {
                 $layer.remove();
