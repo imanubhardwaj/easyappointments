@@ -891,17 +891,21 @@ class Appointments extends CI_Controller {
 
         $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selected_date)))];
 
-        // Add period before work start
-        array_push($periods, [
-            'start' => '00:00',
-            'end'   => $selected_date_working_plan['start']
-        ]);
+        if(!is_null($selected_date_working_plan['start'])) {
+            // Add period before work start
+            array_push($periods, [
+                'start' => '00:00',
+                'end'   => $selected_date_working_plan['start']
+            ]);
+        }
 
-        // Add period after work end
-        array_push($periods, [
-            'start' => $selected_date_working_plan['end'],
-            'end'   => '23:59'
-        ]);
+        if(!is_null($selected_date_working_plan['end'])) {
+            // Add period after work end
+            array_push($periods, [
+                'start' => $selected_date_working_plan['end'],
+                'end'   => '23:59'
+            ]);
+        }
 
         // Add period for breaks
         if (isset($selected_date_working_plan['breaks'])) {
