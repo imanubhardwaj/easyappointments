@@ -214,12 +214,14 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             }
         })
             .done(function (response) {
+                $('#final-actions').css({'display': 'block'});
                 if (!GeneralFunctions.handleAjaxExceptions(response)) {
                     $('.captcha-title small').trigger('click');
                     $('#final-actions').css({'display': 'block'});
                     return false;
                 }
 
+                $('#final-actions').css({'display': 'block'});
                 if (response.captcha_verification === false) {
                     $('#captcha-hint')
                         .text(EALang.captcha_is_wrong)
