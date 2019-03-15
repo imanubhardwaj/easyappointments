@@ -363,10 +363,10 @@ class User extends CI_Controller {
                     $time_left = (new DateTime())->diff(new DateTime($appt['start_datetime']))->i;
                     $customer_title   = new Text('Upcoming Appointment');
                     $customer_message = new Text('Just a reminder, Your appointment with ' . $provider['first_name'] . ' ' .
-                        $provider['last_name'] . ' is due');
+                        $provider['last_name'] . ' is at');
                     $provider_title   = new Text('Upcoming Appointment');
                     $provider_message = new Text('Just a reminder, Your appointment with ' . $customer['first_name'] . ' ' .
-                        $customer['last_name'] . ' is due');
+                        $customer['last_name'] . ' is at');
 
                     $customer_link = new Url(site_url('appointments/index/' . $appt['hash']));
                     $provider_link = new Url(site_url('backend/index/' . $appt['hash']));
