@@ -359,7 +359,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 var currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i);
                 if (unavailableDates.indexOf(currentDate.toString('yyyy-MM-dd')) === -1) {
                     $('#select-date').datepicker('setDate', currentDate);
-                    FrontendBookApi.getAvailableHours(currentDate.toString('yyyy-MM-dd'));
+                    FrontendBookApi.getAvailableHours(moment(currentDate.toString('yyyy-MM-dd'), 'YYYY-MM-DD').format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD') ? currentDate.toString('yyyy-MM-dd') : moment().format('YYYY-MM-DD'));
                     break;
                 }
             }
