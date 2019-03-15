@@ -236,7 +236,7 @@ class Email {
         // Prepare template replace array.
         $replaceArray = [
             '$email_title' => $title->get(),
-            '$email_message' => $message->get(),
+            '$email_message' => $message->get() . ' ' . date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
             '$appointment_service' => $service['name'],
             '$appointment_service_type' => $service['type'],
             '$logo_display' => $service['logo'] ? '': 'none',
