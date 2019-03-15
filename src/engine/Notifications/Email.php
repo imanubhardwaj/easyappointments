@@ -193,6 +193,104 @@ class Email {
         }
     }
 
+    public function sendUpcomingApptMail(
+        array $appointment,
+        array $provider,
+        array $service,
+        array $customer,
+        array $company,
+        Text $title,
+        Text $message,
+        Url $appointmentLink,
+        EmailAddress $recipientEmail,
+        Text $icsStream,
+        $isCustomer = true
+    ) {
+        switch ($company['date_format'])
+        {
+            case 'DMY':
+                $date_format = 'd/m/Y';
+                break;
+            case 'MDY':
+                $date_format = 'm/d/Y';
+                break;
+            case 'YMD':
+                $date_format = 'Y/m/d';
+                break;
+            default:
+                throw new \Exception('Invalid date_format value: ' . $company['date_format']);
+        }
+
+        switch ($company['time_format'])
+        {
+            case 'military':
+                $timeFormat = 'H:i';
+                break;
+            case 'regular':
+                $timeFormat = 'g:i A';
+                break;
+            default:
+                throw new \Exception('Invalid time_format value: ' . $company['time_format']);
+        }
+        $providerTimezone = $this->getTimezoneDetails($provider['settings']['timezone']);
+        // Prepare template replace array.
+        $replaceArray = [
+            '$email_title' => $title->get(),
+            '$email_message' => $message->get(),
+            '$appointment_service' => $service['name'],
+            '$appointment_service_type' => $service['type'],
+            '$logo_display' => $service['logo'] ? '': 'none',
+            '$logo_url' => $service['logo'],
+            '$user_type' => $isCustomer ? 'Your' : 'Customer',
+            '$appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
+            '$appointment_start_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['start_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
+            '$appointment_end_date' => date($date_format . ' ' . $timeFormat, strtotime($this->manage_timezone($appointment['end_datetime'], $providerTimezone['offset']))) . ' ('. $providerTimezone['abbr'] . ')',
+            '$appointment_link' => $appointmentLink->get(),
+            '$company_link' => $company['company_link'],
+            '$company_name' => $company['company_name'],
+            '$user_name' => $isCustomer ? $customer['first_name'] . ' ' . $customer['last_name'] : $provider['first_name'] . ' ' . $provider['last_name'],
+            '$customer_name' => $customer['first_name'] . ' ' . $customer['last_name'],
+            '$customer_email' => $customer['email'],
+            '$customer_phone' => $customer['phone_number'],
+            '$customer_address' => $customer['address'],
+            '$outlook_url' => 'https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent&startdt='.$this->getFormattedTime($appointment['start_datetime']).'&enddt='.$this->getFormattedTime($appointment['end_datetime']).'&subject='.str_replace(' ', '+', $service['name']).'&location='.str_replace(' ', '+', $service['location']),
+            '$google_url' => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='.str_replace(' ', '+', $service['name']).'&dates='.$this->getFormattedTime($appointment['start_datetime']).'Z'.'/'.$this->getFormattedTime($appointment['end_datetime']).'Z'.'&location='.str_replace(' ', '+', $service['location']),
+            '$yahoo_url' => 'https://calendar.yahoo.com/?v=60&st='.$this->getFormattedTime($appointment['start_datetime']).'Z'.'&et='.$this->getFormattedTime($appointment['end_datetime']).'Z'.'&title='.str_replace(' ', '+', $service['name']).'&in_loc='.str_replace(' ', '+', $service['location']),
+
+            // Translations
+            'Appointment Details' => $this->framework->lang->line('appointment_details_title'),
+            'Service' => $this->framework->lang->line('service'),
+            'Provider' => $this->framework->lang->line('provider'),
+            'Start' => $this->framework->lang->line('start'),
+            'End' => $this->framework->lang->line('end'),
+            'Customer Details' => $this->framework->lang->line('customer_details_title'),
+            'Name' => $this->framework->lang->line('name'),
+            'Email' => $this->framework->lang->line('email'),
+            'Phone' => $this->framework->lang->line('phone'),
+            'Address' => $this->framework->lang->line('address'),
+            'Appointment Link' => $this->framework->lang->line('appointment_link_title')
+        ];
+
+        $html = file_get_contents(__DIR__ . '/../../application/views/emails/upcoming_appointment.php');
+        $html = $this->_replaceTemplateVariables($replaceArray, $html);
+
+        $mailer = $this->_createMailer();
+
+        $mailer->From = $company['company_email'];
+        $mailer->FromName = 'Vaetas Calendar';
+        $mailer->AddAddress($recipientEmail->get());
+        $mailer->Subject = $title->get();
+        $mailer->Body = $html;
+
+        $mailer->addStringAttachment($icsStream->get(), 'invitation.ics');
+
+        if ( ! $mailer->Send())
+        {
+            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): '
+                . $mailer->ErrorInfo);
+        }
+    }
+
     /**
      * Send an email notification to both provider and customer on appointment removal.
      *

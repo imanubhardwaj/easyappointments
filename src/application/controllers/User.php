@@ -11,8 +11,9 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
-use \EA\Engine\Types\NonEmptyText;
-use \EA\Engine\Types\Email;
+use EA\Engine\Types\Email;
+use EA\Engine\Types\Text;
+use EA\Engine\Types\Url;
 
 /**
  * User Controller
@@ -324,5 +325,71 @@ class User extends CI_Controller {
         $start_of_time = new DateTime('00:00:00');
         $diff = $t2->diff($start_of_time) ;
         return substr($t1->add($diff)->format(DATE_ATOM), 0, -6);
+    }
+
+    public function sendApptMail() {
+        $this->load->model('appointments_model');
+        $this->load->model('providers_model');
+        $this->load->model('services_model');
+        $this->load->model('customers_model');
+        $this->load->model('settings_model');
+
+        $where_clause = 'start_datetime > ' . $this->db->escape((new DateTime())->format('Y-m-d H:i:s')) .
+            ' AND start_datetime < ' . $this->db->escape((new DateTime('now +1 hour'))->format('Y-m-d H:i:s')) .
+            ' AND mail_pending = 1';
+
+        $response['appointments'] = $this->appointments_model->get_batch($where_clause);
+
+        $company_settings = [
+            'company_name' => $this->settings_model->get_setting('company_name'),
+            'company_link' => $this->settings_model->get_setting('company_link'),
+            'company_email' => $this->settings_model->get_setting('company_email'),
+            'date_format' => $this->settings_model->get_setting('date_format'),
+            'time_format' => $this->settings_model->get_setting('time_format')
+        ];
+
+        try {
+            $this->config->load('email');
+            $this->load->library('ics_file');
+            $email = new \EA\Engine\Notifications\Email($this, $this->config->config);
+            foreach ($response['appointments'] as $appt) {
+                if ($appt && $appt['id_services']) {
+                    // :: SEND NOTIFICATION EMAILS TO BOTH CUSTOMER AND PROVIDER
+
+                    $provider = $this->providers_model->get_row($appt['id_users_provider']);
+                    $customer = $this->customers_model->get_row($appt['id_users_customer']);
+                    $service = $this->services_model->get_row($appt['id_services']);
+
+                    $time_left = (new DateTime())->diff(new DateTime($appt['start_datetime']))->i;
+                    $customer_title   = new Text('Upcoming Appointment');
+                    $customer_message = new Text('Your appointment with ' . $provider['first_name'] . ' ' .
+                        $provider['last_name'] . ' is starting in '. $time_left.' minutes.');
+                    $provider_title   = new Text('Upcoming Appointment');
+                    $provider_message = new Text('Your appointment with ' . $customer['first_name'] . ' ' .
+                        $customer['last_name'] . ' is starting in '. $time_left.' minutes.');
+
+                    $customer_link = new Url(site_url('appointments/index/' . $appt['hash']));
+                    $provider_link = new Url(site_url('backend/index/' . $appt['hash']));
+
+                    $this->load->library('ics_file');
+                    $ics_stream = $this->ics_file->get_stream($appt, $service, $provider, $customer);
+
+                    $email->sendUpcomingApptMail($appt, $provider,
+                        $service, $customer, $company_settings, $customer_title,
+                        $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
+
+                    $email->sendUpcomingApptMail($appt, $provider,
+                        $service, $customer, $company_settings, $provider_title,
+                        $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
+
+                    $this->db->where('id', $appt['id'])->update('ea_appointments', [
+                        'mail_pending' => 0
+                    ]);
+                }
+            }
+        } catch (Exception $exc) {
+            log_message('error', $exc->getMessage());
+            log_message('error', $exc->getTraceAsString());
+        }
     }
 }
