@@ -422,6 +422,11 @@ window.FrontendBook = window.FrontendBook || {};
             {
                 throw 'Invalid Phone Number';
             }
+            if(zipCode) {
+                if (!zipCodeRegex.test(zipCode)) {
+                    throw 'Invalid Zip Code';
+                }
+            }
 
             var $acceptToTermsAndConditions = $('#accept-to-terms-and-conditions');
             if ($acceptToTermsAndConditions.length && !$acceptToTermsAndConditions.prop('checked')) {
