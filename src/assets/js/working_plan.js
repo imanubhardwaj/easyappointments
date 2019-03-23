@@ -48,8 +48,8 @@
         $.each(workingPlan, function (index, workingDay) {
             if (workingDay != null) {
                 $('#' + index).prop('checked', true);
-                $('#' + index + '-start').val(moment.utc(workingDay.start, 'HH:mm').local().format('h:mm A'));
-                $('#' + index + '-end').val(moment.utc(workingDay.end, 'HH:mm').local().format('h:mm A'));
+                $('#' + index + '-start').val(moment(workingDay.start, 'HH:mm').local().format('h:mm A'));
+                $('#' + index + '-end').val(moment(workingDay.end, 'HH:mm').local().format('h:mm A'));
 
                 // Add the day's breaks on the breaks table.
                 $.each(workingDay.breaks, function (i, brk) {
@@ -58,8 +58,8 @@
                     var tr =
                         '<tr>' +
                         '<td class="break-day editable">' + GeneralFunctions.ucaseFirstLetter(day) + '</td>' +
-                        '<td class="break-start editable">' + moment.utc(brk.start, 'HH:mm').local().format('h:mm A') + '</td>' +
-                        '<td class="break-end editable">' + moment.utc(brk.end, 'HH:mm').local().format('h:mm A') + '</td>' +
+                        '<td class="break-start editable">' + moment(brk.start, 'HH:mm').local().format('h:mm A') + '</td>' +
+                        '<td class="break-end editable">' + moment(brk.end, 'HH:mm').local().format('h:mm A') + '</td>' +
                         '<td>' +
                         '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
                         '<span class="glyphicon glyphicon-pencil"></span>' +
@@ -319,8 +319,8 @@
             var id = $(checkbox).attr('id');
             if ($(checkbox).prop('checked') == true) {
                 workingPlan[id] = {
-                    start: moment($('#' + id + '-start').val(), 'h:mm A').utc().format('HH:mm'),
-                    end: moment($('#' + id + '-end').val(), 'h:mm A').utc().format('HH:mm'),
+                    start: moment($('#' + id + '-start').val(), 'h:mm A').format('HH:mm'),
+                    end: moment($('#' + id + '-end').val(), 'h:mm A').format('HH:mm'),
                     breaks: []
                 };
 
@@ -332,8 +332,8 @@
                         var end = $(tr).find('.break-end').text();
 
                         workingPlan[id].breaks.push({
-                            start: moment(start, 'h:mm A').utc().format('HH:mm'),
-                            end: moment(end, 'h:mm A').utc().format('HH:mm')
+                            start: moment(start, 'h:mm A').format('HH:mm'),
+                            end: moment(end, 'h:mm A').format('HH:mm')
                         });
                     }
 

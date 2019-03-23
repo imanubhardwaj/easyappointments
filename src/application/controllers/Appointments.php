@@ -246,9 +246,9 @@ class Appointments extends CI_Controller {
 
 //                if ($send_provider === TRUE)
 //                {
-                    $email->sendDeleteAppointment($appointment, $provider,
-                        $service, $customer, $company_settings, new Email($provider['email']),
-                        new Text($this->input->post('cancel_reason')), false);
+                $email->sendDeleteAppointment($appointment, $provider,
+                    $service, $customer, $company_settings, new Email($provider['email']),
+                    new Text($this->input->post('cancel_reason')), false);
 //                }
 
                 $send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
@@ -256,9 +256,9 @@ class Appointments extends CI_Controller {
 
 //                if ($send_customer === TRUE)
 //                {
-                    $email->sendDeleteAppointment($appointment, $provider,
-                        $service, $customer, $company_settings, new Email($customer['email']),
-                        new Text($this->input->post('cancel_reason')), true);
+                $email->sendDeleteAppointment($appointment, $provider,
+                    $service, $customer, $company_settings, new Email($customer['email']),
+                    new Text($this->input->post('cancel_reason')), true);
 //                }
 
             }
@@ -392,6 +392,361 @@ class Appointments extends CI_Controller {
         }
     }
 
+    public function get_available_slots() {
+        $this->load->model('providers_model');
+        $this->load->model('appointments_model');
+        $this->load->model('settings_model');
+        $this->load->model('services_model');
+
+        $providerId = $this->input->post('provider_id');
+        $serviceId = $this->input->post('service_id');
+
+        $selectedDate = $this->input->post('selected_date');
+        if($selectedDate) {
+            try {
+                $previousDate = (new DateTime($selectedDate . ' -1 day'))->format('Y-m-d');
+                $nextDate     = (new DateTime($selectedDate . ' +1 day'))->format('Y-m-d');
+
+                $service = $this->services_model->get_row($serviceId);
+                $provider = $this->providers_model->get_row($providerId);
+                $timezone = $provider['settings']['timezone'];
+                $userTimezone = $this->input->post('timezone');
+
+                $working_plan = json_decode($this->providers_model->get_setting('working_plan', $providerId), TRUE);
+
+                $previous_date_working_plan = $working_plan[strtolower(date('l', strtotime($previousDate)))];
+                $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selectedDate)))];
+                $next_date_working_plan = $working_plan[strtolower(date('l', strtotime($nextDate)))];
+
+                // Get the service, provider's appointments.
+                $provider_appointments = $this->appointments_model->get_batch([
+                    'id_users_provider' => $providerId,
+                ]);
+
+                $periods = [];
+                if ($previous_date_working_plan) {
+                    $start        = $this->remove_time_offset(
+                        $previousDate . ' ' . $previous_date_working_plan['start'] . ':00',
+                        $timezone
+                    );
+                    $start_of_day = $previousDate . ' 00:00:00';
+                    array_push($periods, [
+                        'start' => $start_of_day,
+                        'end'   => $start > $start_of_day ? $start : $start_of_day
+                    ]);
+
+                    if (isset($previous_date_working_plan['breaks'])) {
+                        foreach ($previous_date_working_plan['breaks'] as $index => $break) {
+                            $break_start = $this->remove_time_offset(
+                                $previousDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                $timezone
+                            );
+                            $break_end   = $this->remove_time_offset(
+                                $previousDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                $timezone
+                            );
+
+                            if(($break_start > $previous_date_working_plan['start']) &&
+                                ($break_end < $previous_date_working_plan['end'])) {
+                                array_push($periods, [
+                                    'start' => $break_start,
+                                    'end'   => $break_end
+                                ]);
+                            }
+                        }
+                    }
+
+                    if ($selected_date_working_plan) {
+                        $start        = $this->remove_time_offset(
+                            $previousDate . ' ' . $previous_date_working_plan['end'] . ':00',
+                            $timezone
+                        );
+                        $end = $this->remove_time_offset(
+                            $selectedDate . ' ' . $selected_date_working_plan['start'] . ':00',
+                            $timezone
+                        );
+                        array_push($periods, [
+                            'start' => $start,
+                            'end'   => $end
+                        ]);
+
+                        if (isset($selected_date_working_plan['breaks'])) {
+                            foreach ($selected_date_working_plan['breaks'] as $index => $break) {
+                                $break_start = $this->remove_time_offset(
+                                    $selectedDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+                                $break_end   = $this->remove_time_offset(
+                                    $selectedDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+
+                                if(($break_start > $selected_date_working_plan['start']) &&
+                                    ($break_end < $selected_date_working_plan['end'])) {
+                                    array_push($periods, [
+                                        'start' => $break_start,
+                                        'end'   => $break_end
+                                    ]);
+                                }
+                            }
+                        }
+                    } else {
+                        $start        = $this->remove_time_offset(
+                            $previousDate . ' ' . $previous_date_working_plan['end'] . ':00',
+                            $timezone
+                        );
+                        $end = $previousDate . ' 23:59:59';
+                        array_push($periods, [
+                            'start' => $start < $end ? $start : $end,
+                            'end'   => $end
+                        ]);
+                    }
+
+                    if($next_date_working_plan) {
+                        if($selected_date_working_plan) {
+                            $start = $this->remove_time_offset(
+                                $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00',
+                                $timezone
+                            );
+                            $end   = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['start'] . ':00',
+                                $timezone
+                            );
+                            array_push($periods, [
+                                'start' => $start,
+                                'end'   => $end
+                            ]);
+                        } else {
+                            $start        = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['start'] . ':00',
+                                $timezone
+                            );
+                            $start_of_day = $nextDate . ' 00:00:00';
+                            array_push($periods, [
+                                'start' => $start_of_day,
+                                'end'   => $start > $start_of_day ? $start : $start_of_day
+                            ]);
+                        }
+
+                        $start        = $this->remove_time_offset(
+                            $nextDate . ' ' . $next_date_working_plan['end'] . ':00',
+                            $timezone
+                        );
+                        $end_of_day = $nextDate . ' 23:59:59';
+                        array_push($periods, [
+                            'start' => $start,
+                            'end'   => $nextDate . ' 23:59:59'
+                        ]);
+
+                        if (isset($next_date_working_plan['breaks'])) {
+                            foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                                $break_start = $this->remove_time_offset(
+                                    $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+                                $break_end   = $this->remove_time_offset(
+                                    $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+
+                                if(($break_start > $next_date_working_plan['start']) &&
+                                    ($break_end < $next_date_working_plan['end'])) {
+                                    array_push($periods, [
+                                        'start' => $break_start,
+                                        'end'   => $break_end
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if($selected_date_working_plan) {
+                        $start        = $this->remove_time_offset(
+                            $selectedDate . ' ' . $selected_date_working_plan['start'] . ':00',
+                            $timezone
+                        );
+                        $start_of_day = $selectedDate . ' 00:00:00';
+                        array_push($periods, [
+                            'start' => $start_of_day,
+                            'end'   => $start > $start_of_day ? $start : $start_of_day
+                        ]);
+
+                        if (isset($selected_date_working_plan['breaks'])) {
+                            foreach ($selected_date_working_plan['breaks'] as $index => $break) {
+                                $break_start = $this->remove_time_offset(
+                                    $selectedDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+                                $break_end   = $this->remove_time_offset(
+                                    $selectedDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $timezone
+                                );
+
+                                if(($break_start > $selected_date_working_plan['start']) &&
+                                    ($break_end < $selected_date_working_plan['end'])) {
+                                    array_push($periods, [
+                                        'start' => $break_start,
+                                        'end'   => $break_end
+                                    ]);
+                                }
+                            }
+                        }
+
+                        if($next_date_working_plan) {
+                            $start        = $this->remove_time_offset(
+                                $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00',
+                                $timezone
+                            );
+                            $end = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['start'] . ':00',
+                                $timezone
+                            );
+                            array_push($periods, [
+                                'start' => $start,
+                                'end'   => $end
+                            ]);
+
+                            $start        = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['end'] . ':00',
+                                $timezone
+                            );
+                            $end_of_day = $nextDate . ' 23:59:59';
+                            array_push($periods, [
+                                'start' => $start,
+                                'end'   => $nextDate . ' 23:59:59'
+                            ]);
+
+                            if (isset($next_date_working_plan['breaks'])) {
+                                foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                                    $break_start = $this->remove_time_offset(
+                                        $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                        $timezone
+                                    );
+                                    $break_end   = $this->remove_time_offset(
+                                        $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                        $timezone
+                                    );
+
+                                    if(($break_start > $next_date_working_plan['start']) &&
+                                        ($break_end < $next_date_working_plan['end'])) {
+                                        array_push($periods, [
+                                            'start' => $break_start,
+                                            'end'   => $break_end
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if($next_date_working_plan) {
+                            $start        = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['start'] . ':00',
+                                $timezone
+                            );
+                            $start_of_day = $nextDate . ' 00:00:00';
+                            array_push($periods, [
+                                'start' => $start_of_day,
+                                'end'   => $start > $start_of_day ? $start : $start_of_day
+                            ]);
+
+                            $start        = $this->remove_time_offset(
+                                $nextDate . ' ' . $next_date_working_plan['end'] . ':00',
+                                $timezone
+                            );
+                            $end_of_day = $nextDate . ' 23:59:59';
+                            array_push($periods, [
+                                'start' => $start,
+                                'end'   => $nextDate . ' 23:59:59'
+                            ]);
+
+                            if (isset($next_date_working_plan['breaks'])) {
+                                foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                                    $break_start = $this->remove_time_offset(
+                                        $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                        $timezone
+                                    );
+                                    $break_end   = $this->remove_time_offset(
+                                        $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                        $timezone
+                                    );
+
+                                    if(($break_start > $next_date_working_plan['start']) &&
+                                        ($break_end < $next_date_working_plan['end'])) {
+                                        array_push($periods, [
+                                            'start' => $break_start,
+                                            'end'   => $break_end
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach ($provider_appointments as $provider_appointment) {
+                    $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                    if($appt_date == $previousDate || $appt_date == $selectedDate || $appt_date == $nextDate) {
+                        array_push($periods, [
+                            'start' => $provider_appointment['start_datetime'],
+                            'end'   => $provider_appointment['end_datetime']
+                        ]);
+                    }
+                }
+
+                $sorted_periods = array();
+                foreach ($periods as $key => $row)
+                {
+                    $sorted_periods[$key] = $row['start'];
+                }
+                array_multisort($sorted_periods, SORT_ASC, $periods);
+
+                $free_periods = [];
+
+                // Find free periods by adjacent comparisons
+                for($i = 0; $i < count($periods); $i++) {
+                    if(($i + 1) < count($periods) && $periods[$i]['end'] < $periods[$i+1]['start']) {
+                        array_push($free_periods, [
+                            'start' => $periods[$i]['end'],
+                            'end' => $periods[$i+1]['start']
+                        ]);
+                    }
+                }
+
+                $available_hours = [];
+
+                foreach ($periods as $period)
+                {
+                    $start_hour = new DateTime($period['start']);
+                    $end_hour = new DateTime($period['end']);
+                    $interval = 5;
+
+                    $current_hour = $start_hour;
+                    $diff = $current_hour->diff($end_hour);
+
+                    while (($diff->h * 60 + $diff->i) >= intval($service['duration']))
+                    {
+                        $available_hours[] = $current_hour->format('Y-m-d H:i:s');
+                        $current_hour->add(new DateInterval('PT' . $interval . 'M'));
+                        $diff = $current_hour->diff($end_hour);
+                    }
+                }
+
+                $hours = [];
+                $selectedDay = (new DateTime($selectedDate))->format('d');
+                foreach ($available_hours as $hour) {
+                    $localTime = $this->remove_time_offset($hour, $userTimezone, 0);
+                    $day = (new DateTime($localTime))->format('d');
+                    if($day == $selectedDay) {
+                        array_push($hours, $hour);
+                    }
+                }
+
+                var_dump($hours);
+            } catch (Exception $e) {
+            }
+        }
+    }
+
     private function get_available_hours_for_day($date, $providerId, $manageMode, $apptId, $serviceId, $service_duration) {
         $this->load->model('providers_model');
         $this->load->model('appointments_model');
@@ -494,9 +849,12 @@ class Appointments extends CI_Controller {
         return array_unique($hours);
     }
 
-    function remove_time_offset($time, $timezone) {
+    function remove_time_offset($time, $timezone, $reverse = 1) {
         $offset = substr($timezone, -5);
-        return substr($timezone, -6, 1) === '+' ? $this->addTime($time, $offset) : $this->diff($time, $offset);
+        if(!$reverse) {
+            return substr($timezone, -6, 1) === '+' ? $this->addTime($time, $offset) : $this->diff($time, $offset);
+        }
+        return substr($timezone, -6, 1) === '+' ? $this->diff($time, $offset) : $this->addTime($time, $offset);
     }
 
     public function addTime($event_time, $time_offset) {
