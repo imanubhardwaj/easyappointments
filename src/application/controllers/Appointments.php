@@ -534,8 +534,8 @@ class Appointments extends CI_Controller {
                         );
                         $end_of_day = $nextDate . ' 23:59:59';
                         array_push($periods, [
-                            'start' => $start,
-                            'end'   => $nextDate . ' 23:59:59'
+                            'start' => $start < $end_of_day ? $start : $end_of_day,
+                            'end'   => $end_of_day
                         ]);
 
                         if (isset($next_date_working_plan['breaks'])) {
@@ -612,8 +612,8 @@ class Appointments extends CI_Controller {
                             );
                             $end_of_day = $nextDate . ' 23:59:59';
                             array_push($periods, [
-                                'start' => $start,
-                                'end'   => $nextDate . ' 23:59:59'
+                                'start' => $start < $end_of_day ? $start : $end_of_day,
+                                'end'   => $end_of_day
                             ]);
 
                             if (isset($next_date_working_plan['breaks'])) {
@@ -636,6 +636,17 @@ class Appointments extends CI_Controller {
                                     }
                                 }
                             }
+                        } else {
+                            $start        = $this->remove_time_offset(
+                                $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00',
+                                $timezone
+                            );
+                            $end_of_day = $selectedDate . ' 23:59:59';
+                            array_push($periods, [
+                                'start' => $start < $end_of_day ? $start : $end_of_day,
+                                'end'   => $end_of_day
+                            ]);
+
                         }
                     } else {
                         if($next_date_working_plan) {
@@ -714,7 +725,7 @@ class Appointments extends CI_Controller {
 
                 $available_hours = [];
 
-                foreach ($periods as $period)
+                foreach ($free_periods as $period)
                 {
                     $start_hour = new DateTime($period['start']);
                     $end_hour = new DateTime($period['end']);
@@ -736,12 +747,15 @@ class Appointments extends CI_Controller {
                 foreach ($available_hours as $hour) {
                     $localTime = $this->remove_time_offset($hour, $userTimezone, 0);
                     $day = (new DateTime($localTime))->format('d');
+                    $formattedHours = (new DateTime($localTime))->format('H:i');
                     if($day == $selectedDay) {
-                        array_push($hours, $hour);
+                        array_push($hours, $formattedHours);
                     }
                 }
 
-                var_dump($hours);
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($hours));
             } catch (Exception $e) {
             }
         }
