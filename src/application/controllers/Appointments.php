@@ -753,6 +753,24 @@ class Appointments extends CI_Controller {
                     }
                 }
 
+                if (date('Y-m-d', strtotime($selectedDate)) === date('Y-m-d'))
+                {
+                    $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
+
+                    foreach ($hours as $index => $value)
+                    {
+                        $available_hour = strtotime($value);
+                        $current_hour = strtotime('+' . $book_advance_timeout . ' minutes', strtotime('now'));
+                        if ($available_hour <= $current_hour)
+                        {
+                            unset($hours[$index]);
+                        }
+                    }
+                }
+
+                $hours = array_values($hours);
+                sort($hours, SORT_STRING);
+
                 $this->output
                     ->set_content_type('application/json')
                     ->set_output(json_encode($hours));
