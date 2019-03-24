@@ -53,7 +53,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         var appointmentId = FrontendBook.manageMode ? GlobalVariables.appointmentData.id : undefined;
 
         // Make ajax post request and get the available hours.
-        var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_available_hours';
+        var postUrl = GlobalVariables.baseUrl + '/index.php/appointments/ajax_get_available_slots';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             service_id: selectedService['id'],

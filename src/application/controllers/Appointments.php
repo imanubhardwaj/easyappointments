@@ -392,7 +392,7 @@ class Appointments extends CI_Controller {
         }
     }
 
-    public function get_available_slots() {
+    public function ajax_get_available_slots() {
         $this->load->model('providers_model');
         $this->load->model('appointments_model');
         $this->load->model('settings_model');
