@@ -451,13 +451,10 @@ class Appointments extends CI_Controller {
                             $break_start = $this->get_utc_timestamp($previousDate . ' ' . $break['start'] . ':00 ' . $timezone);
                             $break_end   = $this->get_utc_timestamp($previousDate . ' ' . $break['end'] . ':00 ' . $timezone);
 
-                            if(($break_start > $previous_date_working_plan['start']) &&
-                                ($break_end < $previous_date_working_plan['end'])) {
-                                array_push($periods, [
-                                    'start' => $break_start,
-                                    'end'   => $break_end
-                                ]);
-                            }
+                            array_push($periods, [
+                                'start' => $break_start,
+                                'end'   => $break_end
+                            ]);
                         }
                     }
 
@@ -474,22 +471,12 @@ class Appointments extends CI_Controller {
                                 $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
                                 $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
 
-                                if(($break_start > $selected_date_working_plan['start']) &&
-                                    ($break_end < $selected_date_working_plan['end'])) {
-                                    array_push($periods, [
-                                        'start' => $break_start,
-                                        'end'   => $break_end
-                                    ]);
-                                }
+                                array_push($periods, [
+                                    'start' => $break_start,
+                                    'end'   => $break_end
+                                ]);
                             }
                         }
-                    } else {
-                        $start        = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 '.$timezone);
-                        $end = strtotime($previousDate . ' 23:59:59');
-                        array_push($periods, [
-                            'start' => $start < $end ? $start : $end,
-                            'end'   => $end
-                        ]);
                     }
 
                     if($next_date_working_plan) {
@@ -501,11 +488,11 @@ class Appointments extends CI_Controller {
                                 'end'   => $end
                             ]);
                         } else {
-                            $start = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
-                            $start_of_day = strtotime($nextDate . ' 00:00:00');
+                            $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
+                            $end   = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
                             array_push($periods, [
-                                'start' => $start_of_day,
-                                'end'   => $start > $start_of_day ? $start : $start_of_day
+                                'start' => $start,
+                                'end'   => $end
                             ]);
                         }
 
@@ -523,14 +510,27 @@ class Appointments extends CI_Controller {
                                 $break_start = $this->get_utc_timestamp($nextDate . ' ' . $break['start'] . ':00 ' . $timezone);
                                 $break_end   = $this->get_utc_timestamp($nextDate . ' ' . $break['end'] . ':00 ' . $timezone);
 
-                                if(($break_start > $next_date_working_plan['start']) &&
-                                    ($break_end < $next_date_working_plan['end'])) {
-                                    array_push($periods, [
-                                        'start' => $break_start,
-                                        'end'   => $break_end
-                                    ]);
-                                }
+                                array_push($periods, [
+                                    'start' => $break_start,
+                                    'end'   => $break_end
+                                ]);
                             }
+                        }
+                    }  else {
+                        if($selected_date_working_plan) {
+                            $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
+                            $end   = strtotime($selectedDate . ' 23:59:59');
+                            array_push($periods, [
+                                'start' => $start < $end ? $start : $end,
+                                'end'   => $end
+                            ]);
+                        } else {
+                            $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
+                            $end   = strtotime($previousDate . ' 23:59:59');
+                            array_push($periods, [
+                                'start' => $start < $end ? $start : $end,
+                                'end'   => $end
+                            ]);
                         }
                     }
                 } else {
@@ -550,13 +550,10 @@ class Appointments extends CI_Controller {
                                 $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
                                 $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
 
-                                if(($break_start > $selected_date_working_plan['start']) &&
-                                    ($break_end < $selected_date_working_plan['end'])) {
-                                    array_push($periods, [
-                                        'start' => $break_start,
-                                        'end'   => $break_end
-                                    ]);
-                                }
+                                array_push($periods, [
+                                    'start' => $break_start,
+                                    'end'   => $break_end
+                                ]);
                             }
                         }
 
@@ -587,21 +584,18 @@ class Appointments extends CI_Controller {
                             if (isset($next_date_working_plan['breaks'])) {
                                 foreach ($next_date_working_plan['breaks'] as $index => $break) {
                                     $break_start = $this->get_utc_timestamp(
-                                        $nextDate .' ' . $break['start'] . ':00 '.
+                                        $nextDate . ' ' . $break['start'] . ':00 ' .
                                         $timezone
                                     );
                                     $break_end   = $this->get_utc_timestamp(
-                                        $nextDate .' ' . $break['end'] . ':00 '.
+                                        $nextDate . ' ' . $break['end'] . ':00 ' .
                                         $timezone
                                     );
 
-                                    if(($break_start > $next_date_working_plan['start']) &&
-                                        ($break_end < $next_date_working_plan['end'])) {
-                                        array_push($periods, [
-                                            'start' => $break_start,
-                                            'end'   => $break_end
-                                        ]);
-                                    }
+                                    array_push($periods, [
+                                        'start' => $break_start,
+                                        'end'   => $break_end
+                                    ]);
                                 }
                             }
                         } else {
@@ -641,21 +635,18 @@ class Appointments extends CI_Controller {
                             if (isset($next_date_working_plan['breaks'])) {
                                 foreach ($next_date_working_plan['breaks'] as $index => $break) {
                                     $break_start = $this->get_utc_timestamp(
-                                        $nextDate .' ' . $break['start']. ':00 '.
+                                        $nextDate . ' ' . $break['start'] . ':00 ' .
                                         $timezone
                                     );
                                     $break_end   = $this->get_utc_timestamp(
-                                        $nextDate .' ' . $break['end']. ':00 '.
+                                        $nextDate . ' ' . $break['end'] . ':00 ' .
                                         $timezone
                                     );
 
-                                    if(($break_start > $next_date_working_plan['start']) &&
-                                        ($break_end < $next_date_working_plan['end'])) {
-                                        array_push($periods, [
-                                            'start' => $break_start,
-                                            'end'   => $break_end
-                                        ]);
-                                    }
+                                    array_push($periods, [
+                                        'start' => $break_start,
+                                        'end'   => $break_end
+                                    ]);
                                 }
                             }
                         }
