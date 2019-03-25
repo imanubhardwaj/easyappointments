@@ -403,285 +403,10 @@ class Appointments extends CI_Controller {
         $userTimezone = $this->input->post('timezone');
 
         $selectedDate = $this->input->post('selected_date');
+        $service = $this->services_model->get_row($serviceId);
         if($selectedDate) {
             try {
-                $day_start_timestamp = strtotime($selectedDate.' 00:00:00');
-                $day_end_timestamp = strtotime($selectedDate.' 23:59:59');
-                $user_current_timestamp = strtotime((new DateTime())->format('Y-m-d H:i:s'));
-                $periods = [];
-                $previousDate = (new DateTime($selectedDate . ' -1 day'))->format('Y-m-d');
-                $nextDate     = (new DateTime($selectedDate . ' +1 day'))->format('Y-m-d');
-
-                $service = $this->services_model->get_row($serviceId);
-                $provider = $this->providers_model->get_row($providerId);
-                $timezone = $provider['settings']['timezone'];
-
-                $working_plan = json_decode($this->providers_model->get_setting('working_plan', $providerId), TRUE);
-
-                $previous_date_working_plan = $working_plan[strtolower(date('l', strtotime($previousDate)))];
-                $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selectedDate)))];
-                $next_date_working_plan = $working_plan[strtolower(date('l', strtotime($nextDate)))];
-
-                // Get the service, provider's appointments.
-                $provider_appointments = $this->appointments_model->get_batch([
-                    'id_users_provider' => $providerId,
-                ]);
-
-                if($user_current_timestamp > $day_end_timestamp) {
-                    $this->output
-                        ->set_content_type('application/json')
-                        ->set_output(json_encode([]));
-                } else {
-                    array_push($periods, [
-                        'start' => $day_end_timestamp + (intval($service['duration']) * 60),
-                        'end' => ($day_end_timestamp + 86400*2)
-                    ]);
-                }
-
-                if ($previous_date_working_plan) {
-                    $start        = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['start'] . ':00 '.$timezone);
-                    $start_of_day = strtotime($previousDate . ' 00:00:00');
-                    array_push($periods, [
-                        'start' => $start_of_day,
-                        'end'   => $start > $start_of_day ? $start : $start_of_day
-                    ]);
-
-                    if (isset($previous_date_working_plan['breaks'])) {
-                        foreach ($previous_date_working_plan['breaks'] as $index => $break) {
-                            $break_start = $this->get_utc_timestamp($previousDate . ' ' . $break['start'] . ':00 ' . $timezone);
-                            $break_end   = $this->get_utc_timestamp($previousDate . ' ' . $break['end'] . ':00 ' . $timezone);
-
-                            array_push($periods, [
-                                'start' => $break_start,
-                                'end'   => $break_end
-                            ]);
-                        }
-                    }
-
-                    if ($selected_date_working_plan) {
-                        $start        = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 '.$timezone);
-                        $end        = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 '.$timezone);
-                        array_push($periods, [
-                            'start' => $start,
-                            'end'   => $end
-                        ]);
-
-                        if (isset($selected_date_working_plan['breaks'])) {
-                            foreach ($selected_date_working_plan['breaks'] as $index => $break) {
-                                $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
-                                $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
-
-                                array_push($periods, [
-                                    'start' => $break_start,
-                                    'end'   => $break_end
-                                ]);
-                            }
-                        }
-                    }
-
-                    if($next_date_working_plan) {
-                        if ($selected_date_working_plan) {
-                            $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
-                            $end   = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
-                            array_push($periods, [
-                                'start' => $start,
-                                'end'   => $end
-                            ]);
-                        } else {
-                            $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
-                            $end   = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
-                            array_push($periods, [
-                                'start' => $start,
-                                'end'   => $end
-                            ]);
-                        }
-
-                        $start      = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['end'] . ':00 ' .
-                            $timezone
-                        );
-                        $end_of_day = strtotime($nextDate . ' 23:59:59');
-                        array_push($periods, [
-                            'start' => $start < $end_of_day ? $start : $end_of_day,
-                            'end'   => $end_of_day
-                        ]);
-
-                        if (isset($next_date_working_plan['breaks'])) {
-                            foreach ($next_date_working_plan['breaks'] as $index => $break) {
-                                $break_start = $this->get_utc_timestamp($nextDate . ' ' . $break['start'] . ':00 ' . $timezone);
-                                $break_end   = $this->get_utc_timestamp($nextDate . ' ' . $break['end'] . ':00 ' . $timezone);
-
-                                array_push($periods, [
-                                    'start' => $break_start,
-                                    'end'   => $break_end
-                                ]);
-                            }
-                        }
-                    }  else {
-                        if($selected_date_working_plan) {
-                            $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
-                            $end   = strtotime($selectedDate . ' 23:59:59');
-                            array_push($periods, [
-                                'start' => $start < $end ? $start : $end,
-                                'end'   => $end
-                            ]);
-                        } else {
-                            $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
-                            $end   = strtotime($previousDate . ' 23:59:59');
-                            array_push($periods, [
-                                'start' => $start < $end ? $start : $end,
-                                'end'   => $end
-                            ]);
-                        }
-                    }
-                } else {
-                    if($selected_date_working_plan) {
-                        $start        = $this->get_utc_timestamp(
-                            $selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 '.
-                            $timezone
-                        );
-                        $start_of_day = strtotime($selectedDate . ' 00:00:00');
-                        array_push($periods, [
-                            'start' => $start_of_day,
-                            'end'   => $start > $start_of_day ? $start : $start_of_day
-                        ]);
-
-                        if (isset($selected_date_working_plan['breaks'])) {
-                            foreach ($selected_date_working_plan['breaks'] as $index => $break) {
-                                $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
-                                $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
-
-                                array_push($periods, [
-                                    'start' => $break_start,
-                                    'end'   => $break_end
-                                ]);
-                            }
-                        }
-
-                        if($next_date_working_plan) {
-                            $start        = $this->get_utc_timestamp(
-                                $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 '.
-                                $timezone
-                            );
-                            $end = $this->get_utc_timestamp(
-                                $nextDate . ' ' . $next_date_working_plan['start'] . ':00 '.
-                                $timezone
-                            );
-                            array_push($periods, [
-                                'start' => $start,
-                                'end'   => $end
-                            ]);
-
-                            $start        = $this->get_utc_timestamp(
-                                $nextDate . ' ' . $next_date_working_plan['end'] . ':00 '.
-                                $timezone
-                            );
-                            $end_of_day = strtotime($nextDate . ' 23:59:59');
-                            array_push($periods, [
-                                'start' => $start < $end_of_day ? $start : $end_of_day,
-                                'end'   => $end_of_day
-                            ]);
-
-                            if (isset($next_date_working_plan['breaks'])) {
-                                foreach ($next_date_working_plan['breaks'] as $index => $break) {
-                                    $break_start = $this->get_utc_timestamp(
-                                        $nextDate . ' ' . $break['start'] . ':00 ' .
-                                        $timezone
-                                    );
-                                    $break_end   = $this->get_utc_timestamp(
-                                        $nextDate . ' ' . $break['end'] . ':00 ' .
-                                        $timezone
-                                    );
-
-                                    array_push($periods, [
-                                        'start' => $break_start,
-                                        'end'   => $break_end
-                                    ]);
-                                }
-                            }
-                        } else {
-                            $start        = $this->get_utc_timestamp(
-                                $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00'.
-                                $timezone
-                            );
-                            $end_of_day = $selectedDate . ' 23:59:59';
-                            array_push($periods, [
-                                'start' => $start < $end_of_day ? $start : $end_of_day,
-                                'end'   => $end_of_day
-                            ]);
-
-                        }
-                    } else {
-                        if($next_date_working_plan) {
-                            $start        = $this->get_utc_timestamp(
-                                $nextDate . ' ' . $next_date_working_plan['start']. ':00 '.
-                                $timezone
-                            );
-                            $start_of_day = $nextDate . ' 00:00:00';
-                            array_push($periods, [
-                                'start' => $start_of_day,
-                                'end'   => $start > $start_of_day ? $start : $start_of_day
-                            ]);
-
-                            $start        = $this->get_utc_timestamp(
-                                $nextDate . ' ' . $next_date_working_plan['end']. ':00 '.
-                                $timezone
-                            );
-                            $end_of_day = $nextDate . ' 23:59:59';
-                            array_push($periods, [
-                                'start' => $start < $end_of_day ? $start : $end_of_day,
-                                'end'   => $end_of_day
-                            ]);
-
-                            if (isset($next_date_working_plan['breaks'])) {
-                                foreach ($next_date_working_plan['breaks'] as $index => $break) {
-                                    $break_start = $this->get_utc_timestamp(
-                                        $nextDate . ' ' . $break['start'] . ':00 ' .
-                                        $timezone
-                                    );
-                                    $break_end   = $this->get_utc_timestamp(
-                                        $nextDate . ' ' . $break['end'] . ':00 ' .
-                                        $timezone
-                                    );
-
-                                    array_push($periods, [
-                                        'start' => $break_start,
-                                        'end'   => $break_end
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                foreach ($provider_appointments as $provider_appointment) {
-                    $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                    if($appt_date == $previousDate || $appt_date == $selectedDate || $appt_date == $nextDate) {
-                        array_push($periods, [
-                            'start' => strtotime($provider_appointment['start_datetime']),
-                            'end'   => strtotime($provider_appointment['end_datetime'])
-                        ]);
-                    }
-                }
-
-                $sorted_periods = array();
-                foreach ($periods as $key => $row)
-                {
-                    $sorted_periods[$key] = $row['start'];
-                }
-                array_multisort($sorted_periods, SORT_ASC, $periods);
-
-                $free_periods = [];
-
-                // Find free periods by adjacent comparisons
-                for($i = 0; $i < count($periods); $i++) {
-                    if(($i + 1) < count($periods) && $periods[$i]['end'] < $periods[$i+1]['start']) {
-                        array_push($free_periods, [
-                            'start' => $periods[$i]['end'],
-                            'end' => $periods[$i+1]['start']
-                        ]);
-                    }
-                }
-
+                $free_periods = $this->_get_available_periods($providerId, $service['duration'], $selectedDate);
                 $available_hours = [];
 
                 foreach ($free_periods as $period)
@@ -736,8 +461,295 @@ class Appointments extends CI_Controller {
                     ->set_content_type('application/json')
                     ->set_output(json_encode($hours));
             } catch (Exception $e) {
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode($e));
             }
         }
+    }
+
+    public function _get_available_periods($providerId, $serviceDuration, $selectedDate) {
+        $this->load->model('providers_model');
+        $this->load->model('appointments_model');
+        $this->load->model('settings_model');
+        $this->load->model('services_model');
+
+        $day_start_timestamp    = strtotime($selectedDate . ' 00:00:00');
+        $day_end_timestamp      = strtotime($selectedDate . ' 23:59:59');
+        $user_current_timestamp = strtotime((new DateTime())->format('Y-m-d H:i:s'));
+        $periods                = [];
+        $previousDate           = (new DateTime($selectedDate . ' -1 day'))->format('Y-m-d');
+        $nextDate               = (new DateTime($selectedDate . ' +1 day'))->format('Y-m-d');
+
+        $provider = $this->providers_model->get_row($providerId);
+        $timezone = $provider['settings']['timezone'];
+
+        $working_plan = json_decode($this->providers_model->get_setting('working_plan', $providerId), TRUE);
+
+        $previous_date_working_plan = $working_plan[strtolower(date('l', strtotime($previousDate)))];
+        $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selectedDate)))];
+        $next_date_working_plan     = $working_plan[strtolower(date('l', strtotime($nextDate)))];
+
+        // Get the service, provider's appointments.
+        $provider_appointments = $this->appointments_model->get_batch([
+            'id_users_provider' => $providerId,
+        ]);
+
+        if ($user_current_timestamp > $day_end_timestamp) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([]));
+        } else {
+            array_push($periods, [
+                'start' => $day_end_timestamp + (intval($serviceDuration) * 60),
+                'end'   => ($day_end_timestamp + 86400 * 2)
+            ]);
+        }
+
+        if ($previous_date_working_plan) {
+            $start        = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['start'] . ':00 ' . $timezone);
+            $start_of_day = strtotime($previousDate . ' 00:00:00');
+            array_push($periods, [
+                'start' => $start_of_day,
+                'end'   => $start > $start_of_day ? $start : $start_of_day
+            ]);
+
+            if (isset($previous_date_working_plan['breaks'])) {
+                foreach ($previous_date_working_plan['breaks'] as $index => $break) {
+                    $break_start = $this->get_utc_timestamp($previousDate . ' ' . $break['start'] . ':00 ' . $timezone);
+                    $break_end   = $this->get_utc_timestamp($previousDate . ' ' . $break['end'] . ':00 ' . $timezone);
+
+                    array_push($periods, [
+                        'start' => $break_start,
+                        'end'   => $break_end
+                    ]);
+                }
+            }
+
+            if ($selected_date_working_plan) {
+                $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
+                $end   = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 ' . $timezone);
+                array_push($periods, [
+                    'start' => $start,
+                    'end'   => $end
+                ]);
+
+                if (isset($selected_date_working_plan['breaks'])) {
+                    foreach ($selected_date_working_plan['breaks'] as $index => $break) {
+                        $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
+                        $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
+
+                        array_push($periods, [
+                            'start' => $break_start,
+                            'end'   => $break_end
+                        ]);
+                    }
+                }
+            }
+
+            if ($next_date_working_plan) {
+                if ($selected_date_working_plan) {
+                    $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
+                    $end   = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
+                    array_push($periods, [
+                        'start' => $start,
+                        'end'   => $end
+                    ]);
+                } else {
+                    $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
+                    $end   = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' . $timezone);
+                    array_push($periods, [
+                        'start' => $start,
+                        'end'   => $end
+                    ]);
+                }
+
+                $start      = $this->get_utc_timestamp($nextDate . ' ' . $next_date_working_plan['end'] . ':00 ' .
+                    $timezone
+                );
+                $end_of_day = strtotime($nextDate . ' 23:59:59');
+                array_push($periods, [
+                    'start' => $start < $end_of_day ? $start : $end_of_day,
+                    'end'   => $end_of_day
+                ]);
+
+                if (isset($next_date_working_plan['breaks'])) {
+                    foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                        $break_start = $this->get_utc_timestamp($nextDate . ' ' . $break['start'] . ':00 ' . $timezone);
+                        $break_end   = $this->get_utc_timestamp($nextDate . ' ' . $break['end'] . ':00 ' . $timezone);
+
+                        array_push($periods, [
+                            'start' => $break_start,
+                            'end'   => $break_end
+                        ]);
+                    }
+                }
+            } else {
+                if ($selected_date_working_plan) {
+                    $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
+                    $end   = strtotime($selectedDate . ' 23:59:59');
+                    array_push($periods, [
+                        'start' => $start < $end ? $start : $end,
+                        'end'   => $end
+                    ]);
+                } else {
+                    $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
+                    $end   = strtotime($previousDate . ' 23:59:59');
+                    array_push($periods, [
+                        'start' => $start < $end ? $start : $end,
+                        'end'   => $end
+                    ]);
+                }
+            }
+        } else {
+            if ($selected_date_working_plan) {
+                $start        = $this->get_utc_timestamp(
+                    $selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 ' .
+                    $timezone
+                );
+                $start_of_day = strtotime($selectedDate . ' 00:00:00');
+                array_push($periods, [
+                    'start' => $start_of_day,
+                    'end'   => $start > $start_of_day ? $start : $start_of_day
+                ]);
+
+                if (isset($selected_date_working_plan['breaks'])) {
+                    foreach ($selected_date_working_plan['breaks'] as $index => $break) {
+                        $break_start = $this->get_utc_timestamp($selectedDate . ' ' . $break['start'] . ':00 ' . $timezone);
+                        $break_end   = $this->get_utc_timestamp($selectedDate . ' ' . $break['end'] . ':00 ' . $timezone);
+
+                        array_push($periods, [
+                            'start' => $break_start,
+                            'end'   => $break_end
+                        ]);
+                    }
+                }
+
+                if ($next_date_working_plan) {
+                    $start = $this->get_utc_timestamp(
+                        $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' .
+                        $timezone
+                    );
+                    $end   = $this->get_utc_timestamp(
+                        $nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' .
+                        $timezone
+                    );
+                    array_push($periods, [
+                        'start' => $start,
+                        'end'   => $end
+                    ]);
+
+                    $start      = $this->get_utc_timestamp(
+                        $nextDate . ' ' . $next_date_working_plan['end'] . ':00 ' .
+                        $timezone
+                    );
+                    $end_of_day = strtotime($nextDate . ' 23:59:59');
+                    array_push($periods, [
+                        'start' => $start < $end_of_day ? $start : $end_of_day,
+                        'end'   => $end_of_day
+                    ]);
+
+                    if (isset($next_date_working_plan['breaks'])) {
+                        foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                            $break_start = $this->get_utc_timestamp(
+                                $nextDate . ' ' . $break['start'] . ':00 ' .
+                                $timezone
+                            );
+                            $break_end   = $this->get_utc_timestamp(
+                                $nextDate . ' ' . $break['end'] . ':00 ' .
+                                $timezone
+                            );
+
+                            array_push($periods, [
+                                'start' => $break_start,
+                                'end'   => $break_end
+                            ]);
+                        }
+                    }
+                } else {
+                    $start      = $this->get_utc_timestamp(
+                        $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00' .
+                        $timezone
+                    );
+                    $end_of_day = $selectedDate . ' 23:59:59';
+                    array_push($periods, [
+                        'start' => $start < $end_of_day ? $start : $end_of_day,
+                        'end'   => $end_of_day
+                    ]);
+
+                }
+            } else {
+                if ($next_date_working_plan) {
+                    $start        = $this->get_utc_timestamp(
+                        $nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' .
+                        $timezone
+                    );
+                    $start_of_day = $nextDate . ' 00:00:00';
+                    array_push($periods, [
+                        'start' => $start_of_day,
+                        'end'   => $start > $start_of_day ? $start : $start_of_day
+                    ]);
+
+                    $start      = $this->get_utc_timestamp(
+                        $nextDate . ' ' . $next_date_working_plan['end'] . ':00 ' .
+                        $timezone
+                    );
+                    $end_of_day = $nextDate . ' 23:59:59';
+                    array_push($periods, [
+                        'start' => $start < $end_of_day ? $start : $end_of_day,
+                        'end'   => $end_of_day
+                    ]);
+
+                    if (isset($next_date_working_plan['breaks'])) {
+                        foreach ($next_date_working_plan['breaks'] as $index => $break) {
+                            $break_start = $this->get_utc_timestamp(
+                                $nextDate . ' ' . $break['start'] . ':00 ' .
+                                $timezone
+                            );
+                            $break_end   = $this->get_utc_timestamp(
+                                $nextDate . ' ' . $break['end'] . ':00 ' .
+                                $timezone
+                            );
+
+                            array_push($periods, [
+                                'start' => $break_start,
+                                'end'   => $break_end
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($provider_appointments as $provider_appointment) {
+            $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+            if ($appt_date == $previousDate || $appt_date == $selectedDate || $appt_date == $nextDate) {
+                array_push($periods, [
+                    'start' => strtotime($provider_appointment['start_datetime']),
+                    'end'   => strtotime($provider_appointment['end_datetime'])
+                ]);
+            }
+        }
+
+        $sorted_periods = array();
+        foreach ($periods as $key => $row) {
+            $sorted_periods[$key] = $row['start'];
+        }
+        array_multisort($sorted_periods, SORT_ASC, $periods);
+
+        $free_periods = [];
+
+        // Find free periods by adjacent comparisons
+        for ($i = 0; $i < count($periods); $i++) {
+            if (($i + 1) < count($periods) && $periods[$i]['end'] < $periods[$i + 1]['start']) {
+                array_push($free_periods, [
+                    'start' => $periods[$i]['end'],
+                    'end'   => $periods[$i + 1]['start']
+                ]);
+            }
+        }
+
+        return $free_periods;
     }
 
     private function get_utc_timestamp($time) {
@@ -1184,10 +1196,9 @@ class Appointments extends CI_Controller {
             return TRUE; // The selected provider is always available.
         }
 
-        $available_periods = $this->_get_provider_available_time_periods(
-            $appointment['id_users_provider'], $appointment['id_services'],
-            date('Y-m-d', strtotime($appointment['start_datetime'])),
-            $exclude_appointments);
+        $available_periods = $this->_get_available_periods(
+            $appointment['id_users_provider'], $service_duration,
+            date('Y-m-d', strtotime($appointment['start_datetime'])));
 
         $is_still_available = FALSE;
 
@@ -1200,8 +1211,8 @@ class Appointments extends CI_Controller {
             $appt_end->add(new DateInterval('PT' . $service_duration . 'M'));
             $appt_end = $appt_end->format('H:i');
 
-            $period_start = date('H:i', strtotime($period['start']));
-            $period_end = date('H:i', strtotime($period['end']));
+            $period_start = date('H:i', $period['start']);
+            $period_end = date('H:i', $period['end']);
 
             if ($period_start <= $appt_start && $period_end >= $appt_end)
             {
