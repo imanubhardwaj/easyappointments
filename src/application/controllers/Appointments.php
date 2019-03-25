@@ -761,6 +761,8 @@ class Appointments extends CI_Controller {
                     {
                         $available_hour = strtotime($value);
                         $current_hour = strtotime('+' . $book_advance_timeout . ' minutes', strtotime('now'));
+                        $current_hour = strtotime($this->remove_time_offset(date('H:i', $current_hour),
+                            $userTimezone, 0));
                         if ($available_hour <= $current_hour)
                         {
                             unset($hours[$index]);
