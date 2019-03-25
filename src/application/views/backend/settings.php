@@ -539,5 +539,25 @@
             </p>
         </div>
 
+        <!-- INVALID WORKPLAN MODAL -->
+
+        <div id="workplan-error" class="modal fade" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Invalid Workplan</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <p>Workplan end must be greater than and on the same date as workplan start.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="cancel" class="btn btn-default" data-dismiss="modal"><?= lang('cancel') ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

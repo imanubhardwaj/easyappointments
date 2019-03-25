@@ -400,17 +400,21 @@ class Appointments extends CI_Controller {
 
         $providerId = $this->input->post('provider_id');
         $serviceId = $this->input->post('service_id');
+        $userTimezone = $this->input->post('timezone');
 
         $selectedDate = $this->input->post('selected_date');
         if($selectedDate) {
             try {
+                $day_start_timestamp = strtotime($selectedDate.' 00:00:00');
+                $day_end_timestamp = strtotime($selectedDate.' 23:59:59');
+                $user_current_timestamp = strtotime((new DateTime())->format('Y-m-d H:i:s'));
+                $periods = [];
                 $previousDate = (new DateTime($selectedDate . ' -1 day'))->format('Y-m-d');
                 $nextDate     = (new DateTime($selectedDate . ' +1 day'))->format('Y-m-d');
 
                 $service = $this->services_model->get_row($serviceId);
                 $provider = $this->providers_model->get_row($providerId);
                 $timezone = $provider['settings']['timezone'];
-                $userTimezone = $this->input->post('timezone');
 
                 $working_plan = json_decode($this->providers_model->get_setting('working_plan', $providerId), TRUE);
 
@@ -423,7 +427,17 @@ class Appointments extends CI_Controller {
                     'id_users_provider' => $providerId,
                 ]);
 
-                $periods = [];
+                if($user_current_timestamp > $day_end_timestamp) {
+                    $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode([]));
+                } else {
+                    array_push($periods, [
+                        'start' => $day_end_timestamp + (intval($service['duration']) * 60),
+                        'end' => ($day_end_timestamp + 86400*2)
+                    ]);
+                }
+
                 if ($previous_date_working_plan) {
                     $start        = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['start'] . ':00 '.$timezone);
                     $start_of_day = strtotime($previousDate . ' 00:00:00');
@@ -652,8 +666,8 @@ class Appointments extends CI_Controller {
                     $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
                     if($appt_date == $previousDate || $appt_date == $selectedDate || $appt_date == $nextDate) {
                         array_push($periods, [
-                            'start' => $provider_appointment['start_datetime'],
-                            'end'   => $provider_appointment['end_datetime']
+                            'start' => strtotime($provider_appointment['start_datetime']),
+                            'end'   => strtotime($provider_appointment['end_datetime'])
                         ]);
                     }
                 }
@@ -681,8 +695,8 @@ class Appointments extends CI_Controller {
 
                 foreach ($free_periods as $period)
                 {
-                    $start_hour = new DateTime($period['start']);
-                    $end_hour = new DateTime($period['end']);
+                    $start_hour = new DateTime(date('Y-m-d H:i:s', $period['start']));
+                    $end_hour = new DateTime(date('Y-m-d H:i:s', $period['end']));
                     $interval = 5;
 
                     $current_hour = $start_hour;
@@ -738,7 +752,6 @@ class Appointments extends CI_Controller {
     private function get_utc_timestamp($time) {
         if($time) {
             $date = new DateTime($time);
-            $date->setTimezone(new DateTimeZone('UTC'));
             return $date->getTimestamp();
         }
         return null;

@@ -48,8 +48,8 @@
         $.each(workingPlan, function (index, workingDay) {
             if (workingDay != null) {
                 $('#' + index).prop('checked', true);
-                $('#' + index + '-start').val(moment(workingDay.start, 'HH:mm').local().format('h:mm A'));
-                $('#' + index + '-end').val(moment(workingDay.end, 'HH:mm').local().format('h:mm A'));
+                $('#' + index + '-start').val(moment(workingDay.start, 'HH:mm').format('h:mm A'));
+                $('#' + index + '-end').val(moment(workingDay.end, 'HH:mm').format('h:mm A'));
 
                 // Add the day's breaks on the breaks table.
                 $.each(workingDay.breaks, function (i, brk) {
@@ -58,8 +58,8 @@
                     var tr =
                         '<tr>' +
                         '<td class="break-day editable">' + GeneralFunctions.ucaseFirstLetter(day) + '</td>' +
-                        '<td class="break-start editable">' + moment(brk.start, 'HH:mm').local().format('h:mm A') + '</td>' +
-                        '<td class="break-end editable">' + moment(brk.end, 'HH:mm').local().format('h:mm A') + '</td>' +
+                        '<td class="break-start editable">' + moment(brk.start, 'HH:mm').format('h:mm A') + '</td>' +
+                        '<td class="break-end editable">' + moment(brk.end, 'HH:mm').format('h:mm A') + '</td>' +
                         '<td>' +
                         '<button type="button" class="btn btn-default btn-sm edit-break" title="' + EALang.edit + '">' +
                         '<span class="glyphicon glyphicon-pencil"></span>' +
@@ -376,6 +376,14 @@
 
                     if (start > end) {
                         $(this).parent().parent().find('.work-end').val(start.addHours(1).toString(GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm'));
+                    }
+                },
+                onClose: function () {
+                    var start = Date.parse($(this).parent().parent().find('.work-start').val()),
+                        end = Date.parse($(this).parent().parent().find('.work-end').val());
+
+                    if (end < start) {
+                        $('#workplan-error').modal('show');
                     }
                 }
             });
