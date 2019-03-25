@@ -982,7 +982,52 @@ class Appointments extends CI_Controller {
             }
 
             // :: SEND NOTIFICATION EMAILS TO BOTH CUSTOMER AND PROVIDER
-            try {
+            try
+            {
+                $this->config->load('email');
+                $email = new \EA\Engine\Notifications\Email($this, $this->config->config);
+
+                if ($post_data['manage_mode'] == FALSE)
+                {
+                    $customer_title = new Text($this->lang->line('appointment_booked'));
+                    $customer_message = new Text('Your appointment with ' . $provider['first_name'] . ' ' . $provider['last_name'] .' is confirmed. Please check below for more details.');
+                    $provider_title = new Text($this->lang->line('appointment_added_to_your_plan'));
+                    $provider_message = new Text($customer['first_name'] . ' ' . $customer['last_name'] . ' has booked an appointment for '. $service['name']. '.');
+
+                }
+                else
+                {
+                    $customer_title = new Text($this->lang->line('appointment_changes_saved'));
+                    $customer_message = new Text('');
+                    $provider_title = new Text($this->lang->line('appointment_details_changed'));
+                    $provider_message = new Text('');
+                }
+
+                $customer_link = new Url(site_url('appointments/index/' . $appointment['hash']));
+                $provider_link = new Url(site_url('backend/index/' . $appointment['hash']));
+
+                $send_customer = filter_var($this->settings_model->get_setting('customer_notifications'),
+                    FILTER_VALIDATE_BOOLEAN);
+
+                $this->load->library('ics_file');
+                $ics_stream = $this->ics_file->get_stream($appointment, $service, $provider, $customer);
+
+//                if ($send_customer === TRUE)
+//                {
+                $email->sendAppointmentDetails($appointment, $provider,
+                    $service, $customer, $company_settings, $customer_title,
+                    $customer_message, $customer_link, new Email($customer['email']), new Text($ics_stream), true);
+//                }
+
+                $send_provider = filter_var($this->providers_model->get_setting('notifications', $provider['id']),
+                    FILTER_VALIDATE_BOOLEAN);
+
+//                if ($send_provider === TRUE)
+//                {
+                $email->sendAppointmentDetails($appointment, $provider,
+                    $service, $customer, $company_settings, $provider_title,
+                    $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), false);
+//                }
             }
             catch (Exception $exc)
             {
