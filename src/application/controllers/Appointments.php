@@ -460,7 +460,7 @@ class Appointments extends CI_Controller {
             } catch (Exception $e) {
                 $this->output
                     ->set_content_type('application/json')
-                    ->set_output(json_encode($e));
+                    ->set_output(json_encode($e->getMessage()));
             }
         }
     }
@@ -477,7 +477,7 @@ class Appointments extends CI_Controller {
         $nextDate               = (new DateTime($selectedDate . ' +1 day'))->format('Y-m-d');
 
         $provider = $this->providers_model->get_row($providerId);
-        $timezone = $provider['settings']['timezone'];
+        $timezone = '-'. substr($provider['settings']['timezone'], -5);
 
         $working_plan = json_decode($this->providers_model->get_setting('working_plan', $providerId), TRUE);
 
