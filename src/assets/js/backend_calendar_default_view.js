@@ -855,8 +855,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                 // Add unavailable period before work starts.
                                 var calendarDateStart = moment($calendar.fullCalendar('getView').start.format('YYYY-MM-DD') + ' 00:00:00');
-                                var startHour = moment.utc(workingPlan[selectedDayName].start, 'HH:mm').local()
-                                    .format('HH:mm').split(':');
+                                var startHour = moment(workingPlan[selectedDayName].start, 'HH:mm').format('HH:mm').split(':');
                                 var workDateStart = calendarDateStart.clone();
                                 workDateStart.hour(parseInt(startHour[0]));
                                 workDateStart.minute(parseInt(startHour[1]));
@@ -876,7 +875,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                 // Add unavailable period after work ends.
                                 var calendarDateEnd = moment($calendar.fullCalendar('getView').end.format('YYYY-MM-DD') + ' 00:00:00');
-                                var endHour = moment.utc(workingPlan[selectedDayName].end, 'HH:mm').local()
+                                var endHour = moment(workingPlan[selectedDayName].end, 'HH:mm')
                                     .format('HH:mm').split(':');
                                 var workDateEnd = calendarDateStart.clone();
 
@@ -902,13 +901,13 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                 var breakEnd;
 
                                 $.each(workingPlan[selectedDayName].breaks, function (index, currentBreak) {
-                                    var breakStartString = moment.utc(currentBreak.start, 'HH:mm').local()
+                                    var breakStartString = moment(currentBreak.start, 'HH:mm')
                                         .format('HH:mm').split(':');
                                     breakStart = calendarDateStart.clone();
                                     breakStart.hour(parseInt(breakStartString[0]));
                                     breakStart.minute(parseInt(breakStartString[1]));
 
-                                    var breakEndString = moment.utc(currentBreak.end, 'HH:mm').local()
+                                    var breakEndString = moment(currentBreak.end, 'HH:mm')
                                         .format('HH:mm').split(':');
                                     breakEnd = calendarDateStart.clone();
                                     breakEnd.hour(parseInt(breakEndString[0]));
@@ -991,7 +990,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                         unavailablePeriod = {
                                             title: EALang.not_working,
                                             start: moment(currentDateStart.format('YYYY-MM-DD') + ' 00:00:00'),
-                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(workingDay.start, 'HH:mm').local().format('HH:mm') + ':00'),
+                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment(workingDay.start, 'HH:mm').format('HH:mm') + ':00'),
                                             allDay: false,
                                             color: '#BEBEBE',
                                             editable: false,
@@ -1010,7 +1009,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                                     if (currentDateEnd > end) {
                                         unavailablePeriod = {
                                             title: EALang.not_working,
-                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(workingDay.end, 'HH:mm').local().format('HH:mm') + ':00'),
+                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment(workingDay.end, 'HH:mm').format('HH:mm') + ':00'),
                                             end: moment(currentDateEnd.format('YYYY-MM-DD') + ' 00:00:00'),
                                             allDay: false,
                                             color: '#BEBEBE',
@@ -1038,8 +1037,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                         var unavailablePeriod = {
                                             title: EALang.break,
-                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(currentBreak.start, 'HH:mm').local().format('HH:mm')),
-                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment.utc(currentBreak.end, 'HH:mm').local().format('HH:mm')),
+                                            start: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment(currentBreak.start, 'HH:mm').format('HH:mm')),
+                                            end: moment(currentDateStart.format('YYYY-MM-DD') + ' ' + moment(currentBreak.end, 'HH:mm').format('HH:mm')),
                                             allDay: false,
                                             color: '#BEBEBE',
                                             editable: false,
