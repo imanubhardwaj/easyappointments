@@ -1466,24 +1466,6 @@ class Backend_api extends CI_Controller {
         $break1_end   = "11:30";
         $break2_start = "14:30";
         $break2_end   = "15:00";
-        $offset       = substr($timezone, 1, 5);
-
-        $secs = strtotime($offset) - strtotime("00:00");
-        if (substr($timezone, 0, 1) === '-') {
-            $startTime    = date('H:i', strtotime($startTime) + $secs);
-            $endTime      = date('H:i', strtotime($endTime) + $secs);
-            $break1_start = date('H:i', strtotime($break1_start) + $secs);
-            $break1_end   = date('H:i', strtotime($break1_end) + $secs);
-            $break2_start = date('H:i', strtotime($break2_start) + $secs);
-            $break2_end   = date('H:i', strtotime($break2_end) + $secs);
-        } else {
-            $startTime    = date('H:i', strtotime($startTime) - $secs);
-            $endTime      = date('H:i', strtotime($endTime) - $secs);
-            $break1_start = date('H:i', strtotime($break1_start) - $secs);
-            $break1_end   = date('H:i', strtotime($break1_end) - $secs);
-            $break2_start = date('H:i', strtotime($break2_start) - $secs);
-            $break2_end   = date('H:i', strtotime($break2_end) - $secs);
-        }
 
         return "{
             \"sunday\":{
