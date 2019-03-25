@@ -499,11 +499,6 @@ class Appointments extends CI_Controller {
             $this->output
                 ->set_content_type('application/json')
                 ->set_output(json_encode([]));
-        } else {
-            array_push($periods, [
-                'start' => $day_end_timestamp + (intval($serviceDuration) * 60),
-                'end'   => ($day_end_timestamp + 86400 * 2)
-            ]);
         }
 
         if ($previous_date_working_plan) {
@@ -671,7 +666,7 @@ class Appointments extends CI_Controller {
                         $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00' .
                         $timezone
                     );
-                    $end_of_day = $selectedDate . ' 23:59:59';
+                    $end_of_day = strtotime($selectedDate . ' 23:59:59');
                     array_push($periods, [
                         'start' => $start < $end_of_day ? $start : $end_of_day,
                         'end'   => $end_of_day
@@ -694,7 +689,7 @@ class Appointments extends CI_Controller {
                         $nextDate . ' ' . $next_date_working_plan['end'] . ':00 ' .
                         $timezone
                     );
-                    $end_of_day = $nextDate . ' 23:59:59';
+                    $end_of_day = strtotime($nextDate . ' 23:59:59');
                     array_push($periods, [
                         'start' => $start < $end_of_day ? $start : $end_of_day,
                         'end'   => $end_of_day
