@@ -1195,14 +1195,14 @@ class Appointments extends CI_Controller {
         foreach ($available_periods as $period)
         {
             $appt_start = new DateTime($appointment['start_datetime']);
-            $appt_start = $appt_start->format('H:i');
+            $appt_start = $appt_start->format('Y-m-d H:i:s');
 
             $appt_end = new DateTime($appointment['start_datetime']);
             $appt_end->add(new DateInterval('PT' . $service_duration . 'M'));
-            $appt_end = $appt_end->format('H:i');
+            $appt_end = $appt_end->format('Y-m-d H:i:s');
 
-            $period_start = date('H:i', $period['start']);
-            $period_end = date('H:i', $period['end']);
+            $period_start = date('Y-m-d H:i:s', $period['start']);
+            $period_end = date('Y-m-d H:i:s', $period['end']);
 
             if ($period_start <= $appt_start && $period_end >= $appt_end)
             {
