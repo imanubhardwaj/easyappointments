@@ -393,9 +393,6 @@ class Appointments extends CI_Controller {
     }
 
     public function ajax_get_available_slots() {
-        $this->load->model('providers_model');
-        $this->load->model('appointments_model');
-        $this->load->model('settings_model');
         $this->load->model('services_model');
 
         $providerId = $this->input->post('provider_id');
@@ -406,7 +403,7 @@ class Appointments extends CI_Controller {
         $service = $this->services_model->get_row($serviceId);
         if($selectedDate) {
             try {
-                $free_periods = $this->_get_available_periods($providerId, $service['duration'], $selectedDate);
+                $free_periods = $this->_get_available_periods($providerId, $selectedDate);
                 $available_hours = [];
 
                 foreach ($free_periods as $period)
@@ -439,7 +436,7 @@ class Appointments extends CI_Controller {
 
                 if (date('Y-m-d', strtotime($selectedDate)) === date('Y-m-d'))
                 {
-                    $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
+                    $book_advance_timeout = 30;
 
                     foreach ($hours as $index => $value)
                     {
@@ -468,11 +465,9 @@ class Appointments extends CI_Controller {
         }
     }
 
-    public function _get_available_periods($providerId, $serviceDuration, $selectedDate) {
+    public function _get_available_periods($providerId, $selectedDate) {
         $this->load->model('providers_model');
         $this->load->model('appointments_model');
-        $this->load->model('settings_model');
-        $this->load->model('services_model');
 
         $day_start_timestamp    = strtotime($selectedDate . ' 00:00:00');
         $day_end_timestamp      = strtotime($selectedDate . ' 23:59:59');
@@ -1192,7 +1187,7 @@ class Appointments extends CI_Controller {
         }
 
         $available_periods = $this->_get_available_periods(
-            $appointment['id_users_provider'], $service_duration,
+            $appointment['id_users_provider'],
             date('Y-m-d', strtotime($appointment['start_datetime'])));
 
         $is_still_available = FALSE;
