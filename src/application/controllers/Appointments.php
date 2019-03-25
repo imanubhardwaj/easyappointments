@@ -438,11 +438,11 @@ class Appointments extends CI_Controller {
                     if (isset($previous_date_working_plan['breaks'])) {
                         foreach ($previous_date_working_plan['breaks'] as $index => $break) {
                             $break_start = $this->remove_time_offset(
-                                $previousDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                $previousDate .' ' . $break['start'] . ':00',
                                 $timezone
                             );
                             $break_end   = $this->remove_time_offset(
-                                $previousDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                $previousDate .' ' . $break['end'] . ':00',
                                 $timezone
                             );
 
@@ -473,11 +473,11 @@ class Appointments extends CI_Controller {
                         if (isset($selected_date_working_plan['breaks'])) {
                             foreach ($selected_date_working_plan['breaks'] as $index => $break) {
                                 $break_start = $this->remove_time_offset(
-                                    $selectedDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $selectedDate .' ' . $break['start'] . ':00',
                                     $timezone
                                 );
                                 $break_end   = $this->remove_time_offset(
-                                    $selectedDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $selectedDate .' ' . $break['end'] . ':00',
                                     $timezone
                                 );
 
@@ -541,11 +541,11 @@ class Appointments extends CI_Controller {
                         if (isset($next_date_working_plan['breaks'])) {
                             foreach ($next_date_working_plan['breaks'] as $index => $break) {
                                 $break_start = $this->remove_time_offset(
-                                    $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $nextDate .' ' . $break['start'] . ':00',
                                     $timezone
                                 );
                                 $break_end   = $this->remove_time_offset(
-                                    $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $nextDate .' ' . $break['end'] . ':00',
                                     $timezone
                                 );
 
@@ -574,11 +574,11 @@ class Appointments extends CI_Controller {
                         if (isset($selected_date_working_plan['breaks'])) {
                             foreach ($selected_date_working_plan['breaks'] as $index => $break) {
                                 $break_start = $this->remove_time_offset(
-                                    $selectedDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                    $selectedDate .' ' . $break['start'] . ':00',
                                     $timezone
                                 );
                                 $break_end   = $this->remove_time_offset(
-                                    $selectedDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                    $selectedDate .' ' . $break['end'] . ':00',
                                     $timezone
                                 );
 
@@ -619,11 +619,11 @@ class Appointments extends CI_Controller {
                             if (isset($next_date_working_plan['breaks'])) {
                                 foreach ($next_date_working_plan['breaks'] as $index => $break) {
                                     $break_start = $this->remove_time_offset(
-                                        $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                        $nextDate .' ' . $break['start'] . ':00',
                                         $timezone
                                     );
                                     $break_end   = $this->remove_time_offset(
-                                        $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                        $nextDate .' ' . $break['end'] . ':00',
                                         $timezone
                                     );
 
@@ -666,18 +666,18 @@ class Appointments extends CI_Controller {
                             );
                             $end_of_day = $nextDate . ' 23:59:59';
                             array_push($periods, [
-                                'start' => $start,
-                                'end'   => $nextDate . ' 23:59:59'
+                                'start' => $start < $end_of_day ? $start : $end_of_day,
+                                'end'   => $end_of_day
                             ]);
 
                             if (isset($next_date_working_plan['breaks'])) {
                                 foreach ($next_date_working_plan['breaks'] as $index => $break) {
                                     $break_start = $this->remove_time_offset(
-                                        $nextDate .' ' . (new DateTime($break['start']))->format('H:i') . ':00',
+                                        $nextDate .' ' . $break['start'] . ':00',
                                         $timezone
                                     );
                                     $break_end   = $this->remove_time_offset(
-                                        $nextDate .' ' . (new DateTime($break['end']))->format('H:i') . ':00',
+                                        $nextDate .' ' . $break['end'] . ':00',
                                         $timezone
                                     );
 
@@ -1308,8 +1308,8 @@ class Appointments extends CI_Controller {
         // Add period for breaks
         if (isset($selected_date_working_plan['breaks'])) {
             foreach ($selected_date_working_plan['breaks'] as $index => $break) {
-                $break_start = (new DateTime($break['start']))->format('H:i');
-                $break_end   = (new DateTime($break['end']))->format('H:i');
+                $break_start = $break['start'];
+                $break_end   = $break['end'];
 
                 array_push($periods, [
                     'start' => $break_start,
