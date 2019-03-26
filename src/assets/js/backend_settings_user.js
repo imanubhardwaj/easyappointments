@@ -63,6 +63,10 @@
             Backend.displayNotification(EALang.user_settings_are_invalid);
             return; // Validation failed, do not proceed.
         }
+        if (validateWorkingPlan(JSON.parse(settings.settings.working_plan))) {
+            Backend.displayNotification('Invalid Workplan, Day end must be greater than and on same date as Day start.');
+            return;
+        }
 
         var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
         var postData = {
@@ -131,6 +135,17 @@
             return false;
         }
     };
+
+    function validateWorkingPlan(wp) {
+        let error = false;
+        Object.keys(wp).forEach(day => {
+            const wpForDay = wp[day];
+            if(wpForDay && wpForDay['start'] > wpForDay['end']) {
+                error = true;
+            }
+        });
+        return error;
+    }
 
     window.UserSettings = UserSettings;
 
