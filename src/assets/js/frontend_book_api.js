@@ -281,24 +281,27 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         url: GlobalVariables.firebase_url + '/video_events/' + user_id + '.json',
                         data: JSON.stringify(event),
                         success: function (response) {
+                            $layer.remove();
                             syncData();
                             const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
                             window.location.href = user_id ? url + '?user_id=' + user_id : url;
+                        },
+                        error: function (error) {
+                            $layer.remove();
                         }
                     });
                 } else {
+                    $layer.remove();
                     syncData();
                     const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
                     window.location.href = user_id ? url + '?user_id=' + user_id : url;
                 }
             })
             .fail(function (jqxhr, textStatus, errorThrown) {
+                $layer.remove();
                 $('.captcha-title small').trigger('click');
                 GeneralFunctions.ajaxFailureHandler(jqxhr, textStatus, errorThrown);
                 $('#final-actions').css({'display': 'block'});
-            })
-            .always(function () {
-                $layer.remove();
             });
     };
 
