@@ -281,13 +281,16 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         url: GlobalVariables.firebase_url + '/video_events/' + user_id + '.json',
                         data: JSON.stringify(event),
                         success: function (response) {
+                            syncData();
+                            const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
+                            window.location.href = user_id ? url + '?user_id=' + user_id : url;
                         }
                     });
+                } else {
+                    syncData();
+                    const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
+                    window.location.href = user_id ? url + '?user_id=' + user_id : url;
                 }
-
-                syncData();
-                const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
-                window.location.href = user_id ? url + '?user_id=' + user_id : url;
             })
             .fail(function (jqxhr, textStatus, errorThrown) {
                 $('.captcha-title small').trigger('click');
