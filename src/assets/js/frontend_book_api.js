@@ -280,7 +280,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                         type: 'POST',
                         url: GlobalVariables.firebase_url + '/video_events/' + user_id + '.json',
                         data: JSON.stringify(event),
-                        success: function (response) {
+                        success: function (res) {
                             $layer.remove();
                             syncData();
                             const url = GlobalVariables.baseUrl + '/index.php/appointments/book_success/' + response.appointment_id;
