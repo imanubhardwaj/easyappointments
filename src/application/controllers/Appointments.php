@@ -521,7 +521,8 @@ class Appointments extends CI_Controller {
 
             foreach ($provider_appointments as $provider_appointment) {
                 $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                if ($appt_date === $previousDate) {
+                $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                if ($appt_date === $previousDate || $appt_end_date === $previousDate || ($appt_date < $previousDate && $appt_end_date > $previousDate)) {
                     array_push($periods, [
                         'start' => strtotime($provider_appointment['start_datetime']),
                         'end'   => strtotime($provider_appointment['end_datetime'])
@@ -551,7 +552,8 @@ class Appointments extends CI_Controller {
 
                 foreach ($provider_appointments as $provider_appointment) {
                     $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                    if ($appt_date === $selectedDate) {
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $selectedDate || $appt_end_date === $selectedDate || ($appt_date < $selectedDate && $appt_end_date > $selectedDate)) {
                         array_push($periods, [
                             'start' => strtotime($provider_appointment['start_datetime']),
                             'end'   => strtotime($provider_appointment['end_datetime'])
@@ -600,7 +602,8 @@ class Appointments extends CI_Controller {
 
                 foreach ($provider_appointments as $provider_appointment) {
                     $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                    if ($appt_date === $nextDate) {
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
                         array_push($periods, [
                             'start' => strtotime($provider_appointment['start_datetime']),
                             'end'   => strtotime($provider_appointment['end_datetime'])
@@ -650,7 +653,8 @@ class Appointments extends CI_Controller {
 
                 foreach ($provider_appointments as $provider_appointment) {
                     $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                    if ($appt_date === $selectedDate) {
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $selectedDate || $appt_end_date === $selectedDate || ($appt_date < $selectedDate && $appt_end_date > $selectedDate)) {
                         array_push($periods, [
                             'start' => strtotime($provider_appointment['start_datetime']),
                             'end'   => strtotime($provider_appointment['end_datetime'])
@@ -702,7 +706,8 @@ class Appointments extends CI_Controller {
 
                     foreach ($provider_appointments as $provider_appointment) {
                         $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                        if ($appt_date === $nextDate) {
+                        $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                        if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
                             array_push($periods, [
                                 'start' => strtotime($provider_appointment['start_datetime']),
                                 'end'   => strtotime($provider_appointment['end_datetime'])
@@ -763,7 +768,8 @@ class Appointments extends CI_Controller {
 
                     foreach ($provider_appointments as $provider_appointment) {
                         $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
-                        if ($appt_date === $nextDate) {
+                        $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                        if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
                             array_push($periods, [
                                 'start' => strtotime($provider_appointment['start_datetime']),
                                 'end'   => strtotime($provider_appointment['end_datetime'])
