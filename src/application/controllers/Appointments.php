@@ -487,15 +487,11 @@ class Appointments extends CI_Controller {
         $previous_date_working_plan = $working_plan[strtolower(date('l', strtotime($previousDate)))];
         $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selectedDate)))];
         $next_date_working_plan     = $working_plan[strtolower(date('l', strtotime($nextDate)))];
-        $start_for_appt = $previousDate . ' 00:00:00';
-        $end_for_appt = $nextDate . ' 23:59:59';
-
-        $where_clause = 'id_users_provider = '. $providerId .
-            ' AND (start_datetime >= "' . $start_for_appt .
-            '" OR end_datetime <= "' . $end_for_appt . '")';
 
         // Get the service, provider's appointments.
-        $provider_appointments = $this->appointments_model->get_batch($where_clause);
+        $provider_appointments = $this->appointments_model->get_batch([
+            'id_users_provider' => $providerId,
+        ]);
 
         if ($user_current_timestamp > $day_end_timestamp) {
             $this->output
@@ -523,6 +519,17 @@ class Appointments extends CI_Controller {
                 }
             }
 
+            foreach ($provider_appointments as $provider_appointment) {
+                $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                if ($appt_date === $previousDate || $appt_end_date === $previousDate || ($appt_date < $previousDate && $appt_end_date > $previousDate)) {
+                    array_push($periods, [
+                        'start' => strtotime($provider_appointment['start_datetime']),
+                        'end'   => strtotime($provider_appointment['end_datetime'])
+                    ]);
+                }
+            }
+
             if ($selected_date_working_plan) {
                 $start = $this->get_utc_timestamp($previousDate . ' ' . $previous_date_working_plan['end'] . ':00 ' . $timezone);
                 $end   = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 ' . $timezone);
@@ -539,6 +546,17 @@ class Appointments extends CI_Controller {
                         array_push($periods, [
                             'start' => $break_start,
                             'end'   => $break_end
+                        ]);
+                    }
+                }
+
+                foreach ($provider_appointments as $provider_appointment) {
+                    $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $selectedDate || $appt_end_date === $selectedDate || ($appt_date < $selectedDate && $appt_end_date > $selectedDate)) {
+                        array_push($periods, [
+                            'start' => strtotime($provider_appointment['start_datetime']),
+                            'end'   => strtotime($provider_appointment['end_datetime'])
                         ]);
                     }
                 }
@@ -581,6 +599,17 @@ class Appointments extends CI_Controller {
                         ]);
                     }
                 }
+
+                foreach ($provider_appointments as $provider_appointment) {
+                    $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
+                        array_push($periods, [
+                            'start' => strtotime($provider_appointment['start_datetime']),
+                            'end'   => strtotime($provider_appointment['end_datetime'])
+                        ]);
+                    }
+                }
             } else {
                 if ($selected_date_working_plan) {
                     $start = $this->get_utc_timestamp($selectedDate . ' ' . $selected_date_working_plan['end'] . ':00 ' . $timezone);
@@ -599,10 +628,6 @@ class Appointments extends CI_Controller {
                 }
             }
         } else {
-            array_push($periods, [
-                'start' => strtotime($previousDate . ' 00:00:00'),
-                'end'   => strtotime($previousDate . ' 23:59:59')
-            ]);
             if ($selected_date_working_plan) {
                 $start        = $this->get_utc_timestamp(
                     $selectedDate . ' ' . $selected_date_working_plan['start'] . ':00 ' .
@@ -622,6 +647,17 @@ class Appointments extends CI_Controller {
                         array_push($periods, [
                             'start' => $break_start,
                             'end'   => $break_end
+                        ]);
+                    }
+                }
+
+                foreach ($provider_appointments as $provider_appointment) {
+                    $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                    $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                    if ($appt_date === $selectedDate || $appt_end_date === $selectedDate || ($appt_date < $selectedDate && $appt_end_date > $selectedDate)) {
+                        array_push($periods, [
+                            'start' => strtotime($provider_appointment['start_datetime']),
+                            'end'   => strtotime($provider_appointment['end_datetime'])
                         ]);
                     }
                 }
@@ -667,6 +703,17 @@ class Appointments extends CI_Controller {
                             ]);
                         }
                     }
+
+                    foreach ($provider_appointments as $provider_appointment) {
+                        $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                        $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                        if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
+                            array_push($periods, [
+                                'start' => strtotime($provider_appointment['start_datetime']),
+                                'end'   => strtotime($provider_appointment['end_datetime'])
+                            ]);
+                        }
+                    }
                 } else {
                     $start      = $this->get_utc_timestamp(
                         $selectedDate . ' ' . $selected_date_working_plan['end'] . ':00' .
@@ -680,10 +727,6 @@ class Appointments extends CI_Controller {
 
                 }
             } else {
-                array_push($periods, [
-                    'start' => strtotime($selectedDate . ' 00:00:00'),
-                    'end'   => strtotime($selectedDate . ' 23:59:59')
-                ]);
                 if ($next_date_working_plan) {
                     $start        = $this->get_utc_timestamp(
                         $nextDate . ' ' . $next_date_working_plan['start'] . ':00 ' .
@@ -722,20 +765,19 @@ class Appointments extends CI_Controller {
                             ]);
                         }
                     }
-                } else {
-                    array_push($periods, [
-                        'start' => strtotime($nextDate . ' 00:00:00'),
-                        'end'   => strtotime($nextDate . ' 23:59:59')
-                    ]);
+
+                    foreach ($provider_appointments as $provider_appointment) {
+                        $appt_date = (new DateTime($provider_appointment['start_datetime']))->format('Y-m-d');
+                        $appt_end_date = (new DateTime($provider_appointment['end_datetime']))->format('Y-m-d');
+                        if ($appt_date === $nextDate || $appt_end_date === $nextDate || ($appt_date < $nextDate && $appt_end_date > $nextDate)) {
+                            array_push($periods, [
+                                'start' => strtotime($provider_appointment['start_datetime']),
+                                'end'   => strtotime($provider_appointment['end_datetime'])
+                            ]);
+                        }
+                    }
                 }
             }
-        }
-
-        foreach ($provider_appointments as $provider_appointment) {
-            array_push($periods, [
-                'start' => strtotime($provider_appointment['start_datetime']),
-                'end'   => strtotime($provider_appointment['end_datetime'])
-            ]);
         }
 
         $sorted_periods = array();
