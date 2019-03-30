@@ -515,7 +515,7 @@ window.BackendCalendarTimezoneModal = window.BackendCalendarTimezoneModal || {};
 
 
         timezones.forEach(function (timezone) {
-            const option = '<option value="' + timezone.offset + '">' + timezone.name + ' (' + timezone.abbr + ')' + '</option>';
+            const option = '<option value="' + timezone.offset + '">' + timezone.name + ' (' + timezone.abbr + ')' + ' ' + '(' + timezone.offset + ')' + '</option>';
             $('#timezone').append(option);
         });
     }
