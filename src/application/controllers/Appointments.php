@@ -487,11 +487,15 @@ class Appointments extends CI_Controller {
         $previous_date_working_plan = $working_plan[strtolower(date('l', strtotime($previousDate)))];
         $selected_date_working_plan = $working_plan[strtolower(date('l', strtotime($selectedDate)))];
         $next_date_working_plan     = $working_plan[strtolower(date('l', strtotime($nextDate)))];
+        $start_for_appt = (new DateTime($previousDate . ' -1 day'))->format('Y-m-d').' 23:59:59';
+        $end_for_appt = (new DateTime($nextDate . ' +1 day'))->format('Y-m-d') . ' 00:00:00';
+
+        $where_clause = 'id_users_provider = '. $providerId .
+            ' AND (start_datetime >= "' . $start_for_appt .
+            '" OR end_datetime <= "' . $end_for_appt . '")';
 
         // Get the service, provider's appointments.
-        $provider_appointments = $this->appointments_model->get_batch([
-            'id_users_provider' => $providerId,
-        ]);
+        $provider_appointments = $this->appointments_model->get_batch($where_clause);
 
         if ($user_current_timestamp > $day_end_timestamp) {
             $this->output
