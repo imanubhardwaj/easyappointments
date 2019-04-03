@@ -34,10 +34,10 @@ window.BackendCalendarUnavailabilitiesModal = window.BackendCalendarUnavailabili
             var start = $dialog.find('#unavailable-start').datetimepicker('getDate');
             var end = Date.parse($dialog.find('#unavailable-end').datetimepicker('getDate'));
 
-            if (start > end) {
+            if (start >= end) {
                 // Start time is after end time - display message to user.
                 $dialog.find('.modal-message')
-                    .text(EALang.start_date_before_end_error)
+                    .text('End Date-Time must be greater than Start')
                     .addClass('alert-danger')
                     .removeClass('hidden');
 
