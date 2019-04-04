@@ -54,6 +54,14 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var startDatetime = $dialog.find('#start-datetime').datetimepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
             var endDatetime = $dialog.find('#end-datetime').datetimepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
 
+            if(startDatetime >= endDatetime) {
+                $dialog.find('.modal-message')
+                    .text('End Date-Time must be greater than Start')
+                    .addClass('alert-danger')
+                    .removeClass('hidden');
+                return;
+            }
+
             var appointment = {
                 id_services: $dialog.find('#select-service').val(),
                 id_users_provider: $dialog.find('#select-provider').val(),
