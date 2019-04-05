@@ -686,6 +686,10 @@ class Appointments_Model extends CI_Model {
                         $appointment['end_datetime']   = date('Y-m-d H:i:s', strtotime($end_time));
                         $this->appointments_model->_update($appointment);
                     }
+                    if($appointment['notes'] !== $event->getSummary()) {
+                        $appointment['notes']   = $event->getSummary();
+                        $this->appointments_model->_update($appointment);
+                    }
                 }
             }
         }
