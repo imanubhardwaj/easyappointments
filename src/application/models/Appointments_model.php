@@ -648,10 +648,18 @@ class Appointments_Model extends CI_Model {
         // :: ADD GCAL EVENTS THAT ARE NOT PRESENT ON E!A
         $google_calendar = $provider['settings']['google_calendar'];
         $events = $this->google_sync->get_sync_events($google_calendar, $google_start, $google_end);
-
+        $events_deleted = '';
         foreach ($events->getItems() as $event)
         {
             if($event->start && $event->end) {
+                $id = $event->getId();
+                $event_id = substr($id, 0, strpos($id, '_'));
+                if ($id && $event_id && $events_deleted !== $event_id) {
+                    $where_clause = 'id_users_provider = ' . $provider['id'] .
+                        ' AND id_google_calendar LIKE "' . $event_id . '%"';
+                    $this->db->where($where_clause)->delete('ea_appointments');
+                    $events_deleted = $event_id;
+                }
                 $results    = $this->appointments_model->get_batch(['id_google_calendar' => $event->getId()]);
                 $start_time = $this->remove_time_offset($event->start->getDateTime());
                 $end_time   = $this->remove_time_offset($event->end->getDateTime());
@@ -669,6 +677,14 @@ class Appointments_Model extends CI_Model {
                             'id_services'        => NULL,
                         ];
                         $this->appointments_model->add($appointment);
+                    }
+                } else if(count($results) == 1) {
+                    $appointment = $results[0];
+                    if($appointment['start_datetime'] !== $start_time ||
+                        $appointment['end_datetime'] !== $end_time) {
+                        $appointment['start_datetime'] = date('Y-m-d H:i:s', strtotime($start_time));
+                        $appointment['end_datetime']   = date('Y-m-d H:i:s', strtotime($end_time));
+                        $this->appointments_model->_update($appointment);
                     }
                 }
             }
