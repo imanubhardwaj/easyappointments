@@ -75,10 +75,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $dialog.find('#select-provider').val(appointment.id_users_provider);
 
                 // Set the start and end datetime of the appointment.
-                var startDatetime = Date.parseExact(appointment.start_datetime, 'yyyy-MM-dd HH:mm:ss');
+                var startDatetime = Date.parseExact(moment.utc(appointment.start_datetime).local().format('YYYY-MM-DD HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss');
                 $dialog.find('#start-datetime').datetimepicker('setDate', startDatetime);
 
-                var endDatetime = Date.parseExact(appointment.end_datetime, 'yyyy-MM-dd HH:mm:ss');
+                var endDatetime = Date.parseExact(moment.utc(appointment.end_datetime).local().format('YYYY-MM-DD HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss');
                 $dialog.find('#end-datetime').datetimepicker('setDate', endDatetime);
 
                 var customer = appointment.customer;
@@ -97,10 +97,9 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                 // Replace string date values with actual date objects.
                 unavailable.start_datetime = lastFocusedEventData.start.format('YYYY-MM-DD HH:mm:ss');
-                var startDatetime = Date.parseExact(unavailable.start_datetime, 'yyyy-MM-dd HH:mm:ss');
+                var startDatetime = Date.parseExact(moment.utc(unavailable.start_datetime).local().format('YYYY-MM-DD HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss');
                 unavailable.end_datetime = lastFocusedEventData.end.format('YYYY-MM-DD HH:mm:ss');
-                var endDatetime = Date.parseExact(unavailable.end_datetime, 'yyyy-MM-dd HH:mm:ss');
-
+                var endDatetime = Date.parseExact(moment.utc(unavailable.end_datetime).local().format('YYYY-MM-DD HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss');
                 $dialog = $('#manage-unavailable');
                 BackendCalendarUnavailabilitiesModal.resetUnavailableDialog();
 
