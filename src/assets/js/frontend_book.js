@@ -420,15 +420,6 @@ window.FrontendBook = window.FrontendBook || {};
             const zipCode = $('#zip-code').val();
             const phoneNumber = $('#phone-number').val();
             const city = $('#city').val();
-            if (!phoneNumberRegex.test(phoneNumber))
-            {
-                throw 'Invalid Phone Number';
-            }
-            if(zipCode) {
-                if (!zipCodeRegex.test(zipCode)) {
-                    throw 'Invalid Zip Code';
-                }
-            }
 
             var $acceptToTermsAndConditions = $('#accept-to-terms-and-conditions');
             if ($acceptToTermsAndConditions.length && !$acceptToTermsAndConditions.prop('checked')) {
